@@ -30,6 +30,7 @@ namespace TRE
 			void SwapBuffers();
 			void UpdateDeltaTime();
 			void MaximizeWindow();
+			void SetCursor(bool Show);
 
 			GLFWwindow* GetWindowHandle() const;
 			WindowConfig& GetWindowConfig();

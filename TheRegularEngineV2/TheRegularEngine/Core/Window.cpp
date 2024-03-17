@@ -28,6 +28,14 @@ namespace TRE
 		return m_SwapChain;
 	}
 
+	void Window::SetCursor(bool Show)
+	{
+		if (!Show)
+			glfwSetInputMode(m_WindowHandle, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+		else
+			glfwSetInputMode(m_WindowHandle, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+	}
+	
 	Window::Window(const WindowConfig& config) : m_Config(config)
 	{
 		if (int Error = glfwInit(); !Error)

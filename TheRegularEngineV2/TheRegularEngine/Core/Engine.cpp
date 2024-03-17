@@ -99,6 +99,7 @@ namespace TRE
 		{
 			SceneManager::Instance().LoadScene(GETFOLDER(FILESYS_SCENE) + "SplashScreen.json");
 			EventHandler::getEventHandlerInstance().Publish(ToggleRunEvent{ true, GameLoop::Instance().GetGameSimulating() });
+			m_Window->SetCursor(false);
 		}
 		else
 			SceneManager::Instance().NewScene();
