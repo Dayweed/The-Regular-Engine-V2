@@ -116,6 +116,12 @@ namespace TRE
 				endCutscene = true;
 			}
 
+			if (currentFrame == 0 || currentFrame == 1)
+			{
+				if (ECSManager.IsValidEntity(birdSFX))
+					AS.Play(birdSFX);
+			}
+
 			if (currentFrame == 2)
 			{
 				if (ECSManager.IsValidEntity(birdSFX))
