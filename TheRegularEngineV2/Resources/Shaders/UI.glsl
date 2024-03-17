@@ -31,6 +31,7 @@ void main()
     Out.UV = in_UV;
     Out.Gamma = ubo.mGammeValue;
     gl_Position = ubo.m_ProjView * PC.Transform * vec4(in_Position, 1.0);
+    gl_Position.z = 1;
 }
 
 #version 450
