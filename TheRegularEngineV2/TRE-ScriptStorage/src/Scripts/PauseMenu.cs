@@ -52,14 +52,17 @@ namespace TRE
 		private List<Entity> settingsSelected;
 		private List<Entity> audioPanel;
 
-		private Entity mSettingPanel;
-
 		private Entity pauseMenu;
 		private Entity cfmMenu;
 		private Entity settingsMenu;
 
+		//Audio panel entities
+		private Entity masterVolume;
+		private Entity musicVolume;
+		private Entity sfxVolume;
+
 		//Graphics panel entities
-		private int mCurrentEditMember = 0;
+		private int mCurrentEditMember = -1;
 		private Entity mGammaPanel;
         private Entity mGammaCheckbox;
         private Entity mGammaTick;
@@ -87,8 +90,6 @@ namespace TRE
 			settingsPanel.Add(ECSManager.FindEntityByName("audio_panel"));
 			settingsPanel.Add(ECSManager.FindEntityByName("controls_panel"));
 
-			mSettingPanel = ECSManager.FindEntityByName("settings_panel");
-
             //selected
             settingsSelected = new List<Entity>();
 			settingsSelected.Add(ECSManager.FindEntityByName("gameplay_selected"));
@@ -106,8 +107,11 @@ namespace TRE
 				String childName = ECSManager.FindEntityByName("audio_selected").parenting.GetChild(i).name;
 				audioPanel.Add(ECSManager.FindEntityByName(childName));
 			}
+			masterVolume = ECSManager.FindEntityByName("master_volume");
+			musicVolume = ECSManager.FindEntityByName("music_volume");
+			sfxVolume = ECSManager.FindEntityByName("sfx_volume");
 
-			pointer = ECSManager.FindEntityByName("main_pointer");
+            pointer = ECSManager.FindEntityByName("main_pointer");
 			pointerTransform = pointer.GetComponent<Transform>();
 
 			destructivePointer = ECSManager.FindEntityByName("destructive_Pointer");
@@ -119,7 +123,6 @@ namespace TRE
 			pauseMenu = ECSManager.FindEntityByName("PauseMenu");
 			cfmMenu = ECSManager.FindEntityByName("pauseMenu_destructive");
 			settingsMenu = ECSManager.FindEntityByName("settings_panel");
-
 
             mGammaPanel = ECSManager.FindEntityByName("gamma_panel");
 			mGammaCheckbox = ECSManager.FindEntityByName("checkbox_gamma");
@@ -265,7 +268,8 @@ namespace TRE
 					if (InputSystem.GetKeyTriggered(InputKeys.A))
 					{
 						Debug.Log("press left");
-						if (settingsOption < 0)
+                        Debug.Log("mCurrentEditMember: " + mCurrentEditMember);
+                        if (settingsOption < 0)
 							settingsOption = 0;
 						else if (settingsOption > 3)
 							settingsOption = 3;
@@ -281,7 +285,8 @@ namespace TRE
 					if (InputSystem.GetKeyTriggered(InputKeys.D))
 					{
 						Debug.Log("press right");
-						if (settingsOption < 0)
+                        Debug.Log("mCurrentEditMember: " + mCurrentEditMember);
+                        if (settingsOption < 0)
 							settingsOption = 0;
 						else if (settingsOption > 3)
 							settingsOption = 3;
@@ -302,28 +307,28 @@ namespace TRE
 							showGraphicsPanel = false;
 							showAudioPanel = false;
 							showControlsPanel = false;
-							break;
+                            break;
 						case 1:
 							settings_name = "Graphics";
 							showGameplayPanel = false;
 							showGraphicsPanel = true;
 							showAudioPanel = false;
 							showControlsPanel = false;
-							break;
+                            break;
 						case 2:
 							settings_name = "Audio";
 							showGameplayPanel = false;
 							showGraphicsPanel = false;
 							showAudioPanel = true;
 							showControlsPanel = false;
-							break;
+                            break;
 						case 3:
 							settings_name = "Controls";
 							showGameplayPanel = false;
 							showGraphicsPanel = false;
 							showAudioPanel = false;
 							showControlsPanel = true;
-							break;
+                            break;
 						default:
 							showGameplayPanel = false;
 							showGraphicsPanel = false;
@@ -384,6 +389,8 @@ namespace TRE
 					{
 						mIsEditingSettings = true;
 						mCurrentEditMember = 0; //Set it to be 0th member always at the start
+
+                        Debug.Log("1st trigger mCurrentEditMember: " + mCurrentEditMember);
                     }
 
 					//Show graphics panel
@@ -394,6 +401,7 @@ namespace TRE
 						mGammaTick.GetComponent<SpriteRenderer>().isVisible = showGraphicsPanel;
 					}
 				}
+				//edit settings here
 				else if (menustate == 1 && mIsEditingSettings)
 				{
 					if (showAudioPanel)
@@ -403,11 +411,16 @@ namespace TRE
                         {
                             Debug.Log("press up");
                             if (mCurrentEditMember <= 0)
+							{
+								mCurrentEditMember = -1;
 								mIsEditingSettings = false;
+							}
 							else if (mCurrentEditMember > 2)
 								mCurrentEditMember = 2;
 							else
 								--mCurrentEditMember;
+
+                            Debug.Log("mCurrentEditMember: " + mCurrentEditMember);
                         }
 
                         if (InputSystem.GetKeyTriggered(InputKeys.S))
@@ -419,8 +432,82 @@ namespace TRE
 								mCurrentEditMember = 2;
 							else
 								++mCurrentEditMember;
+
+                            Debug.Log("mCurrentEditMember: " + mCurrentEditMember);
                         }
 
+						//adjust each setting
+						if (InputSystem.GetKeyPress(InputKeys.A))
+						{
+							switch (mCurrentEditMember)
+							{
+								case 0:
+									String textVol = TextSystem.GetTextMessage(masterVolume.ID);
+									int currentVol;
+									if (int.TryParse(textVol, out currentVol))
+									{
+										if (currentVol > 0)
+											--currentVol;
+										TextSystem.SetTextMessage(masterVolume.ID, currentVol.ToString());
+									}
+									break;
+								case 1:
+                                    textVol = TextSystem.GetTextMessage(musicVolume.ID);
+                                    if (int.TryParse(textVol, out currentVol))
+                                    {
+                                        if (currentVol > 0)
+                                            --currentVol;
+                                        TextSystem.SetTextMessage(musicVolume.ID, currentVol.ToString());
+                                    }
+                                    break;
+								case 2:
+                                    textVol = TextSystem.GetTextMessage(sfxVolume.ID);
+                                    if (int.TryParse(textVol, out currentVol))
+                                    {
+                                        if (currentVol > 0)
+                                            --currentVol;
+                                        TextSystem.SetTextMessage(sfxVolume.ID, currentVol.ToString());
+                                    }
+                                    break;
+							}
+						}
+
+                        if (InputSystem.GetKeyPress(InputKeys.D))
+                        {
+                            switch (mCurrentEditMember)
+                            {
+                                case 0:
+                                    String textVol = TextSystem.GetTextMessage(masterVolume.ID);
+                                    int currentVol;
+                                    if (int.TryParse(textVol, out currentVol))
+                                    {
+										if (currentVol < 100)
+											++currentVol;
+                                        TextSystem.SetTextMessage(masterVolume.ID, currentVol.ToString());
+                                    }
+                                    break;
+                                case 1:
+                                    textVol = TextSystem.GetTextMessage(musicVolume.ID);
+                                    if (int.TryParse(textVol, out currentVol))
+                                    {
+                                        if (currentVol > 0)
+                                            ++currentVol;
+                                        TextSystem.SetTextMessage(musicVolume.ID, currentVol.ToString());
+                                    }
+                                    break;
+                                case 2:
+                                    textVol = TextSystem.GetTextMessage(sfxVolume.ID);
+                                    if (int.TryParse(textVol, out currentVol))
+                                    {
+                                        if (currentVol > 0)
+                                            ++currentVol;
+                                        TextSystem.SetTextMessage(sfxVolume.ID, currentVol.ToString());
+                                    }
+                                    break;
+                            }
+                        }
+
+                        //move pointer
                         switch (mCurrentEditMember)
                         {
                             case 0:
@@ -714,7 +801,7 @@ namespace TRE
                 UISystem.SetVisible(settingsPanel[x].ID, false);
             }
 
-            UISystem.SetVisible(mSettingPanel.ID, false);
+            UISystem.SetVisible(settingsMenu.ID, false);
 
 			if (showGraphicsPanel)
 			{
