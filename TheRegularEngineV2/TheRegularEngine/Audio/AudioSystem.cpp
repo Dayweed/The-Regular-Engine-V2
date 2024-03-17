@@ -565,7 +565,7 @@ namespace TRE
 		Audio& source = go->GetComponent<Audio>();
 		return source.m_Channel->isPlaying(&source.m_isPlaying);
 
-		std::cout << "IsPlaying: " << source.m_isPlaying << source.m_FileName << std::endl;
+		//std::cout << "IsPlaying: " << source.m_isPlaying << source.m_FileName << std::endl;
 	}
 
 }

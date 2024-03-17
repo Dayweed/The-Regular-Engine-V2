@@ -33,6 +33,8 @@ namespace TRE
 		public int audioOption = 0;
 		public String settings_name = "";
 
+		private ulong sfx;
+
 		////Settings -> Gameplay
 		//public int gameplayOption = 0;
 
@@ -114,6 +116,8 @@ namespace TRE
 			settingsSelected.Add(ECSManager.FindEntityByName("audio_selected"));
 			settingsSelected.Add(ECSManager.FindEntityByName("controls_selected"));
 
+			sfx = ECSManager.FindIDFromName("SFX_Pausebutton");
+
 			//audio panel
             audioPanel = new List<Entity>();
 			int total_children = ECSManager.FindEntityByName("audio_selected").parenting.GetTotalChildren();
@@ -191,7 +195,12 @@ namespace TRE
                     currentOption = 0;
                     Debug.Log("Trigger: Unpause the game");
                 }
-				
+
+				if (ECSManager.IsValidEntity(sfx))
+				{
+					AudioSystem.Play(sfx);
+				}
+
 			}
 
 			if (isPaused)
@@ -206,6 +215,11 @@ namespace TRE
 							currentOption = 2;
 						else
 							currentOption -= 1;
+
+						if (ECSManager.IsValidEntity(sfx))
+						{
+							AudioSystem.Play(sfx);
+						}
 					}
 
 					if (InputSystem.GetKeyTriggered(InputKeys.S) || ControllerInput(MenuNavigation.DOWN))
@@ -214,6 +228,11 @@ namespace TRE
 							currentOption = 0;
 						else
 							currentOption += 1;
+
+						if (ECSManager.IsValidEntity(sfx))
+						{
+							AudioSystem.Play(sfx);
+						}
 					}
 
 					if (InputSystem.GetKeyTriggered(InputKeys.Enter) || ControllerInput(MenuNavigation.CONFIRM))
@@ -237,6 +256,11 @@ namespace TRE
 							menustate = 2;
 							currentOption = 1;
 							isChangeMenu = true;
+						}
+
+						if (ECSManager.IsValidEntity(sfx))
+						{
+							AudioSystem.Play(sfx);
 						}
 					}
 
@@ -266,6 +290,11 @@ namespace TRE
 							settingsOption = 3;
 						else
 							--settingsOption;
+
+						if (ECSManager.IsValidEntity(sfx))
+						{
+							AudioSystem.Play(sfx);
+						}
 					}
 
 					if (InputSystem.GetKeyTriggered(InputKeys.D))
@@ -277,6 +306,11 @@ namespace TRE
 							settingsOption = 3;
 						else
 							++settingsOption;
+
+						if (ECSManager.IsValidEntity(sfx))
+						{
+							AudioSystem.Play(sfx);
+						}
 					}
 
 					switch (settingsOption)
@@ -456,7 +490,12 @@ namespace TRE
                         //Set every pointer back to false
                         mGraphicsPointer.GetComponent<SpriteRenderer>().isVisible = false;
 						audioPointer.GetComponent<SpriteRenderer>().isVisible = false;
-                    }
+
+						if (ECSManager.IsValidEntity(sfx))
+						{
+							AudioSystem.Play(sfx);
+						}
+					}
                 }
                 else // confirmation menu logic which is menustate == 2
                 {
@@ -466,6 +505,11 @@ namespace TRE
 							menuOption = 1;
 						else if (menuOption == 1)
 							menuOption = 0;
+
+						if (ECSManager.IsValidEntity(sfx))
+						{
+							AudioSystem.Play(sfx);
+						}
 					}
 
 					if (InputSystem.GetKeyTriggered(InputKeys.D) || ControllerInput(MenuNavigation.RIGHT))
@@ -474,6 +518,11 @@ namespace TRE
 							menuOption = 1;
 						else if (menuOption == 1)
 							menuOption = 0;
+
+						if (ECSManager.IsValidEntity(sfx))
+						{
+							AudioSystem.Play(sfx);
+						}
 					}
 
 					if (InputSystem.GetKeyTriggered(InputKeys.Enter) || ControllerInput(MenuNavigation.CONFIRM))
@@ -492,6 +541,10 @@ namespace TRE
 							menustate = 0;
 							isChangeMenu = true;
 							menuOption = 1;
+						}
+						if (ECSManager.IsValidEntity(sfx))
+						{
+							AudioSystem.Play(sfx);
 						}
 					}
 
