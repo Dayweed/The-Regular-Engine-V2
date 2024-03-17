@@ -71,9 +71,13 @@ namespace TRE
 				source.m_Channel->isPlaying(&source.m_isPlaying);
 				TogglePause(go);
 				ToggleMute(go);
-				//source.m_Channel->setVolume(source.m_Volume);
 				source.m_Channel->setPitch(source.m_Pitch);
 				source.m_Channel->setPriority(source.m_Priority);
+
+				if (!source.m_Spatialize)
+				{
+					source.m_Channel->setVolume(source.m_Volume);
+				}
 
 			}
 			else
