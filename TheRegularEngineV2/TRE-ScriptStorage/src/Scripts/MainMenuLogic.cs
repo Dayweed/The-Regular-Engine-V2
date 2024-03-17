@@ -1,5 +1,4 @@
 using System;
-using System.Security.Policy;
 using GlmSharp;
 
 namespace TRE
@@ -125,69 +124,77 @@ namespace TRE
 
 				JumpOutHole();
 			}
+			else if (prevScene == "Credits_Scene")
+			{
+				// Teleport Moley and Holey to another location
+				vec3 teleportPos = ToOptionSelect.GetComponent<Transform>().Position;
+				Moley.GetComponent<Transform>().Position = new vec3(teleportPos.x - 5, teleportPos.y + 15, teleportPos.z);
+				Holey.GetComponent<Transform>().Position = new vec3(teleportPos.x + 5, teleportPos.y + 15, teleportPos.z);
+
+				JumpOutHole();
+			}
 		}
 
 		public void Update()
-        {
-            controller1 = InputSystem.GetControllerConnected(0);
+		{
+			#region Controller UI
+			controller1 = InputSystem.GetControllerConnected(0);
 			controller2 = InputSystem.GetControllerConnected(1);
 
 			// Controller check
-            if (controller1)
-            {
-                if (lastController1 == false)
-                {
-                    lastController1 = true;
+			if (controller1)
+			{
+				if (lastController1 == false)
+				{
+					lastController1 = true;
 					changeUI = true;
-                }
-            }
-            else
-            {
-                if (lastController1 == false) { }
-                else
-                {
-                    lastController1 = false;
+				}
+			}
+			else
+			{
+				if (lastController1 == false) { }
+				else
+				{
+					lastController1 = false;
 					changeUI = true;
-                }
+				}
+			}
 
-            }
-
-            if (controller2)
-            {
-                if (lastController2 == false)
-                {
-                    lastController2 = true;
+			if (controller2)
+			{
+				if (lastController2 == false)
+				{
+					lastController2 = true;
 					changeUI = true;
-                }
-            }
-            else
-            {
-                if (lastController2 == false) { }
-                else
-                {
-                    lastController2 = false;
+				}
+			}
+			else
+			{
+				if (lastController2 == false) { }
+				else
+				{
+					lastController2 = false;
 					changeUI = true;
-                }
+				}
 
-            }
+			}
 
-            //Controller UI 
-            if (controller1 && !controller2 && changeUI)
-            {
-                UIControls.GetComponent<SpriteRenderer>().Texture = "ui-mm-controls-controller1.png";
+			//Controller UI 
+			if (controller1 && !controller2 && changeUI)
+			{
+				UIControls.GetComponent<SpriteRenderer>().Texture = "ui-mm-controls-controller1.png";
 				controller1 = false;
-            }
+			}
 			else if (controller1 && controller2 && changeUI)
-            {
-                UIControls.GetComponent<SpriteRenderer>().Texture = "ui-mm-controls-controller2.png";
+			{
+				UIControls.GetComponent<SpriteRenderer>().Texture = "ui-mm-controls-controller2.png";
 				controller1 = false;
-            }
-            else if(!controller1 && !controller2 && changeUI)
-            {
-                UIControls.GetComponent<SpriteRenderer>().Texture = "ui-mm-controls.png";
+			}
+			else if (!controller1 && !controller2 && changeUI)
+			{
+				UIControls.GetComponent<SpriteRenderer>().Texture = "ui-mm-controls.png";
 				changeUI = false;
-            }
-
+			}
 
 			// UIControls: Determines if fade in or out
 			if (UIControls != null && Moley != null && Holey != null)
@@ -207,6 +214,7 @@ namespace TRE
 					UIControls.GetComponent<VFX_FadeIn>().FadeIn();
 				}
 			}
+			#endregion
 
 			#region TitleLerpLogic
 			// Title: Determine which title to show
@@ -388,7 +396,7 @@ namespace TRE
 				}
 				else if (selectedLevelBonus)
 				{
-                    selectedLevelBonus = false;
+					selectedLevelBonus = false;
 
 					Scene.TransitionScene("Level_Bonus", sceneTransitionDelay);
 				}
@@ -396,7 +404,7 @@ namespace TRE
 
 			if (PopupQuitConfirmation)
 			{
-                if (InputSystem.GetKeyPress(InputKeys.Q) || (!CurrentButtonSelected && InputSystem.GetKeyPress(InputKeys.Enter)))
+				if (InputSystem.GetKeyPress(InputKeys.Q) || (!CurrentButtonSelected && InputSystem.GetKeyPress(InputKeys.Enter)))
 				{
 					CurrentButtonSelected = false;
 					QuitConfirmation.GetComponent<SpriteRenderer>().isVisible = false;
