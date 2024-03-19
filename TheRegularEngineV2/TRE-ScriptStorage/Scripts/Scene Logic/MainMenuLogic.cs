@@ -72,7 +72,7 @@ namespace TRE
 			Moley = ECSManager.FindEntityByName("Moley");
 			Holey = ECSManager.FindEntityByName("Holey");
 
-			ToOptionSelect = ECSManager.FindEntityByName("ToOptionSelect");
+            ToOptionSelect = ECSManager.FindEntityByName("ToOptionSelect");
 			ToLevelSelect = ECSManager.FindEntityByName("ToLevelSelect");
 			ToQuitSelect = ECSManager.FindEntityByName("ToQuitSelect");
 			ToReturnSelect = ECSManager.FindEntityByName("ToReturnSelect");
@@ -129,11 +129,6 @@ namespace TRE
 			}
 			else if (prevScene == "Credits_Scene")
 			{
-				// Teleport Moley and Holey to another location
-				vec3 teleportPos = ToOptionSelect.GetComponent<Transform>().Position;
-				Moley.GetComponent<Transform>().Position = new vec3(teleportPos.x - 5, teleportPos.y + 15, teleportPos.z);
-				Holey.GetComponent<Transform>().Position = new vec3(teleportPos.x + 5, teleportPos.y + 15, teleportPos.z);
-
 				JumpOutHole();
 			}
 		}
