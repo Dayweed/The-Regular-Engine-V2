@@ -59,28 +59,24 @@ namespace TRE
 			return;
 
 #pragma region Gizmo
-		if (event._key == static_cast<int>(KeyButton::Q))
+		if (!ImGui::IsMouseDown(ImGuiMouseButton_Right))
 		{
-			m_GizmoOperation = -1;
-		}
-		if (event._key == static_cast<int>(KeyButton::W))
-		{
-			m_GizmoOperation = ImGuizmo::OPERATION::TRANSLATE;
-		}
-		if (event._key == static_cast<int>(KeyButton::E))
-		{
-			m_GizmoOperation = ImGuizmo::OPERATION::ROTATE;
-		}
-		if (event._key == static_cast<int>(KeyButton::R))
-		{
-			m_GizmoOperation = ImGuizmo::OPERATION::SCALE;
+			if (event._key == static_cast<int>(KeyButton::Q))
+				m_GizmoOperation = -1;
+			
+			if (event._key == static_cast<int>(KeyButton::W))
+				m_GizmoOperation = ImGuizmo::OPERATION::TRANSLATE;
+
+			if (event._key == static_cast<int>(KeyButton::E))
+				m_GizmoOperation = ImGuizmo::OPERATION::ROTATE;
+
+			if (event._key == static_cast<int>(KeyButton::R))
+				m_GizmoOperation = ImGuizmo::OPERATION::SCALE;
 		}
 
 		//Gizmo snapping
 		if ((event._key == static_cast<int>(KeyButton::LeftControl) || event._key == static_cast<int>(KeyButton::RightControl)) && event._state == static_cast<int>(KeyState::keyHeld))
-		{
 			m_IsGridAndSnap = true;
-		}
 		else
 			m_IsGridAndSnap = false;
 #pragma endregion
