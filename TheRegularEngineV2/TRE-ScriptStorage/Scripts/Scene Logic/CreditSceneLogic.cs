@@ -5,7 +5,8 @@ namespace TRE
 	public class CreditSceneLogic : Entity
 	{
 		Entity mCreditText;
-		const float m_ScrollSpeed = 500f;
+		float m_ScrollSpeed = 200f;
+		float m_FastSpeed = 500f;
 		bool m_EndOfCredits = false;
 		const float m_Endposition = -2850f;
 
@@ -22,6 +23,11 @@ namespace TRE
 
 		public void ScrollingCredits()
 		{
+			if (InputSystem.GetKeyTriggered(InputKeys.Space))
+			{
+				m_ScrollSpeed = m_FastSpeed;
+			}
+
 			vec3 currentpos = mCreditText.GetComponent<Transform>().Position;
 			if (currentpos.y > m_Endposition)
 			{
