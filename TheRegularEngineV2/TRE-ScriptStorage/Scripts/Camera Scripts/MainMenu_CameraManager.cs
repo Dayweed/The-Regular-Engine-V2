@@ -49,8 +49,8 @@ namespace TRE
 			regionB = IsInsideTrigger(Trigger_B);
 
 			if (regionA)
-            {
-                cameraController.staticPosition = new vec3(0, 30, 70);
+			{
+				cameraController.staticPosition = new vec3(0, 30, 70);
 				expectedPosition = new vec3(0, 30, 70);
 				expectedRotation = new vec3(30, 180, 0);
 				expectedDistance = 0;
@@ -58,8 +58,8 @@ namespace TRE
 			}
 
 			if (regionB)
-            {
-                cameraController.staticPosition = new vec3(240, 45, -230);
+			{
+				cameraController.staticPosition = new vec3(240, 45, -230);
 				expectedPosition = new vec3(240, 45, -230);
 				expectedRotation = new vec3(30, 120, 0);
 				expectedDistance = 0;
