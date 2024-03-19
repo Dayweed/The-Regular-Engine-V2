@@ -1041,6 +1041,7 @@ namespace property
                         vartype_from_functiongetset<fn_getsettype> Data;
                         const auto  Ret        = FunctionGetSet( HandleBasePointer(pBase, Entry.m_Offset), Data, true, Index );
                         assert(Ret);
+                        static_cast<void>(Ret);
 
                         const auto  EntryIndex = Table.getIndexFromEntry( Entry );
                         const auto& TableEntry = Table.m_pEntry[ EntryIndex ];
@@ -1160,6 +1161,7 @@ namespace property
                                                           , WorkingPack.getData().emplace<vartype_from_functiongetset<fn_getsettype>>()
                                                           , true, Index );
                         assert( Ret );
+                        static_cast<void>(Ret);
 
                         const auto& TableEntry = Table.m_pEntry[ Table.getIndexFromEntry( Entry ) ];
                         WorkingPack.pushPath( TableEntry.m_NameHash, Index );
@@ -1551,6 +1553,7 @@ namespace property
 
         int   Ret = property::details::UnpackRecursive( Table, pClassInstance, const_cast<pack&>( Pack ), iCurrentEntry, iCurrentPath );
         assert( Ret == 0 );
+        static_cast<void>(Ret);
         return true;
     }
 
