@@ -32,7 +32,7 @@ namespace TRE
 		m_ResourcesDirectory += "\\Resources";
 		m_ShaderDirectory = m_ResourcesDirectory;
 		m_ShaderDirectory += "\\Shaders";
-		m_ScriptDirectory += "\\TRE-ScriptStorage\\src\\Scripts";
+		m_ScriptDirectory += "\\TRE-ScriptStorage\\Scripts";
 		m_CurrentDirectory = m_AssetDirectory;
 
 		//std::cout << "m_CurrentDirectory: " << m_CurrentDirectory << "\n";
