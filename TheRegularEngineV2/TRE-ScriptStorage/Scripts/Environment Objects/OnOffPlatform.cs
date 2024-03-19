@@ -43,6 +43,12 @@ namespace TRE
 
 		/// <summary>The total amount of time in seconds for the platform to tremble before rotating.</summary>
 		const float trembleDuration = 1.0f; // 0.5f for FAST
+
+		/// <summary>The amount in units to tremble by.</summary>
+		const float trembleAmplitude = 0.25f;
+		
+		/// <summary>The speed of the trembling.</summary>
+		const float trembleFrequency = 60.0f;
 		#endregion
 
 		#region Variables
@@ -228,6 +234,10 @@ namespace TRE
 			{
 				shouldRotate = false;
 				platformState = IsInRange(rot.z, platformActiveAngle);
+
+				// to counteract lag spikes, if any
+				rot.z = rotateEndAngle;
+				TS.SetRotation(this.ID, rot);
 			}
 		}
 
@@ -249,20 +259,21 @@ namespace TRE
 			{
 				shouldRotate = false;
 				platformState = IsInRange(rot.x, platformActiveAngle);
+
+				// to counteract lag spikes, if any
+				rot.x = rotateEndAngle;
+				TS.SetRotation(this.ID, rot);
 			}
 		}
 
 		void TrembleZ()
 		{
-			const float amplitude = 0.125f;
-			const float frequency = 60.0f;
-
 			trembleTimer += Time.deltaTime;
 
 			if (trembleTimer < trembleDuration)
 			{
 				TS.GetPosition(this.ID, out vec3 pos);
-				pos.z = originalPosition.z + amplitude * MathF.Sin(globalTimer * frequency);
+				pos.z = originalPosition.z + trembleAmplitude * MathF.Sin(globalTimer * trembleFrequency);
 				TS.SetPosition(this.ID, pos);
 			}
 			else
@@ -278,15 +289,12 @@ namespace TRE
 
 		void TrembleX()
 		{
-			const float amplitude = 0.125f;
-			const float frequency = 60.0f;
-
 			trembleTimer += Time.deltaTime;
 
 			if (trembleTimer < trembleDuration)
 			{
 				TS.GetPosition(this.ID, out vec3 pos);
-				pos.x = originalPosition.x + amplitude * MathF.Sin(globalTimer * frequency);
+				pos.x = originalPosition.x + trembleAmplitude * MathF.Sin(globalTimer * trembleFrequency);
 				TS.SetPosition(this.ID, pos);
 			}
 			else
