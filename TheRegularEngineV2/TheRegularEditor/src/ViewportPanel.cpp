@@ -39,16 +39,16 @@ namespace TRE
 
 	void ViewportPanel::OnMouseClick(const InputEvent& event)
 	{
-		if((event._key != (int)KeyButton::mouseButtonLeft) 
-			&& (event._key != (int)KeyButton::mouseButtonMiddle) 
-			&& (event._key != (int)KeyButton::mouseButtonRight))
+		if((event._key != static_cast<int>(KeyButton::mouseButtonLeft)) 
+			&& (event._key != static_cast<int>(KeyButton::mouseButtonMiddle)) 
+			&& (event._key != static_cast<int>(KeyButton::mouseButtonRight)))
 			return;
 
-		if (event._state == (int)KeyState::keyPressed)
+		if (event._state == static_cast<int>(KeyState::keyPressed))
 		{
 			m_IsViewportFocused = m_IsViewportHovered;
 		}
-		else if (event._state == (int)KeyState::keyHeld)
+		else if (event._state == static_cast<int>(KeyState::keyHeld))
 		{
 		}
 	}
@@ -59,25 +59,25 @@ namespace TRE
 			return;
 
 #pragma region Gizmo
-		if (event._key == (int)KeyButton::Q)
+		if (event._key == static_cast<int>(KeyButton::Q))
 		{
 			m_GizmoOperation = -1;
 		}
-		if (event._key == (int)KeyButton::W)
+		if (event._key == static_cast<int>(KeyButton::W))
 		{
 			m_GizmoOperation = ImGuizmo::OPERATION::TRANSLATE;
 		}
-		if (event._key == (int)KeyButton::E)
+		if (event._key == static_cast<int>(KeyButton::E))
 		{
 			m_GizmoOperation = ImGuizmo::OPERATION::ROTATE;
 		}
-		if (event._key == (int)KeyButton::R)
+		if (event._key == static_cast<int>(KeyButton::R))
 		{
 			m_GizmoOperation = ImGuizmo::OPERATION::SCALE;
 		}
 
 		//Gizmo snapping
-		if ((event._key == (int)KeyButton::LeftControl || event._key == (int)KeyButton::RightControl) && event._state == (int)KeyState::keyHeld)
+		if ((event._key == static_cast<int>(KeyButton::LeftControl) || event._key == static_cast<int>(KeyButton::RightControl)) && event._state == static_cast<int>(KeyState::keyHeld))
 		{
 			m_IsGridAndSnap = true;
 		}
@@ -88,7 +88,7 @@ namespace TRE
 		//Editor camera Look at
 #pragma region EditorCamera
 		EditorCamera& editorCamera = EditorCamera::Instance();
-		if (event._key == (int)KeyButton::F)
+		if (event._key == static_cast<int>(KeyButton::F))
 		{
 			if (Entity SelectedEntity = m_SelectionManager->GetSelectedEntity(); SelectedEntity)
 			{
@@ -103,7 +103,7 @@ namespace TRE
 				const float zoomSpeed = m_ZoomSensitivity * ImGui::GetIO().DeltaTime;
 				const float moveSpeed = m_PanSpeed * ImGui::GetIO().DeltaTime * editorCamera.m_BaseCamera.m_FocalLength / 10.f * PanSensitivity(m_ImageSize.x, m_ImageSize.y).x;
 
-				if (event._key == (int)KeyButton::W)
+				if (event._key == static_cast<int>(KeyButton::W))
 				{
 					editorCamera.SetFocalDistance(editorCamera.m_BaseCamera.m_FocalLength - zoomSpeed);
 
@@ -113,7 +113,7 @@ namespace TRE
 						editorCamera.SetFocalPoint(editorCamera.m_BaseCamera.m_FocalPoint + editorCamera.m_BaseCamera.GetViewDirection());
 					}
 				}
-				if (event._key == (int)KeyButton::S)
+				if (event._key == static_cast<int>(KeyButton::S))
 				{
 					editorCamera.SetFocalDistance(editorCamera.m_BaseCamera.m_FocalLength + zoomSpeed);
 
@@ -123,13 +123,21 @@ namespace TRE
 						editorCamera.SetFocalPoint(editorCamera.m_BaseCamera.m_FocalPoint + editorCamera.m_BaseCamera.GetViewDirection());
 					}
 				}
-				if (event._key == (int)KeyButton::A)
+				if (event._key == static_cast<int>(KeyButton::A))
 				{
 					editorCamera.SetFocalPoint(editorCamera.m_BaseCamera.m_FocalPoint + editorCamera.m_BaseCamera.GetRightVec() * moveSpeed);
 				}
-				if (event._key == (int)KeyButton::D)
+				if (event._key == static_cast<int>(KeyButton::D))
 				{
 					editorCamera.SetFocalPoint(editorCamera.m_BaseCamera.m_FocalPoint - editorCamera.m_BaseCamera.GetRightVec() * moveSpeed);
+				}
+				if (event._key == static_cast<int>(KeyButton::Q))
+				{
+					editorCamera.SetFocalPoint(editorCamera.m_BaseCamera.m_FocalPoint - editorCamera.m_BaseCamera.GetUpVec() * moveSpeed);
+				}
+				if (event._key == static_cast<int>(KeyButton::E))
+				{
+					editorCamera.SetFocalPoint(editorCamera.m_BaseCamera.m_FocalPoint + editorCamera.m_BaseCamera.GetUpVec() * moveSpeed);
 				}
 			}
 		}
@@ -217,7 +225,7 @@ namespace TRE
 			//For 3D Models
 			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("m_3DObject"))
 			{
-				std::string assetName = (const char*)payload->Data;
+				std::string assetName = static_cast<const char*>(payload->Data);
 				//assetName = assetName.substr(assetName.find_last_of('\\') + 1);
 				//assetName = assetName.substr(0, assetName.find_last_of(".fbx") + 1);
 
@@ -267,7 +275,7 @@ namespace TRE
 			// For prefab
 			else if (const ImGuiPayload* prefabPayload = ImGui::AcceptDragDropPayload("m_Prefab"))
 			{
-				std::string assetName = (const char*)prefabPayload->Data;
+				std::string assetName = static_cast<const char*>(prefabPayload->Data);
 				std::string filePath = assetName.substr(0, assetName.find_last_of(FILESYS_PREFABASSTYPE) + 1);
 				filePath.erase(filePath.find(FILESYS_PREFABASSTYPE));	// This is to remove unneeded data at the end after ".prefab"
 				filePath += FILESYS_PREFABASSTYPE;
@@ -331,13 +339,13 @@ namespace TRE
 					{
 						const Collision::Sphere3D& sphere = meshRendererSystem->GetBoundingSphere(mr);
 						float t = 0.f;
-						if (cameraRay.Collision::Ray3D::Intersects(sphere, &t))
+						if (cameraRay.Intersects(sphere, &t))
 						{
 							entitiesHit[t] = mr;
 						}
 					}
 
-					if (entitiesHit.size() > 0)
+					if (!entitiesHit.empty())
 					{
 						//int offset = m_ClickCount % entitiesHit.size();
 						Entity selectedEntity = (--entitiesHit.end())->second;
@@ -460,13 +468,13 @@ namespace TRE
 				break;
 			}
 
-			float snapArray[3] = { snapValue, snapValue, snapValue };
+			const float snapArray[3] = { snapValue, snapValue, snapValue };
 
 			ImGuizmo::MODE mode = ImGuizmo::WORLD;
 			if(m_IsGizmoLocal)
 				mode = ImGuizmo::LOCAL;
 
-			ImGuizmo::Manipulate(glm::value_ptr(View), glm::value_ptr(proj), (ImGuizmo::OPERATION)m_GizmoOperation, mode, glm::value_ptr(xform), nullptr, m_IsGridAndSnap  ? snapArray : nullptr);
+			ImGuizmo::Manipulate(glm::value_ptr(View), glm::value_ptr(proj), static_cast<ImGuizmo::OPERATION>(m_GizmoOperation), mode, glm::value_ptr(xform), nullptr, m_IsGridAndSnap  ? snapArray : nullptr);
 
 			if (ImGuizmo::IsUsing())
 			{
