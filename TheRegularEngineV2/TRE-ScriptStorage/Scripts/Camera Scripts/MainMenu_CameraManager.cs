@@ -35,7 +35,7 @@ namespace TRE
 			Debug.Log("CameraController ID is " + cameraController.ID);
 
 			expectedDistance = 35;
-			expectedPosition = new vec3(0, 10, 20);
+			expectedPosition = new vec3(0, 30, 20);
 			expectedRotation = new vec3(30, 180, 0);
 
 			cameraController.freeCamera = true;
@@ -44,23 +44,26 @@ namespace TRE
 		public void Update()
 		{
 			cameraController.freeCamera = true;
+			cameraController.lookOnlyBool = true;
 			regionA = IsInsideTrigger(Trigger_A);
 			regionB = IsInsideTrigger(Trigger_B);
 
 			if (regionA)
-			{
-				expectedPosition = new vec3(0, 10, 20);
+            {
+                cameraController.staticPosition = new vec3(0, 30, 70);
+				expectedPosition = new vec3(0, 30, 70);
 				expectedRotation = new vec3(30, 180, 0);
-				expectedDistance = 35;
-				expectedDuration = 0.8f;
+				expectedDistance = 0;
+				expectedDuration = 2.0f;
 			}
 
 			if (regionB)
-			{
-				expectedPosition = new vec3(0, 10, 0);
-				expectedRotation = new vec3(45, 180, 0);
-				expectedDistance = 60;
-				expectedDuration = 0.8f;
+            {
+                cameraController.staticPosition = new vec3(240, 45, -230);
+				expectedPosition = new vec3(240, 45, -230);
+				expectedRotation = new vec3(30, 120, 0);
+				expectedDistance = 0;
+				expectedDuration = 2.0f;
 			}
 
 			cameraController.expectedPosition = expectedPosition;
