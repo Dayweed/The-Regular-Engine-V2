@@ -32,11 +32,14 @@ namespace TRE
 		public float expectedYPos;
 		public float offsetX;
 		public float offsetZ;
+		public float forcedZ;
 		public bool toTransition;
 		public float transitionDuration = 0.8f;
 		public bool freeCamera = true;
 
 		public bool lookOnlyBool = false; // true = look only(stationary position), false = follow player
+
+		public bool forceZaxis = false;
 
 		private const float lerpSpeed = 2f; //faster is higher
 
@@ -81,6 +84,15 @@ namespace TRE
 				else
 				{
 					pos = new vec3(MidPosTransform.Position.x + offsetX, expectedYPos, MidPosTransform.Position.z + offsetZ);
+				}
+
+				if (forceZaxis)
+				{
+					pos.z = forcedZ;
+				}
+				else
+				{
+					pos.z = MidPosTransform.Position.z + offsetZ;
 				}
 
 				finalPos.x = MathF.Lerp(finalPos.x, pos.x, lerpSpeed * Time.deltaTime);

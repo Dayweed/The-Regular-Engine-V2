@@ -208,14 +208,15 @@ namespace TRE
 
 			if (regionI)
 			{
-				//last pivot platform section part 1
+				//after section two, before last pivot platform section
 				expectedPosition = new vec3(0, 10, 20);
-				expectedRotation = new vec3(60, 90, 0);
+				expectedRotation = new vec3(45, 180, 0);
 				expectedDistance = 60;
 				cameraController.lookOnlyBool = false;
-				cameraController.expectedYPos = 50f;
+				cameraController.expectedYPos = 30f;
+				cameraController.forceZaxis = false;
 				cameraController.offsetX = 0f;
-				cameraController.offsetZ = 0f;
+				cameraController.offsetZ = 10f;
 				expectedDuration = 0.8f;
 				CheckTransition(Trigger_I);
 			}
@@ -223,12 +224,12 @@ namespace TRE
 			if (regionJ)
 			{
 				//last pivot platform section part 2
-				cameraController.staticPosition = new vec3(553.459f, 80, -424.613f);
-				cameraController.lookOnlyBool = true;
-				expectedPosition = new vec3(112, 82, -207);
-				expectedRotation = new vec3(89, 90, 0);
-				expectedDistance = 60;
-				cameraController.expectedYPos = 50f;
+				expectedPosition = new vec3(0, 10, 20);
+				expectedRotation = new vec3(60, 90, 0);
+				expectedDistance = 40;
+				cameraController.expectedYPos = 60f;
+				cameraController.forcedZ = -424.738f;
+				cameraController.forceZaxis = true;
 				cameraController.offsetX = 0f;
 				cameraController.offsetZ = 0f;
 				expectedDuration = 0.8f;
@@ -239,10 +240,14 @@ namespace TRE
 			{
 				//on the vertical platform
 				expectedPosition = new vec3(0, 10, 20);
-				expectedRotation = new vec3(30, 180, 0);
-				expectedDistance = 80;
+				expectedRotation = new vec3(75, 90, 0);
+				expectedDistance = 40;
 				cameraController.lookOnlyBool = false;
-				cameraController.expectedYPos = 90f;
+				cameraController.expectedYPos = 70f;
+				cameraController.forcedZ = -424.738f;
+				cameraController.forceZaxis = true;
+				cameraController.offsetX = 12f;
+				cameraController.offsetZ = 0f;
 				expectedDuration = 0.8f;
 				CheckTransition(Trigger_K);
 			}

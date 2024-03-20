@@ -49,20 +49,22 @@ namespace TRE
 
 			if (regionA)
 			{
-				cameraController.staticPosition = new vec3(0, 30, 70);
-				expectedPosition = new vec3(0, 30, 70);
-				expectedRotation = new vec3(30, 180, 0);
+				cameraController.staticPosition = new vec3(-9, 34, 50);
+				cameraController.lookOnlyBool = true;
+				expectedPosition = new vec3(-9, 34, 50);
+				expectedRotation = new vec3(40, 180, 0);
 				expectedDistance = 0;
-				expectedDuration = 2.0f;
+				expectedDuration = 1.5f;
 			}
 
 			if (regionB)
 			{
-				cameraController.staticPosition = new vec3(240, 45, -230);
-				expectedPosition = new vec3(240, 45, -230);
-				expectedRotation = new vec3(30, 120, 0);
+				cameraController.staticPosition = new vec3(113, 57.5f, -140);
+				cameraController.lookOnlyBool = true;
+				expectedPosition = new vec3(113, 57.5f, -140);
+				expectedRotation = new vec3(50, 139, 0);
 				expectedDistance = 0;
-				expectedDuration = 2.0f;
+				expectedDuration = 1.5f;
 			}
 
 			cameraController.expectedPosition = expectedPosition;
