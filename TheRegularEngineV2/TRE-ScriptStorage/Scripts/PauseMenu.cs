@@ -168,7 +168,7 @@ namespace TRE
 			destructivePointer = ECSManager.FindEntityByName("destructive_Pointer");
 			destructivePointerTransform = destructivePointer.GetComponent<Transform>();
 
-			settingsPointer = ECSManager.FindEntityByName("audio_pointer");
+			settingsPointer = ECSManager.FindEntityByName("settings_pointer");
 			settingsPointerTransform = settingsPointer.GetComponent<Transform>();
 
 			pauseMenu = ECSManager.FindEntityByName("PauseMenu");
@@ -416,6 +416,7 @@ namespace TRE
                     }
 
                     //show audio panel
+                    settingsPointer.GetComponent<SpriteRenderer>().isVisible = false;
                     for (int i = 0; i < audioPanel.Count; ++i)
 					{
 						//show text
