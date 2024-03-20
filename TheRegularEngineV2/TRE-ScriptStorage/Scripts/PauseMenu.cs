@@ -46,8 +46,8 @@ namespace TRE
 		private Entity destructivePointer;
 		private Transform destructivePointerTransform;
 
-		private Entity audioPointer;
-		private Transform audioPointerTransform;
+		private Entity settingsPointer;
+		private Transform settingsPointerTransform;
 
 		// Pause menu options
 		private List<Entity> options;
@@ -60,8 +60,22 @@ namespace TRE
 		private Entity cfmMenu;
 		private Entity settingsMenu;
 
-		//Audio panel entities
-		private Entity masterVolumeEnt;
+        //Gameplay panel entities
+        private Entity power_ups_panel;
+        private Entity on_button_pwrUp;
+        private Entity on_button_backing_pwrUp;
+        private Entity off_button_pwrUp;
+        private Entity off_button_backing_pwrUp;
+        private Entity invulnerability_panel;
+        private Entity on_button_inv;
+        private Entity on_button_backing_inv;
+        private Entity off_button_inv;
+        private Entity off_button_backing_inv;
+        bool IsPowerUpOn = false;
+        bool IsInvulnerabilityOn = false;
+
+        //Audio panel entities
+        private Entity masterVolumeEnt;
 		private Entity musicVolumeEnt;
 		private Entity sfxVolumeEnt;
 		private int masterVolume = 100;
@@ -73,7 +87,7 @@ namespace TRE
 		private Entity mGammaPanel;
 		private Entity mGammaCheckbox;
 		private Entity mGammaTick;
-		private Entity mGraphicsPointer;
+		//private Entity mGraphicsPointer;
 		bool mIsGammaOn = true;
 		//private Transform settingsPointerTransform;
 
@@ -130,23 +144,36 @@ namespace TRE
 			TS.SetTextMessage(sfxVolumeEnt.ID, sfxVolume.ToString());
 			AS.SetMasterVolume(masterVolume / 100f);
 
-			pointer = ECSManager.FindEntityByName("main_pointer");
+            //gameplay panel
+            power_ups_panel = ECSManager.FindEntityByName("power_ups_panel");
+            on_button_pwrUp = ECSManager.FindEntityByName("on_button_pwrUp");
+            on_button_backing_pwrUp = ECSManager.FindEntityByName("on_button_backing_pwrUp");
+            off_button_pwrUp = ECSManager.FindEntityByName("off_button_pwrUp");
+            off_button_backing_pwrUp = ECSManager.FindEntityByName("off_button_backing_pwrUp");
+            invulnerability_panel = ECSManager.FindEntityByName("invulnerability_panel");
+            on_button_inv = ECSManager.FindEntityByName("on_button_inv");
+            on_button_backing_inv = ECSManager.FindEntityByName("on_button_backing_inv");
+            off_button_inv = ECSManager.FindEntityByName("off_button_inv");
+            off_button_backing_inv = ECSManager.FindEntityByName("off_button_backing_inv");
+
+			//graphics panel
+			mGammaPanel = ECSManager.FindEntityByName("gamma_panel");
+			mGammaCheckbox = ECSManager.FindEntityByName("checkbox_gamma");
+			mGammaTick = ECSManager.FindEntityByName("tick_gamma");
+			//mGraphicsPointer = ECSManager.FindEntityByName("graphics_pointer");
+
+            pointer = ECSManager.FindEntityByName("main_pointer");
 			pointerTransform = pointer.GetComponent<Transform>();
 
 			destructivePointer = ECSManager.FindEntityByName("destructive_Pointer");
 			destructivePointerTransform = destructivePointer.GetComponent<Transform>();
 
-			audioPointer = ECSManager.FindEntityByName("audio_pointer");
-			audioPointerTransform = audioPointer.GetComponent<Transform>();
+			settingsPointer = ECSManager.FindEntityByName("audio_pointer");
+			settingsPointerTransform = settingsPointer.GetComponent<Transform>();
 
 			pauseMenu = ECSManager.FindEntityByName("PauseMenu");
 			cfmMenu = ECSManager.FindEntityByName("pauseMenu_destructive");
 			settingsMenu = ECSManager.FindEntityByName("settings_panel");
-
-			mGammaPanel = ECSManager.FindEntityByName("gamma_panel");
-			mGammaCheckbox = ECSManager.FindEntityByName("checkbox_gamma");
-			mGammaTick = ECSManager.FindEntityByName("tick_gamma");
-			mGraphicsPointer = ECSManager.FindEntityByName("graphics_pointer");
 
 			Entity mainCam = ECSManager.FindEntityByName("Main Camera");
 			if (mainCam != null)
@@ -178,8 +205,8 @@ namespace TRE
 					isChangeMenu = true;
 					menustate = 1;
 					mIsEditingSettings = false;
-					ResetPointers();
-					Debug.Log("Trigger: Get out of editing state");
+                    UIS.SetVisible(settingsPointer.ID, false);
+                    Debug.Log("Trigger: Get out of editing state");
 				}
 				else if (!mIsEditingSettings && menustate == 1)
 				{
@@ -364,8 +391,32 @@ namespace TRE
 						}
 					}
 
-					//show audio panel
-					for (int i = 0; i < audioPanel.Count; ++i)
+                    //show gameplay panel
+                    power_ups_panel.GetComponent<SpriteRenderer>().isVisible = showGameplayPanel;
+                    invulnerability_panel.GetComponent<SpriteRenderer>().isVisible = showGameplayPanel;
+                    if (IsPowerUpOn)
+                    {
+                        on_button_pwrUp.GetComponent<SpriteRenderer>().isVisible = showGameplayPanel;
+                        on_button_backing_pwrUp.GetComponent<SpriteRenderer>().isVisible = showGameplayPanel;
+                    }
+                    else
+                    {
+                        off_button_pwrUp.GetComponent<SpriteRenderer>().isVisible = showGameplayPanel;
+                        off_button_backing_pwrUp.GetComponent<SpriteRenderer>().isVisible = showGameplayPanel;
+                    }
+                    if (IsInvulnerabilityOn)
+                    {
+                        on_button_inv.GetComponent<SpriteRenderer>().isVisible = showGameplayPanel;
+                        on_button_backing_inv.GetComponent<SpriteRenderer>().isVisible = showGameplayPanel;
+                    }
+                    else
+                    {
+                        off_button_inv.GetComponent<SpriteRenderer>().isVisible = showGameplayPanel;
+                        off_button_backing_inv.GetComponent<SpriteRenderer>().isVisible = showGameplayPanel;
+                    }
+
+                    //show audio panel
+                    for (int i = 0; i < audioPanel.Count; ++i)
 					{
 						//show text
 						if (audioPanel[i].HasComponent<Text>())
@@ -373,17 +424,6 @@ namespace TRE
 						//show UI
 						else
 							UIS.SetVisible(audioPanel[i].ID, showAudioPanel);
-					}
-					audioPointer.GetComponent<SpriteRenderer>().isVisible = false;
-
-					//Not editing settings -> editing settings
-					//lock this action for gameplay and controls (havent implemented)
-					if (!mIsEditingSettings && IS.GetKeyTriggered(InputKeys.S) && (showGraphicsPanel || showAudioPanel))
-					{
-						mIsEditingSettings = true;
-						mCurrentEditMember = 0; //Set it to be 0th member always at the start
-
-						Debug.Log("1st trigger mCurrentEditMember: " + mCurrentEditMember);
 					}
 
 					//Show graphics panel
@@ -393,13 +433,23 @@ namespace TRE
 					{
 						mGammaTick.GetComponent<SpriteRenderer>().isVisible = showGraphicsPanel;
 					}
+
+                    //Not editing settings -> editing settings
+                    //dont allow controls panel to move down for now
+                    if (!mIsEditingSettings && IS.GetKeyTriggered(InputKeys.S) && (showGameplayPanel || showGraphicsPanel || showAudioPanel))
+					{
+						mIsEditingSettings = true;
+						mCurrentEditMember = 0; //Set it to be 0th member always at the start
+
+						Debug.Log("1st trigger mCurrentEditMember: " + mCurrentEditMember);
+					}
 				}
 				//edit settings here
 				else if (menustate == 1 && mIsEditingSettings)
 				{
 					if (showAudioPanel)
 					{
-						audioPointer.GetComponent<SpriteRenderer>().isVisible = true;
+						settingsPointer.GetComponent<SpriteRenderer>().isVisible = true;
 						if (IS.GetKeyTriggered(InputKeys.W))
 						{
 							Debug.Log("press up");
@@ -492,24 +542,26 @@ namespace TRE
 						switch (mCurrentEditMember)
 						{
 							case 0:
-								audioPointerTransform.Position = audioPanel[0].GetComponent<Transform>().Position;
+								settingsPointerTransform.Position = audioPanel[0].GetComponent<Transform>().Position;
 								break;
 							case 1:
-								audioPointerTransform.Position = audioPanel[1].GetComponent<Transform>().Position;
+								settingsPointerTransform.Position = audioPanel[1].GetComponent<Transform>().Position;
 								break;
 							case 2:
-								audioPointerTransform.Position = audioPanel[2].GetComponent<Transform>().Position;
+								settingsPointerTransform.Position = audioPanel[2].GetComponent<Transform>().Position;
 								break;
 						}
 					}
 					else if (showGraphicsPanel)
 					{
-						mGraphicsPointer.GetComponent<SpriteRenderer>().isVisible = true;
-						if (mCurrentEditMember == 0)
+                        settingsPointer.GetComponent<SpriteRenderer>().isVisible = true;
+                        //mGraphicsPointer.GetComponent<SpriteRenderer>().isVisible = true;
+                        if (mCurrentEditMember == 0)
 						{
-							mGraphicsPointer.GetComponent<Transform>().Position = mGammaPanel.GetComponent<Transform>().Position;
+                            settingsPointerTransform.Position = mGammaPanel.GetComponent<Transform>().Position;
+                            //mGraphicsPointer.GetComponent<Transform>().Position = mGammaPanel.GetComponent<Transform>().Position;
 
-							if (IS.GetKeyTriggered(InputKeys.Enter))
+                            if (IS.GetKeyTriggered(InputKeys.Enter))
 							{
 								mIsGammaOn = !mIsGammaOn;
 								if (mIsGammaOn)
@@ -533,8 +585,96 @@ namespace TRE
 					}
 					else if (showGameplayPanel)
 					{
+                        settingsPointer.GetComponent<SpriteRenderer>().isVisible = true;
+                        if (IS.GetKeyTriggered(InputKeys.W))
+                        {
+                            Debug.Log("press up");
+                            if (mCurrentEditMember <= 0)
+                            {
+                                mCurrentEditMember = -1;
+                                mIsEditingSettings = false;
+                            }
+                            else if (mCurrentEditMember > 1)
+                                mCurrentEditMember = 1;
+                            else
+                                --mCurrentEditMember;
 
-					}
+                            Debug.Log("mCurrentEditMember: " + mCurrentEditMember);
+                        }
+
+                        if (IS.GetKeyTriggered(InputKeys.S))
+                        {
+                            Debug.Log("press down");
+                            if (mCurrentEditMember < 0)
+                                mIsEditingSettings = false;
+                            else if (mCurrentEditMember >= 1)
+                                mCurrentEditMember = 1;
+                            else
+                                ++mCurrentEditMember;
+
+                            Debug.Log("mCurrentEditMember: " + mCurrentEditMember);
+                        }
+
+                        //adjust each setting
+                        switch (mCurrentEditMember)
+                        {
+                            case 0:
+                                if (IS.GetKeyPress(InputKeys.A) || IS.GetKeyPress(InputKeys.Left))
+                                {
+                                    //on
+                                    IsPowerUpOn = true;
+                                    on_button_pwrUp.GetComponent<SpriteRenderer>().isVisible = IsPowerUpOn;
+                                    on_button_backing_pwrUp.GetComponent<SpriteRenderer>().isVisible = IsPowerUpOn;
+
+                                    off_button_pwrUp.GetComponent<SpriteRenderer>().isVisible = !IsPowerUpOn;
+                                    off_button_backing_pwrUp.GetComponent<SpriteRenderer>().isVisible = !IsPowerUpOn;
+                                }
+                                else if (IS.GetKeyPress(InputKeys.D) || IS.GetKeyPress(InputKeys.Right))
+                                {
+                                    //off
+                                    IsPowerUpOn = false;
+                                    off_button_pwrUp.GetComponent<SpriteRenderer>().isVisible = !IsPowerUpOn;
+                                    off_button_backing_pwrUp.GetComponent<SpriteRenderer>().isVisible = !IsPowerUpOn;
+
+                                    on_button_pwrUp.GetComponent<SpriteRenderer>().isVisible = IsPowerUpOn;
+                                    on_button_backing_pwrUp.GetComponent<SpriteRenderer>().isVisible = IsPowerUpOn;
+                                }
+                                break;
+                            case 1:
+                                if (IS.GetKeyPress(InputKeys.A) || IS.GetKeyPress(InputKeys.Left))
+                                {
+                                    //on
+                                    IsInvulnerabilityOn = true;
+                                    on_button_inv.GetComponent<SpriteRenderer>().isVisible = IsInvulnerabilityOn;
+                                    on_button_backing_inv.GetComponent<SpriteRenderer>().isVisible = IsInvulnerabilityOn;
+
+                                    off_button_inv.GetComponent<SpriteRenderer>().isVisible = !IsInvulnerabilityOn;
+                                    off_button_backing_inv.GetComponent<SpriteRenderer>().isVisible = !IsInvulnerabilityOn;
+                                }
+                                else if (IS.GetKeyPress(InputKeys.D) || IS.GetKeyPress(InputKeys.Right))
+                                {
+                                    //off
+                                    IsInvulnerabilityOn = false;
+                                    off_button_inv.GetComponent<SpriteRenderer>().isVisible = !IsInvulnerabilityOn;
+                                    off_button_backing_inv.GetComponent<SpriteRenderer>().isVisible = !IsInvulnerabilityOn;
+
+                                    on_button_inv.GetComponent<SpriteRenderer>().isVisible = IsInvulnerabilityOn;
+                                    on_button_backing_inv.GetComponent<SpriteRenderer>().isVisible = IsInvulnerabilityOn;
+                                }
+                                break;
+                        }
+
+                        //move pointer
+                        switch (mCurrentEditMember)
+                        {
+                            case 0:
+                                settingsPointerTransform.Position = power_ups_panel.GetComponent<Transform>().Position;
+                                break;
+                            case 1:
+                                settingsPointerTransform.Position = invulnerability_panel.GetComponent<Transform>().Position;
+                                break;
+                        }
+                    }
 
 					if (IS.GetKeyTriggered(InputKeys.W) || IS.GetControllerButtonTriggered(0, IS.Button.Start) || IS.GetControllerButtonTriggered(1, IS.Button.Start))
 					{
@@ -543,8 +683,8 @@ namespace TRE
 						menustate = 1;
 
 						//Set every pointer back to false
-						mGraphicsPointer.GetComponent<SpriteRenderer>().isVisible = false;
-						audioPointer.GetComponent<SpriteRenderer>().isVisible = false;
+						//mGraphicsPointer.GetComponent<SpriteRenderer>().isVisible = false;
+						settingsPointer.GetComponent<SpriteRenderer>().isVisible = false;
 
 						if (ECSManager.IsValidEntity(sfx))
 							AS.Play(sfx);
@@ -753,13 +893,14 @@ namespace TRE
 				UIS.SetVisible(settingsPanel[x].ID, false);
 
 			UIS.SetVisible(settingsMenu.ID, false);
+            UIS.SetVisible(settingsPointer.ID, false);
 
-			if (showGraphicsPanel)
+            if (showGraphicsPanel)
 			{
 				UIS.SetVisible(mGammaPanel.ID, false);
 				UIS.SetVisible(mGammaCheckbox.ID, false);
 				UIS.SetVisible(mGammaTick.ID, false);
-				UIS.SetVisible(mGraphicsPointer.ID, false);
+				//UIS.SetVisible(mGraphicsPointer.ID, false);
 				showGraphicsPanel = false;
 			}
 
@@ -783,28 +924,17 @@ namespace TRE
 			if (showGameplayPanel)
 			{
 				showGameplayPanel = false;
-			}
-		}
-
-		private void ResetPointers()
-		{
-			if (showGraphicsPanel)
-				UIS.SetVisible(mGraphicsPointer.ID, false);
-
-			if (showAudioPanel)
-				UIS.SetVisible(audioPointer.ID, false);
-
-			if (showControlsPanel)
-			{
-				//Change below to the correct pointer and delete this comment
-				//UISystem.SetVisible(audioPointer.ID, false);
-			}
-
-			if (showGameplayPanel)
-			{
-				//Change below to the correct pointer and delete this comment
-				//UISystem.SetVisible(audioPointer.ID, false);
-			}
+                UIS.SetVisible(power_ups_panel.ID, false);
+                UIS.SetVisible(on_button_pwrUp.ID, false);
+                UIS.SetVisible(on_button_backing_pwrUp.ID, false);
+                UIS.SetVisible(off_button_pwrUp.ID, false);
+                UIS.SetVisible(off_button_backing_pwrUp.ID, false);
+                UIS.SetVisible(invulnerability_panel.ID, false);
+                UIS.SetVisible(on_button_inv.ID, false);
+                UIS.SetVisible(on_button_backing_inv.ID, false);
+                UIS.SetVisible(off_button_inv.ID, false);
+                UIS.SetVisible(off_button_backing_inv.ID, false);
+            }
 		}
 	}
 }
