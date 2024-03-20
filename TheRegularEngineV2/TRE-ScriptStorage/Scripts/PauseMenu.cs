@@ -514,12 +514,10 @@ namespace TRE
 								mIsGammaOn = !mIsGammaOn;
 								if (mIsGammaOn)
 								{
-									Game.TurnGammaOn();
 									mGammaTick.GetComponent<SpriteRenderer>().isVisible = true;
 								}
 								else
 								{
-									Game.TurnGammaOff();
 									mGammaTick.GetComponent<SpriteRenderer>().isVisible = false;
 								}
 							}

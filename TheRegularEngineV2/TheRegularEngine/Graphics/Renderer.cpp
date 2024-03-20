@@ -15,7 +15,7 @@ namespace TRE
 	std::shared_ptr<CommandBuffer> Renderer::m_CommandBuffer = nullptr;
 	FinalRenderData* Renderer::s_FinalRenderData = nullptr;
 	std::shared_ptr<Skybox> Renderer::m_SkyboxEnvironment = nullptr;
-	bool Renderer::s_IsGammaOn = true;
+	float Renderer::s_GammaValue = 2.2f;
 
 	std::unique_ptr<Buffer> CreateVertexBuffer(const std::vector<QuadVertex>& vertices)
 	{
@@ -241,13 +241,13 @@ namespace TRE
 		m_SkyboxEnvironment->ReloadCubeMap();
 	}
 
-	void Renderer::SetGamma(bool Gamma)
+	void Renderer::SetGamma(float Gamma)
 	{
-		s_IsGammaOn = Gamma;
+		s_GammaValue = Gamma;
 	}
 
-	bool Renderer::IsGammaOn()
+	float Renderer::GetGammaValue()
 	{
-		return s_IsGammaOn;
+		return s_GammaValue;
 	}
 }

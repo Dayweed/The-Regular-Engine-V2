@@ -2281,14 +2281,9 @@ namespace TRE
 		}
 	}
 
-	static void BindTurnGammaOn()
+	static void SetGammaValue(float gamma)
 	{
-		Renderer::SetGamma(true);
-	}
-
-	static void BindTurnGammaOff()
-	{
-		Renderer::SetGamma(false);
+		Renderer::SetGamma(gamma);
 	}
 #pragma endregion
 
@@ -3051,8 +3046,7 @@ namespace TRE
 		// Game
 		{
 			mono_add_internal_call("TRE.Game::Engine_CloseGame", BindCloseGame);
-			mono_add_internal_call("TRE.Game::Engine_TurnGammaOn", BindTurnGammaOn);
-			mono_add_internal_call("TRE.Game::Engine_TurnGammaOff", BindTurnGammaOff);
+			mono_add_internal_call("TRE.Game::Engine_SetGammaValue", SetGammaValue);
 		}
 
 		// PersistentValues

@@ -27,8 +27,8 @@ namespace TRE
 			static void BindPipeline(const std::shared_ptr<CommandBuffer>& CommandBuffer, const std::shared_ptr<Pipeline>& Pipeline, bool IsCompute = false);
 
 			static void SetSkyboxEnvironment(std::string texture0, std::string texture1, std::string texture2, std::string texture3, std::string texture4, std::string texture5);
-			static void SetGamma(bool Gamma);
-			static bool IsGammaOn();
+			static void SetGamma(float Gamma);
+			static float GetGammaValue();
 
 		public:
 			static std::shared_ptr<Skybox> GetSkybox();
@@ -38,6 +38,6 @@ namespace TRE
 			static std::shared_ptr<CommandBuffer> m_CommandBuffer;
 			static FinalRenderData* s_FinalRenderData;
 			static std::shared_ptr<Skybox> m_SkyboxEnvironment;
-			static bool s_IsGammaOn;
+			static float s_GammaValue;
 	};
 }
