@@ -305,7 +305,7 @@ namespace TRE
 					{
 						Debug.Log("press left");
 						Debug.Log("mCurrentEditMember: " + mCurrentEditMember);
-						if (settingsOption < 0)
+						if (settingsOption <= 0)
 							settingsOption = 0;
 						else if (settingsOption > 3)
 							settingsOption = 3;
@@ -322,7 +322,7 @@ namespace TRE
 						Debug.Log("mCurrentEditMember: " + mCurrentEditMember);
 						if (settingsOption < 0)
 							settingsOption = 0;
-						else if (settingsOption > 3)
+						else if (settingsOption >= 3)
 							settingsOption = 3;
 						else
 							++settingsOption;
