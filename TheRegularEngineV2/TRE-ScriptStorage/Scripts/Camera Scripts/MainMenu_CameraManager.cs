@@ -34,8 +34,8 @@ namespace TRE
 			cameraController = ECSManager.FindEntityByName("Main Camera").GetComponent<CameraController>();
 			Debug.Log("CameraController ID is " + cameraController.ID);
 
-			expectedDistance = 35;
-			expectedPosition = new vec3(0, 30, 20);
+			expectedDistance = 0;
+			expectedPosition = new vec3(0, 30, 70);
 			expectedRotation = new vec3(30, 180, 0);
 
 			cameraController.freeCamera = true;
@@ -43,7 +43,6 @@ namespace TRE
 
 		public void Update()
 		{
-			cameraController.freeCamera = true;
 			cameraController.lookOnlyBool = true;
 			regionA = IsInsideTrigger(Trigger_A);
 			regionB = IsInsideTrigger(Trigger_B);
@@ -76,7 +75,8 @@ namespace TRE
 		private bool IsInsideTrigger(Entity entity)
 		{
 			//make a gameobject that will always be in the middle of both characters and then find that obj instead
-			return ECSManager.IsValidEntity(entity.ID) && (PS.IsTriggerEnter(Holey.ID, entity.ID) || PS.IsTriggerStay(Holey.ID, entity.ID));
+			return ECSManager.IsValidEntity(entity.ID) && PS.IsTriggerEnter(Holey.ID, entity.ID);
+
 		}
 	}
 }
