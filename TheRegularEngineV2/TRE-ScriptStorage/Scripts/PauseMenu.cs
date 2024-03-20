@@ -887,7 +887,9 @@ namespace TRE
 
 		private void BacktoMainPausePage()
 		{
-			for (int x = 0; x < settingsSelected.Count; x++)
+			settingsOption = 0;
+
+            for (int x = 0; x < settingsSelected.Count; x++)
 				UIS.SetVisible(settingsSelected[x].ID, false);
 
 			for (int x = 0; x < settingsPanel.Count; x++)
