@@ -208,7 +208,7 @@ namespace TRE
 
 			if (regionI)
 			{
-				//last pivot platform section
+				//last pivot platform section part 1
 				expectedPosition = new vec3(0, 10, 20);
 				expectedRotation = new vec3(60, 90, 0);
 				expectedDistance = 60;
@@ -222,12 +222,15 @@ namespace TRE
 
 			if (regionJ)
 			{
-				//on moving hitw and ground before vertical moving platform
-				expectedPosition = new vec3(0, 10, 20);
-				expectedRotation = new vec3(30, 90, 0);
-				expectedDistance = 50;
-				cameraController.lookOnlyBool = false;
-				cameraController.expectedYPos = 90f;
+				//last pivot platform section part 2
+				cameraController.staticPosition = new vec3(553.459f, 80, -424.613f);
+				cameraController.lookOnlyBool = true;
+				expectedPosition = new vec3(112, 82, -207);
+				expectedRotation = new vec3(89, 90, 0);
+				expectedDistance = 60;
+				cameraController.expectedYPos = 50f;
+				cameraController.offsetX = 0f;
+				cameraController.offsetZ = 0f;
 				expectedDuration = 0.8f;
 				CheckTransition(Trigger_J);
 			}
