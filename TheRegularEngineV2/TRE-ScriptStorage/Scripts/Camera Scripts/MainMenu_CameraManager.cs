@@ -35,8 +35,8 @@ namespace TRE
 			Debug.Log("CameraController ID is " + cameraController.ID);
 
 			expectedDistance = 0;
-			expectedPosition = new vec3(0, 30, 70);
-			expectedRotation = new vec3(30, 180, 0);
+			expectedPosition = new vec3(-9, 34, 50);
+			expectedRotation = new vec3(40, 180, 0);
 
 			cameraController.freeCamera = true;
 		}

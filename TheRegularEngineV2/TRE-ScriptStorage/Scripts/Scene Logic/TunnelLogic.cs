@@ -14,9 +14,9 @@ namespace TRE
 		bool HoleyInside = false;
 
 		// Signposts
-		Entity SignpostFeature;
-		Entity SignpostMoley;
-		Entity SignpostHoley;
+		//Entity SignpostFeature;
+		//Entity SignpostMoley;
+		//Entity SignpostHoley;
 
 		float SignpostGoalMoleyPosY = 0;
 		float SignpostGoalHoleyPosY = 0;
@@ -35,7 +35,7 @@ namespace TRE
 			Moley = ECSManager.FindEntityByName("Moley");
 			Holey = ECSManager.FindEntityByName("Holey");
 
-			SignpostFeature = parenting.GetChildFromName("SignpostFeature");
+			/*SignpostFeature = parenting.GetChildFromName("SignpostFeature");
 			SignpostMoley = parenting.GetChildFromName("SignpostMoleyApprove");
 			SignpostHoley = parenting.GetChildFromName("SignpostHoleyApprove");
 
@@ -47,7 +47,7 @@ namespace TRE
 
 				SignpostGoalMoleyPosY = SignpostHiddenPosY;
 				SignpostGoalHoleyPosY = SignpostHiddenPosY;
-			}
+			}*/
 
 			//Audio
 			holeyCheer = ECSManager.FindIDFromName("SFX_HoleyCheer");
@@ -71,7 +71,7 @@ namespace TRE
 			}
 
 			// Determine signposts bounce
-			if (SignpostFeature != null && SignpostMoley != null && SignpostHoley != null)
+			/*if (SignpostFeature != null && SignpostMoley != null && SignpostHoley != null)
 			{
 				if (MoleyInside || HoleyInside)
 				{
@@ -129,7 +129,7 @@ namespace TRE
 					SignpostHoley.GetComponent<VFX_SignPostBounce>().Pause();
 				}
 				#endregion
-			}
+			}*/
 		}
 
 		public void OnTriggerEnter(System.UInt64 otherID)
