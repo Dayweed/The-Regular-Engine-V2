@@ -22,6 +22,9 @@ namespace TRE
 		private Entity Trigger_K;
 		private Entity Trigger_L;
 		private Entity Trigger_M;
+		private Entity Trigger_N;
+		private Entity Trigger_O;
+		private Entity Trigger_P;
 
 		private Entity Previous_Trigger = null;
 
@@ -38,6 +41,9 @@ namespace TRE
 		private bool regionK;
 		private bool regionL;
 		private bool regionM;
+		private bool regionN;
+		private bool regionO;
+		private bool regionP;
 
 		CameraController cameraController;
 
@@ -67,6 +73,9 @@ namespace TRE
 			Trigger_K = ECSManager.FindEntityByName("Trigger_K");
 			Trigger_L = ECSManager.FindEntityByName("Trigger_L");
 			Trigger_M = ECSManager.FindEntityByName("Trigger_M");
+			Trigger_N = ECSManager.FindEntityByName("Trigger_N");
+			Trigger_O = ECSManager.FindEntityByName("Trigger_O");
+			Trigger_P = ECSManager.FindEntityByName("Trigger_P");
 
 
 			cameraController = ECSManager.FindEntityByName("Main Camera").GetComponent<CameraController>();
@@ -93,6 +102,9 @@ namespace TRE
 			regionK = IsHoleyMoleyInsideTrigger(Trigger_K);
 			regionL = IsInsideTrigger(Trigger_L);
 			regionM = IsInsideTrigger(Trigger_M);
+			regionN = IsHoleyMoleyInsideTrigger(Trigger_N);
+			regionO = IsHoleyMoleyInsideTrigger(Trigger_O);
+			regionP = IsInsideTrigger(Trigger_P);
 
 			if (regionA)
 			{
@@ -143,7 +155,7 @@ namespace TRE
 				expectedRotation = new vec3(30, 90, 0);
 				expectedDistance = 50;
 				cameraController.lookOnlyBool = false;
-				cameraController.expectedYPos = 30f;
+				cameraController.expectedYPos = 35f;
 				cameraController.offsetX = 0f;
 				cameraController.offsetZ = 0f;
 				expectedDuration = 0.8f;
@@ -223,7 +235,7 @@ namespace TRE
 
 			if (regionJ)
 			{
-				//last pivot platform section part 2
+				//last pivot platform section part one
 				expectedPosition = new vec3(0, 10, 20);
 				expectedRotation = new vec3(60, 90, 0);
 				expectedDistance = 40;
@@ -238,7 +250,7 @@ namespace TRE
 
 			if (regionK)
 			{
-				//on the vertical platform
+				//last pivot platform section part two
 				expectedPosition = new vec3(0, 10, 20);
 				expectedRotation = new vec3(75, 90, 0);
 				expectedDistance = 40;
@@ -254,27 +266,61 @@ namespace TRE
 
 			if (regionL)
 			{
-				//last platforming section
-				//for some reason it's offset to the left idk why
+				//second hitw
+				cameraController.forceZaxis = false;
 				expectedPosition = new vec3(0, 10, 20);
-				expectedRotation = new vec3(30, 180, 0);
-				expectedDistance = 60;
+				expectedRotation = new vec3(30, 90, 0);
+				expectedDistance = 40;
 				cameraController.lookOnlyBool = false;
-				cameraController.expectedYPos = 100f;
+				cameraController.expectedYPos = 40f;
+				cameraController.offsetX = 0f;
+				cameraController.offsetZ = 0f;
 				expectedDuration = 0.8f;
 				CheckTransition(Trigger_L);
 			}
 
 			if (regionM)
 			{
-				//last hitw
+				//after second hitw before chase sequence
 				expectedPosition = new vec3(0, 10, 20);
-				expectedRotation = new vec3(30, 90, 0);
-				expectedDistance = 50;
+				expectedRotation = new vec3(45, 180, 0);
+				expectedDistance = 80;
 				cameraController.lookOnlyBool = false;
-				cameraController.expectedYPos = 105f;
+				cameraController.expectedYPos = 40f;
+				cameraController.offsetX = 0f;
+				cameraController.offsetZ = 0f;
 				expectedDuration = 0.8f;
 				CheckTransition(Trigger_M);
+			}
+
+			if (regionN)
+			{
+				//chase sequence
+				expectedPosition = new vec3(0, 10, 20);
+				expectedRotation = new vec3(15, 180, 0);
+				expectedDistance = 50;
+				cameraController.lookOnlyBool = false;
+				cameraController.expectedYPos = 10f;
+				cameraController.forcedX = 764.502f;
+				cameraController.forceXaxis = true;
+				cameraController.offsetX = 0f;
+				cameraController.offsetZ = 0f;
+				expectedDuration = 0.8f;
+				CheckTransition(Trigger_N);
+			}
+
+			if (regionO)
+			{
+				//chase sequence last pivot platform
+				expectedPosition = new vec3(0, 10, 20);
+				expectedRotation = new vec3(45, 180, 0);
+				expectedDistance = 80;
+				cameraController.lookOnlyBool = false;
+				cameraController.expectedYPos = 10f;
+				cameraController.offsetX = 0f;
+				cameraController.offsetZ = 0f;
+				expectedDuration = 0.8f;
+				CheckTransition(Trigger_O);
 			}
 
 			cameraController.expectedPosition = expectedPosition;
