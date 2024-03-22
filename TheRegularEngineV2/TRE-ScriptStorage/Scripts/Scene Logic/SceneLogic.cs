@@ -186,13 +186,13 @@ namespace TRE
 					MoleyController moley = ECSManager.FindEntityByName("Moley").GetComponent<MoleyController>();
 					//first one is to rolling obj section, second one is to last platforming section, third one is all the way to the last section
 					//moley.GetComponent<Transform>().Position = new GlmSharp.vec3(180, 50, -330);
-					//moley.GetComponent<Transform>().Position = new GlmSharp.vec3(602.175f, 107, -189.596f);
-					moley.GetComponent<Transform>().Position = new GlmSharp.vec3(970, 108, -193);
+					moley.GetComponent<Transform>().Position = new GlmSharp.vec3(602.175f, 107, -189.596f);
+					//moley.GetComponent<Transform>().Position = new GlmSharp.vec3(970, 108, -193);
 
 					HoleyController holey = ECSManager.FindEntityByName("Holey").GetComponent<HoleyController>();
 					//holey.GetComponent<Transform>().Position = new GlmSharp.vec3(180, 50, -310);
-					//holey.GetComponent<Transform>().Position = new GlmSharp.vec3(602.175f, 107, -174.596f);
-					holey.GetComponent<Transform>().Position = new GlmSharp.vec3(970, 108, -167);
+					holey.GetComponent<Transform>().Position = new GlmSharp.vec3(602.175f, 107, -174.596f);
+					//holey.GetComponent<Transform>().Position = new GlmSharp.vec3(970, 108, -167);
 				}
 
 				//if ((InputSystem.GetKeyHold(InputKeys.LeftControl) || InputSystem.GetKeyHold(InputKeys.RightControl)) && InputSystem.GetKeyPress(InputKeys.D2))

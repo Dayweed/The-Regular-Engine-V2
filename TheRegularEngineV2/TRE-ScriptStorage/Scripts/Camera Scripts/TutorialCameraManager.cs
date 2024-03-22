@@ -158,6 +158,7 @@ namespace TRE
 				if (regionD)
 				{
 					//falling objs section
+					cameraController.forceXaxis = false;
 					expectedPosition = new vec3(0, 40, 50);
 					expectedRotation = new vec3(45, 180, 0);
 					expectedDistance = 55;
@@ -173,12 +174,14 @@ namespace TRE
 				{
 					//platforming section
 					expectedPosition = new vec3(0, 60, 50);
-					expectedRotation = new vec3(45, 180, 0);
-					expectedDistance = 60;
+					expectedRotation = new vec3(50, 180, 0);
+					expectedDistance = 80;
 					cameraController.lookOnlyBool = false;
 					cameraController.expectedYPos = 0f;
+					cameraController.forcedX = 114.314f;
+					cameraController.forceXaxis = true;
 					cameraController.offsetX = 0f;
-					cameraController.offsetZ = 0f;
+					cameraController.offsetZ = -10f;
 					expectedDuration = 0.8f;
 					CheckTransition(Trigger_E);
 				}
@@ -186,6 +189,7 @@ namespace TRE
 				if (regionF)
 				{
 					//second hitw
+					cameraController.forceXaxis = false;
 					expectedPosition = new vec3(0, 40, 50);
 					expectedRotation = new vec3(25, 180, 0);
 					expectedDistance = 35;

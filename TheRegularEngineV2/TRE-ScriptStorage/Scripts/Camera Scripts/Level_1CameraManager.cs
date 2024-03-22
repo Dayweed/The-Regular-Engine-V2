@@ -204,6 +204,8 @@ namespace TRE
 					expectedDistance = 70;
 					cameraController.lookOnlyBool = false;
 					cameraController.expectedYPos = 30f;
+					cameraController.forcedZ = -328.781f;
+					cameraController.forceZaxis = true;
 					cameraController.offsetX = 0f;
 					cameraController.offsetZ = 0f;
 					expectedDuration = 1f;
@@ -213,6 +215,7 @@ namespace TRE
 				if (regionH)
 				{
 					//jumppad section after rolling objs - 1st floor
+					cameraController.forceZaxis = false;
 					cameraController.staticPosition = new vec3(320, 45, -330);
 					cameraController.lookOnlyBool = true;
 					expectedPosition = new vec3(260, 99, -335);
@@ -256,6 +259,7 @@ namespace TRE
 				if (regionK)
 				{
 					//on the vertical platform
+					cameraController.forceZaxis = false;
 					expectedPosition = new vec3(0, 10, 20);
 					expectedRotation = new vec3(30, 180, 0);
 					expectedDistance = 80;
@@ -273,9 +277,11 @@ namespace TRE
 					//for some reason it's offset to the left idk why
 					expectedPosition = new vec3(0, 10, 20);
 					expectedRotation = new vec3(20, 180, 0);
-					expectedDistance = 60;
+					expectedDistance = 0;
 					cameraController.lookOnlyBool = false;
-					cameraController.expectedYPos = 100f;
+					cameraController.expectedYPos = 130f;
+					cameraController.forcedZ = -123.492f;
+					cameraController.forceZaxis = true;
 					cameraController.offsetX = 10f;
 					cameraController.offsetZ = 0f;
 					expectedDuration = 0.8f;
@@ -285,6 +291,7 @@ namespace TRE
 				if (regionM)
 				{
 					//last hitw
+					cameraController.forceZaxis = false;
 					expectedPosition = new vec3(0, 10, 20);
 					expectedRotation = new vec3(30, 90, 0);
 					expectedDistance = 50;
