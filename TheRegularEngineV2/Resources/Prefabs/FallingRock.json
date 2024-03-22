@@ -27,7 +27,7 @@
       0,
       {
          "m_Active": true,
-         "m_GUID": "5789945578874576919",
+         "m_GUID": "13233380318927444089",
          "m_Index": 1,
          "m_Name": "FallingRock",
          "m_Tag": "FallingObstacle"
@@ -48,9 +48,9 @@
             0.0
          ],
          "m_Scale": [
-            1.0,
-            3.0,
-            1.0
+            1.5,
+            1.5,
+            1.5
          ]
       }
    ],
@@ -61,7 +61,7 @@
          "ASSET_GEOM_m_RenderObject": "9f0261d662ce2534",
          "ASSET_MAT_m_AnimationMaterialInstance": "0",
          "ASSET_MAT_m_MaterialInstance": "2dabcdafe3c0d2f2",
-         "m_DLightIndex": 0,
+         "m_DLightIndex": 1,
          "m_DrawShadow": true,
          "m_IsVisible": true
       }
@@ -82,7 +82,7 @@
          "m_FreezeRotationY": true,
          "m_FreezeRotationZ": true,
          "m_IsKinematic": false,
-         "m_Mass": 160.0,
+         "m_Mass": 96.0,
          "m_UseGravity": true
       }
    ],
@@ -96,7 +96,7 @@
          "m_CollisionLayer.m_LayerID": 7,
          "m_HalfExtents": [
             2.0,
-            3.0,
+            1.5,
             2.0
          ],
          "m_IsActive": true,

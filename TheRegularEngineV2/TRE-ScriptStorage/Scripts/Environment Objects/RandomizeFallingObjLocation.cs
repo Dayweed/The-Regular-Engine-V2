@@ -18,8 +18,8 @@ namespace TRE
 
 		// Spawn timing
 		public float activeDuration;
-		public float minDurationModifier = 0.5f;
-		public float maxDurationModifier = 1.5f;
+		public float minDurationModifier = 0.3f;
+		public float maxDurationModifier = 1.2f;
 
 		private List<Entity> itemsToSpawn = new List<Entity>();
 		private List<float> itemsTimer = new List<float>();
@@ -32,46 +32,13 @@ namespace TRE
 			{
 				if (name == "FallingObj_Spawner_01")
 				{
-					size = new vec3(30, 0, 20);
-					activeDuration = 5;
-				}
-
-				if (name == "FallingObj_Spawner_02")
-				{
-					size = new vec3(30, 0, 11);
-					activeDuration = 4;
-				}
-			}
-
-			if (Scene.GetSceneName() == "Level_Bonus")
-			{
-				if (name == "FallingObj_Spawner_01")
-				{
-					size = new vec3(20, 0, 8);
+					size = new vec3(30, 0, 30);
 					activeDuration = 3;
 				}
 
 				if (name == "FallingObj_Spawner_02")
 				{
-					size = new vec3(15, 0, 20);
-					activeDuration = 4;
-				}
-
-				if (name == "FallingObj_Spawner_03")
-				{
-					size = new vec3(15, 0, 15);
-					activeDuration = 4;
-				}
-
-				if (name == "FallingObj_Spawner_04")
-				{
-					size = new vec3(8, 0, 15);
-					activeDuration = 4;
-				}
-
-				if (name == "FallingObj_Spawner_05")
-				{
-					size = new vec3(20, 0, 8);
+					size = new vec3(30, 0, 30);
 					activeDuration = 4;
 				}
 			}
