@@ -108,7 +108,7 @@ namespace TRE
 
             DetermineIfSkippable();
 
-			if(skipCutscene && (InputSystem.GetKeyRelease(InputKeys.P) || InputSystem.GetControllerButtonReleased(0, InputSystem.Button.Start)))
+			if(skipCutscene && (InputSystem.GetKeyRelease(InputKeys.Escape) || InputSystem.GetControllerButtonReleased(0, InputSystem.Button.Start)))
 			{
                 Debug.Log("skip cutscene: " + skipCutscene);
                 if (ECSManager.IsValidEntity(BGM))
@@ -211,7 +211,7 @@ namespace TRE
                 }
 
                 // Close Game
-                if (InputSystem.GetKeyHold(InputKeys.Escape))
+                if (InputSystem.GetKeyHold(InputKeys.Escape) && !skipCutscene)
                 {
                     Debug.Log("Close Game");
                     Game.CloseGame();
