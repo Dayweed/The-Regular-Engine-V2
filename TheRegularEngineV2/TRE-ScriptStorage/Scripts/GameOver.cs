@@ -27,6 +27,9 @@
 
 			if (holey_ref.GetComponent<HoleyController>().GetIsDead() && moley_ref.GetComponent<MoleyController>().GetIsDead())
 			{
+				if (Scene.GetSceneName() == "MainMenu")
+					return;
+
 				goToGameOver = true;
 				holey_ref.SetActive(false);
 				moley_ref.SetActive(false);
