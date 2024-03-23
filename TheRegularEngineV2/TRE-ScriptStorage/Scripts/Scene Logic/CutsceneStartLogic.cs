@@ -45,6 +45,10 @@ namespace TRE
 		List<string> nextScenes = new List<string>();
 		List<string> forcedScenes = new List<string>(); // This requires the user to press space manually to go to the next scene
 
+		//Skip cutscene
+		public bool skipCutscene = false;
+		string mapName = "Tutorial";
+
 		public void Start()
 		{
 			Frame_1 = ECSManager.FindEntityByName("Frame1");
@@ -102,172 +106,191 @@ namespace TRE
 
 			bool paragraphIsHalfWay = false;
 
-			// Go to next scene
-			if (hasPlayerPressed && SpaceToContinue.GetActive() && currentFrame == frames.Count - 1)
+            DetermineIfSkippable();
+
+			if(skipCutscene && (InputSystem.GetKeyRelease(InputKeys.P) || InputSystem.GetControllerButtonReleased(0, InputSystem.Button.Start)))
 			{
-				if (ECSManager.IsValidEntity(BGM))
-					AS.Stop(BGM);
+                Debug.Log("skip cutscene: " + skipCutscene);
+                if (ECSManager.IsValidEntity(BGM))
+                    AS.Stop(BGM);
 
-				if (ECSManager.IsValidEntity(endBGM))
-					AS.Play(endBGM);
+                if (ECSManager.IsValidEntity(endBGM))
+                    AS.Play(endBGM);
 
-				Scene.TransitionScene("Tutorial", delayScene);
-				endCutscene = true;
-			}
-
-			if (currentFrame == 0 || currentFrame == 1)
+                Scene.TransitionScene("Tutorial", delayScene);
+            }
+			else
 			{
-				if (ECSManager.IsValidEntity(birdSFX))
-					AS.Play(birdSFX);
-			}
+                // Go to next scene
+                if (hasPlayerPressed && SpaceToContinue.GetActive() && currentFrame == frames.Count - 1)
+                {
+                    if (ECSManager.IsValidEntity(BGM))
+                        AS.Stop(BGM);
 
-			if (currentFrame == 2)
-			{
-				if (ECSManager.IsValidEntity(birdSFX))
-					AS.Stop(birdSFX);
-			}
+                    if (ECSManager.IsValidEntity(endBGM))
+                        AS.Play(endBGM);
 
-			if (currentFrame == 2 && !invitationSFXPlayed)
-			{
-				if (ECSManager.IsValidEntity(invitationSFX))
-					AS.Play(invitationSFX);
-				invitationSFXPlayed = true;
-			}
+                    Scene.TransitionScene("Tutorial", delayScene);
+                    endCutscene = true;
+                }
 
-			//letter frames: 3, 4, 5, 6, 7
-			if (currentFrame >= 3 && currentFrame <= 7)
-			{
-				if (ECSManager.IsValidEntity(dialogueSFX))
-					AS.Play(dialogueSFX);
-			}
+                if (currentFrame == 0 || currentFrame == 1)
+                {
+                    if (ECSManager.IsValidEntity(birdSFX))
+                        AS.Play(birdSFX);
+                }
 
-			if (currentFrame == 3)
-			{
-				paragraphIsHalfWay = TextSystem.GetDialogueRunning(InvitationDialogue1.ID);
+                if (currentFrame == 2)
+                {
+                    if (ECSManager.IsValidEntity(birdSFX))
+                        AS.Stop(birdSFX);
+                }
 
-				if (pressSpaceCounter == 1)
-					TextSystem.ResetDialogue(InvitationDialogue1.ID);
-				else if (pressSpaceCounter == 0)
-					TextSystem.StartDialogue(InvitationDialogue1.ID);
-			}
+                if (currentFrame == 2 && !invitationSFXPlayed)
+                {
+                    if (ECSManager.IsValidEntity(invitationSFX))
+                        AS.Play(invitationSFX);
+                    invitationSFXPlayed = true;
+                }
 
-			if (currentFrame == 4)
-			{
-				paragraphIsHalfWay = TextSystem.GetDialogueRunning(InvitationDialogue2.ID);
+                //letter frames: 3, 4, 5, 6, 7
+                if (currentFrame >= 3 && currentFrame <= 7)
+                {
+                    if (ECSManager.IsValidEntity(dialogueSFX))
+                        AS.Play(dialogueSFX);
+                }
 
-				if (pressSpaceCounter == 1)
-					TextSystem.ResetDialogue(InvitationDialogue2.ID);
-				else
-					TextSystem.StartDialogue(InvitationDialogue2.ID);
-			}
+                if (currentFrame == 3)
+                {
+                    paragraphIsHalfWay = TextSystem.GetDialogueRunning(InvitationDialogue1.ID);
 
-			if (currentFrame == 5)
-			{
-				paragraphIsHalfWay = TextSystem.GetDialogueRunning(InvitationDialogue3.ID);
+                    if (pressSpaceCounter == 1)
+                        TextSystem.ResetDialogue(InvitationDialogue1.ID);
+                    else if (pressSpaceCounter == 0)
+                        TextSystem.StartDialogue(InvitationDialogue1.ID);
+                }
 
-				if (pressSpaceCounter == 1)
-					TextSystem.ResetDialogue(InvitationDialogue3.ID);
-				else
-					TextSystem.StartDialogue(InvitationDialogue3.ID);
-			}
+                if (currentFrame == 4)
+                {
+                    paragraphIsHalfWay = TextSystem.GetDialogueRunning(InvitationDialogue2.ID);
 
-			if (currentFrame == 6)
-			{
-				paragraphIsHalfWay = TextSystem.GetDialogueRunning(InvitationDialogue4.ID);
+                    if (pressSpaceCounter == 1)
+                        TextSystem.ResetDialogue(InvitationDialogue2.ID);
+                    else
+                        TextSystem.StartDialogue(InvitationDialogue2.ID);
+                }
 
-				if (pressSpaceCounter == 1)
-					TextSystem.ResetDialogue(InvitationDialogue4.ID);
-				else
-					TextSystem.StartDialogue(InvitationDialogue4.ID);
-			}
+                if (currentFrame == 5)
+                {
+                    paragraphIsHalfWay = TextSystem.GetDialogueRunning(InvitationDialogue3.ID);
 
-			if (currentFrame == 7)
-			{
-				paragraphIsHalfWay = TextSystem.GetDialogueRunning(InvitationDialogue5.ID);
+                    if (pressSpaceCounter == 1)
+                        TextSystem.ResetDialogue(InvitationDialogue3.ID);
+                    else
+                        TextSystem.StartDialogue(InvitationDialogue3.ID);
+                }
 
-				if (pressSpaceCounter == 1)
-					TextSystem.ResetDialogue(InvitationDialogue5.ID);
-				else
-					TextSystem.StartDialogue(InvitationDialogue5.ID);
-			}
+                if (currentFrame == 6)
+                {
+                    paragraphIsHalfWay = TextSystem.GetDialogueRunning(InvitationDialogue4.ID);
 
-			// Close Game
-			if (InputSystem.GetKeyHold(InputKeys.Escape))
-				Game.CloseGame();
+                    if (pressSpaceCounter == 1)
+                        TextSystem.ResetDialogue(InvitationDialogue4.ID);
+                    else
+                        TextSystem.StartDialogue(InvitationDialogue4.ID);
+                }
 
-			// Ignore if last frame alr
-			if (currentFrame >= frames.Count) return;
+                if (currentFrame == 7)
+                {
+                    paragraphIsHalfWay = TextSystem.GetDialogueRunning(InvitationDialogue5.ID);
 
-			// Timer to go to next frame
-			if (currentTime > 0)
-				currentTime -= Time.deltaTime;
+                    if (pressSpaceCounter == 1)
+                        TextSystem.ResetDialogue(InvitationDialogue5.ID);
+                    else
+                        TextSystem.StartDialogue(InvitationDialogue5.ID);
+                }
 
-			//check if space is already pressed, then set pressedSpaceTwice as true/false
-			if (currentFrame >= 3 && currentFrame <= 7 && pressSpaceCounter == 1)
-			{
-				pressedSpaceTwice = InputSystem.GetKeyPress(InputKeys.Space);
-			}
+                // Close Game
+                if (InputSystem.GetKeyHold(InputKeys.Escape))
+                {
+                    Debug.Log("Close Game");
+                    Game.CloseGame();
+                }
 
-			if (!endCutscene)
-			{
-				//Every frame will go through this if statement (when its going to the next frame)
-				if (hasPlayerPressed || (currentFrame < frames.Count && !forcedScenes.Contains(frames[currentFrame].name) &&
-												 frames[currentFrame].GetComponent<VFX_FadeIn>().DoneFading() && currentTime <= 0))
-				{
-					frames[currentFrame].GetComponent<VFX_FadeIn>().ForceComplete();
+                // Ignore if last frame alr
+                if (currentFrame >= frames.Count) return;
 
-					if (currentFrame >= 3 && currentFrame <= 7 && paragraphIsHalfWay)
-						++pressSpaceCounter;
+                // Timer to go to next frame
+                if (currentTime > 0)
+                    currentTime -= Time.deltaTime;
 
-					//player can press double space to go next frame OR once the paragraph is done press space once to go next frame
-					if (currentFrame >= 3 && currentFrame <= 7 && (hasPlayerPressed && pressedSpaceTwice || !paragraphIsHalfWay))
-					{
-						++currentFrame;
-						pressedSpaceTwice = false;
-						pressSpaceCounter = 0;
-					}
+                //check if space is already pressed, then set pressedSpaceTwice as true/false
+                if (currentFrame >= 3 && currentFrame <= 7 && pressSpaceCounter == 1)
+                {
+                    pressedSpaceTwice = InputSystem.GetKeyPress(InputKeys.Space);
+                }
 
-					else if (!(currentFrame >= 3 && currentFrame <= 7))
-						++currentFrame;
+                if (!endCutscene)
+                {
+                    //Every frame will go through this if statement (when its going to the next frame)
+                    if (hasPlayerPressed || (currentFrame < frames.Count && !forcedScenes.Contains(frames[currentFrame].name) &&
+                                                     frames[currentFrame].GetComponent<VFX_FadeIn>().DoneFading() && currentTime <= 0))
+                    {
+                        frames[currentFrame].GetComponent<VFX_FadeIn>().ForceComplete();
 
-					if (ECSManager.IsValidEntity(dialogueSFX))
-						AS.Stop(dialogueSFX);
+                        if (currentFrame >= 3 && currentFrame <= 7 && paragraphIsHalfWay)
+                            ++pressSpaceCounter;
 
-					//currentframe == 3/4/5/6/7, SpaceToContinueBlack
-					//letter frames + last frame + out of bounds frame will go through this if statement
-					if (currentFrame >= frames.Count - 1 || forcedScenes.Contains(frames[currentFrame].name))
-					{
-						if (currentFrame >= 3 && currentFrame <= 7)
-							SpaceToContinueBlack.SetActive(true);
-						else
-							SpaceToContinue.SetActive(true);
-					}
-					//disable SpaceToContinue
-					else if (SpaceToContinue.GetActive() || SpaceToContinueBlack.GetActive())
-					{
-						SpaceToContinue.SetActive(false);
-						SpaceToContinueBlack.SetActive(false);
-					}
+                        //player can press double space to go next frame OR once the paragraph is done press space once to go next frame
+                        if (currentFrame >= 3 && currentFrame <= 7 && (hasPlayerPressed && pressedSpaceTwice || !paragraphIsHalfWay))
+                        {
+                            ++currentFrame;
+                            pressedSpaceTwice = false;
+                            pressSpaceCounter = 0;
+                        }
 
-					if (currentFrame >= frames.Count) return;
+                        else if (!(currentFrame >= 3 && currentFrame <= 7))
+                            ++currentFrame;
 
-					// Check if deactivate all frames if counted as next scene
-					//Every new frame that appears
-					if (nextScenes.Contains(frames[currentFrame].name))
-					{
-						FadeAllActive();
-						currentTime = delayScene;
-					}
-					else
-					{
-						currentTime = delayFrame;
-					}
+                        if (ECSManager.IsValidEntity(dialogueSFX))
+                            AS.Stop(dialogueSFX);
 
-					// Fade In next frame
-					frames[currentFrame].SetActive(true);
-					frames[currentFrame].GetComponent<VFX_FadeIn>().FadeIn();
-				}
-			}
+                        //currentframe == 3/4/5/6/7, SpaceToContinueBlack
+                        //letter frames + last frame + out of bounds frame will go through this if statement
+                        if (currentFrame >= frames.Count - 1 || forcedScenes.Contains(frames[currentFrame].name))
+                        {
+                            if (currentFrame >= 3 && currentFrame <= 7)
+                                SpaceToContinueBlack.SetActive(true);
+                            else
+                                SpaceToContinue.SetActive(true);
+                        }
+                        //disable SpaceToContinue
+                        else if (SpaceToContinue.GetActive() || SpaceToContinueBlack.GetActive())
+                        {
+                            SpaceToContinue.SetActive(false);
+                            SpaceToContinueBlack.SetActive(false);
+                        }
+
+                        if (currentFrame >= frames.Count) return;
+
+                        // Check if deactivate all frames if counted as next scene
+                        //Every new frame that appears
+                        if (nextScenes.Contains(frames[currentFrame].name))
+                        {
+                            FadeAllActive();
+                            currentTime = delayScene;
+                        }
+                        else
+                        {
+                            currentTime = delayFrame;
+                        }
+
+                        // Fade In next frame
+                        frames[currentFrame].SetActive(true);
+                        frames[currentFrame].GetComponent<VFX_FadeIn>().FadeIn();
+                    }
+                }
+            }
 		}
 
 		private void FadeAllActive()
@@ -281,5 +304,13 @@ namespace TRE
 				}
 			}
 		}
+
+        void DetermineIfSkippable()
+        {
+            int mapStars;
+            int.TryParse(PersistentSystem.GetValue(mapName + "StarsObtained"), out mapStars);
+            if (mapStars >= 1)
+                skipCutscene = true;
+        }
 	}
 }
