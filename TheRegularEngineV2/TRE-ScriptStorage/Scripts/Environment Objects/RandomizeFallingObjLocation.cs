@@ -20,9 +20,11 @@ namespace TRE
 		public float activeDuration;
 		public float minDurationModifier = 0.3f;
 		public float maxDurationModifier = 1.2f;
+		public float delayDuration = 2;
 
 		private List<Entity> itemsToSpawn = new List<Entity>();
 		private List<float> itemsTimer = new List<float>();
+		private List<float> itemsDelayTimer = new List<float>();
 		private List<vec3> itemsPos = new List<vec3>();
 		private List<vec3> itemsDefRot = new List<vec3>();
 
@@ -47,6 +49,7 @@ namespace TRE
 			itemsTimer.Clear();
 			itemsPos.Clear();
 			itemsDefRot.Clear();
+			itemsDelayTimer.Clear();
 
 			// ID for prefabs are based on resource prefab GUID
 			fallingRockPrefab = new Entity(17896144981290866787);
@@ -106,6 +109,7 @@ namespace TRE
 					itemsTimer.Add(activeDuration * Random.Range(minDurationModifier, maxDurationModifier));
 					itemsPos.Add(pos);
 					itemsDefRot.Add(child.transform.Rotation);
+					itemsDelayTimer.Add(delayDuration);
 
 					if (!foundSpot) child.SetActive(false);
 
@@ -171,6 +175,10 @@ namespace TRE
 				// Ignore if no new spot
 				if (!foundSpot) continue;
 
+				itemsDelayTimer[i] -= Time.deltaTime;
+
+				if (itemsDelayTimer[i] > 0) continue;
+
 				// Reset falling object
 				itemsPos[i] = newpos;
 				itemsToSpawn[i].transform.Position = newpos;
@@ -178,6 +186,7 @@ namespace TRE
 				itemsToSpawn[i].GetComponent<Rigidbody>().useGravity = true;
 
 				itemsTimer[i] = activeDuration * Random.Range(minDurationModifier, maxDurationModifier);
+				itemsDelayTimer[i] = delayDuration;
 			}
 		}
 	}
