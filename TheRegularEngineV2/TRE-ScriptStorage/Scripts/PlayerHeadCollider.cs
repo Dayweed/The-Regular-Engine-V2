@@ -10,6 +10,9 @@ namespace TRE
 		private const string mole1tag = "RedCollider";
 		private const string mole2tag = "BlueCollider";
 
+		private vec3 oldPosition = new vec3(0, 0, 0);
+		private vec3 newPosition = new vec3(0, 0, 0);
+
 		public void SetToPlayer()
 		{
 			if (playerObj == null || ECSManager.IsValidEntity(playerObj.ID) == false)
@@ -76,7 +79,19 @@ namespace TRE
 
 		public void Update()
 		{
+			oldPosition = transform.Position;
 			SetToPlayer();
+		}
+
+		public void OnCollisionStay(System.UInt64 otherID)
+		{
+			Entity other = new Entity(otherID);
+
+			if (other.CompareTag("Red") || other.CompareTag("Blue"))
+			{
+				newPosition = transform.Position - oldPosition;
+				other.GetComponent<Transform>().Position += newPosition;
+			}
 		}
 	}
 }
