@@ -188,7 +188,7 @@ namespace TRE
 
 		public void Update()
 		{
-			if ((IS.GetKeyTriggered(InputKeys.Escape) && mainCamera.freeCamera)
+			if ((IS.GetKeyPress(InputKeys.Escape) && mainCamera.freeCamera)
 				|| IS.GetControllerButtonTriggered(0, IS.Button.Start)
 				|| IS.GetControllerButtonTriggered(1, IS.Button.Start))
 			{
@@ -234,7 +234,7 @@ namespace TRE
 				if (menustate == 0)
 				{
 					//we are assuming that pause menu entering is handled by game logic
-					if (IS.GetKeyTriggered(InputKeys.W) || ControllerInput(MenuNavigation.UP))
+					if (IS.GetKeyPress(InputKeys.W) || ControllerInput(MenuNavigation.UP))
 					{
 						if (currentOption == 0)
 							currentOption = 2;
@@ -245,7 +245,7 @@ namespace TRE
 							AS.Play(sfx);
 					}
 
-					if (IS.GetKeyTriggered(InputKeys.S) || ControllerInput(MenuNavigation.DOWN))
+					if (IS.GetKeyPress(InputKeys.S) || ControllerInput(MenuNavigation.DOWN))
 					{
 						if (currentOption == 2)
 							currentOption = 0;
@@ -256,7 +256,7 @@ namespace TRE
 							AS.Play(sfx);
 					}
 
-					if (IS.GetKeyTriggered(InputKeys.Enter) || ControllerInput(MenuNavigation.CONFIRM))
+					if (IS.GetKeyPress(InputKeys.Enter) || ControllerInput(MenuNavigation.CONFIRM))
 					{
 						if (currentOption == 0) // resume game
 						{
@@ -301,7 +301,7 @@ namespace TRE
 				{
 					//settings pop up will appear
 					//user can press A or D to move left or right for "Gameplay", "Graphics", "Audio", "Controls"
-					if (IS.GetKeyTriggered(InputKeys.A))
+					if (IS.GetKeyPress(InputKeys.A))
 					{
 						Debug.Log("press left");
 						Debug.Log("mCurrentEditMember: " + mCurrentEditMember);
@@ -316,7 +316,7 @@ namespace TRE
 							AS.Play(sfx);
 					}
 
-					if (IS.GetKeyTriggered(InputKeys.D))
+					if (IS.GetKeyPress(InputKeys.D))
 					{
 						Debug.Log("press right");
 						Debug.Log("mCurrentEditMember: " + mCurrentEditMember);
@@ -437,7 +437,7 @@ namespace TRE
 
                     //Not editing settings -> editing settings
                     //dont allow controls panel to move down for now
-                    if (!mIsEditingSettings && IS.GetKeyTriggered(InputKeys.S) && (showGameplayPanel || showGraphicsPanel || showAudioPanel))
+                    if (!mIsEditingSettings && IS.GetKeyPress(InputKeys.S) && (showGameplayPanel || showGraphicsPanel || showAudioPanel))
 					{
 						mIsEditingSettings = true;
 						mCurrentEditMember = 0; //Set it to be 0th member always at the start
@@ -451,7 +451,7 @@ namespace TRE
 					if (showAudioPanel)
 					{
 						settingsPointer.GetComponent<SpriteRenderer>().isVisible = true;
-						if (IS.GetKeyTriggered(InputKeys.W))
+						if (IS.GetKeyPress(InputKeys.W))
 						{
 							Debug.Log("press up");
 							if (mCurrentEditMember <= 0)
@@ -467,7 +467,7 @@ namespace TRE
 							Debug.Log("mCurrentEditMember: " + mCurrentEditMember);
 						}
 
-						if (IS.GetKeyTriggered(InputKeys.S))
+						if (IS.GetKeyPress(InputKeys.S))
 						{
 							Debug.Log("press down");
 							if (mCurrentEditMember < 0)
@@ -562,7 +562,7 @@ namespace TRE
                             settingsPointerTransform.Position = mGammaPanel.GetComponent<Transform>().Position;
                             //mGraphicsPointer.GetComponent<Transform>().Position = mGammaPanel.GetComponent<Transform>().Position;
 
-                            if (IS.GetKeyTriggered(InputKeys.Enter))
+                            if (IS.GetKeyPress(InputKeys.Enter))
 							{
 								mIsGammaOn = !mIsGammaOn;
 								if (mIsGammaOn)
@@ -587,7 +587,7 @@ namespace TRE
 					else if (showGameplayPanel)
 					{
                         settingsPointer.GetComponent<SpriteRenderer>().isVisible = true;
-                        if (IS.GetKeyTriggered(InputKeys.W))
+                        if (IS.GetKeyPress(InputKeys.W))
                         {
                             Debug.Log("press up");
                             if (mCurrentEditMember <= 0)
@@ -603,7 +603,7 @@ namespace TRE
                             Debug.Log("mCurrentEditMember: " + mCurrentEditMember);
                         }
 
-                        if (IS.GetKeyTriggered(InputKeys.S))
+                        if (IS.GetKeyPress(InputKeys.S))
                         {
                             Debug.Log("press down");
                             if (mCurrentEditMember < 0)
@@ -677,7 +677,7 @@ namespace TRE
                         }
                     }
 
-					if (IS.GetKeyTriggered(InputKeys.W) || IS.GetControllerButtonTriggered(0, IS.Button.Start) || IS.GetControllerButtonTriggered(1, IS.Button.Start))
+					if (IS.GetKeyPress(InputKeys.W) || IS.GetControllerButtonTriggered(0, IS.Button.Start) || IS.GetControllerButtonTriggered(1, IS.Button.Start))
 					{
 						Debug.Log("Triggered ESC to not editing settings");
 						mIsEditingSettings = false; //Set to not editing any option
@@ -693,7 +693,7 @@ namespace TRE
 				}
 				else // confirmation menu logic which is menustate == 2
 				{
-					if (IS.GetKeyTriggered(InputKeys.A) || ControllerInput(MenuNavigation.LEFT))
+					if (IS.GetKeyPress(InputKeys.A) || ControllerInput(MenuNavigation.LEFT))
 					{
 						if (menuOption == 0)
 							menuOption = 1;
@@ -704,7 +704,7 @@ namespace TRE
 							AS.Play(sfx);
 					}
 
-					if (IS.GetKeyTriggered(InputKeys.D) || ControllerInput(MenuNavigation.RIGHT))
+					if (IS.GetKeyPress(InputKeys.D) || ControllerInput(MenuNavigation.RIGHT))
 					{
 						if (menuOption == 0)
 							menuOption = 1;
@@ -715,7 +715,7 @@ namespace TRE
 							AS.Play(sfx);
 					}
 
-					if (IS.GetKeyTriggered(InputKeys.Enter) || ControllerInput(MenuNavigation.CONFIRM))
+					if (IS.GetKeyPress(InputKeys.Enter) || ControllerInput(MenuNavigation.CONFIRM))
 					{
 						if (menuOption == 0) // yes
 						{

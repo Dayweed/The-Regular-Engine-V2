@@ -23,7 +23,7 @@ namespace TRE
 
 		public void ScrollingCredits()
 		{
-			if (InputSystem.GetKeyTriggered(InputKeys.Space))
+			if (InputSystem.GetKeyPress(InputKeys.Space))
 			{
 				m_ScrollSpeed = m_FastSpeed;
 			}

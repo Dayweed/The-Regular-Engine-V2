@@ -1256,15 +1256,15 @@ namespace TRE
 			return Engine_GetKeyRelease(keycode);
 		}
 
-		private static Dictionary<InputKeys, bool> previousKeyStates = new Dictionary<InputKeys, bool>();
+		//private static Dictionary<InputKeys, bool> previousKeyStates = new Dictionary<InputKeys, bool>();
 
-		public static bool GetKeyTriggered(InputKeys keycode)
-		{
-			bool wasPressed = previousKeyStates.ContainsKey(keycode) && previousKeyStates[keycode];
-			bool isPressed = GetKeyHold(keycode);
-			previousKeyStates[keycode] = isPressed;
-			return !wasPressed && isPressed;
-		}
+		//public static bool GetKeyTriggered(InputKeys keycode)
+		//{
+		//	bool wasPressed = previousKeyStates.ContainsKey(keycode) && previousKeyStates[keycode];
+		//	bool isPressed = GetKeyHold(keycode);
+		//	previousKeyStates[keycode] = isPressed;
+		//	return !wasPressed && isPressed;
+		//}
 
 		// Controller Input
 
