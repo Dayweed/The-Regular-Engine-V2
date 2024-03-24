@@ -27,8 +27,8 @@
       0,
       {
          "m_Active": true,
-         "m_GUID": "7181036292863551589",
-         "m_Index": 0,
+         "m_GUID": "12636337309715896765",
+         "m_Index": 1,
          "m_Name": "Blueberry",
          "m_Tag": "Blueberry"
       }
@@ -61,6 +61,8 @@
          "ASSET_GEOM_m_RenderObject": "5e5479e60fbcccaf",
          "ASSET_MAT_m_AnimationMaterialInstance": "0",
          "ASSET_MAT_m_MaterialInstance": "18cf136263b2c948",
+         "m_DLightIndex": 1,
+         "m_DrawShadow": true,
          "m_IsVisible": true
       }
    ],
@@ -124,6 +126,12 @@
          ],
          "m_StoredClass": "TRE.GetPowerUp"
       }
+   ],
+   [
+      0
+   ],
+   [
+      0
    ],
    [
       0

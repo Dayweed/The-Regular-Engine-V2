@@ -18,9 +18,9 @@ namespace TRE
 
 		// Spawn timing
 		public float activeDuration;
-		public float minDurationModifier = 0.3f;
-		public float maxDurationModifier = 1.2f;
-		public float delayDuration = 4;
+		public float minDurationModifier = 0.75f;
+		public float maxDurationModifier = 1.3f;
+		public float delayDuration = 3;
 
 		private List<Entity> itemsToSpawn = new List<Entity>();
 		private List<float> itemsTimer = new List<float>();
