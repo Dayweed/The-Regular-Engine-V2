@@ -37,20 +37,20 @@
       0,
       {
          "m_Children": [
-            "5105160030871804384",
-            "13042397468684631246"
+            "16393174291731253948",
+            "11757490528834761345"
          ],
          "m_Parent": ""
       },
       1,
       {
          "m_Children": [],
-         "m_Parent": "3279601566727437495"
+         "m_Parent": "17369103908339687134"
       },
       2,
       {
          "m_Children": [],
-         "m_Parent": "3279601566727437495"
+         "m_Parent": "17369103908339687134"
       }
    ],
    [
@@ -58,7 +58,7 @@
       0,
       {
          "m_Active": true,
-         "m_GUID": "3279601566727437495",
+         "m_GUID": "17369103908339687134",
          "m_Index": 1,
          "m_Name": "Moley",
          "m_Tag": "Red"
@@ -66,7 +66,7 @@
       1,
       {
          "m_Active": true,
-         "m_GUID": "5105160030871804384",
+         "m_GUID": "16393174291731253948",
          "m_Index": 2,
          "m_Name": "Moley_Dust",
          "m_Tag": ""
@@ -74,7 +74,7 @@
       2,
       {
          "m_Active": true,
-         "m_GUID": "13042397468684631246",
+         "m_GUID": "11757490528834761345",
          "m_Index": 3,
          "m_Name": "Power Manager",
          "m_Tag": ""
@@ -259,7 +259,7 @@
          ],
          "LifeTime": 0.10000000149011612,
          "Loop": true,
-         "MaterialInstance": "79b97f19e736757d",
+         "MaterialInstance": "59baabc353937cff",
          "ParticleCount": 50,
          "PlayOnStart": true,
          "RenderObject": "4d974e3a749e338a",
