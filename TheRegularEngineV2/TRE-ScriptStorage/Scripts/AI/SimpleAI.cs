@@ -182,6 +182,18 @@ namespace TRE
 			}
 		}
 
+		private void OnCollisionStay(/*Collider*/System.UInt64 otherID)
+        {
+            // Assign ground if still have not found a ground
+            Entity other = new Entity(otherID);
+            if (mGround.ID == 0 && (other.CompareTag("Ground") || other.CompareTag("Platform")) && other.HasComponent<BoxCollider>())
+            {
+                mGround = other;
+                mCanChaseTarget = true;
+                isGrounded = true;
+            }
+        }
+
 		private void OnCollisionExit(/*Collider*/System.UInt64 otherID)
 		{
 			// Assign ground if valid
