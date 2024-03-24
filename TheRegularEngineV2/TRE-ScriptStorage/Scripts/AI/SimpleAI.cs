@@ -32,6 +32,8 @@ namespace TRE
 		private float armingTimer = 0f;
 		private const float armingDuration = 1.25f;
 
+		private bool isAfraid = false;
+
 		private Entity pinataEffect;
 
 		public void Start()
@@ -98,7 +100,7 @@ namespace TRE
 				}
 
 				// Check if go explode
-				if (mFoundTarget)
+				if (mFoundTarget && !isAfraid)
 				{
 					// Check if moley or holey is in attack range
 					if (PS.IsTriggerStay(mAttackRange.ID, mHoley.ID) || PS.IsTriggerStay(mAttackRange.ID, mMoley.ID))
@@ -113,11 +115,17 @@ namespace TRE
 			// Check if player is within detect sphere
 			if (mFoundTarget && mGround.ID != 0)
 			{
+				// Check if afraid move the other direction based on the following condition
+				isAfraid = (mTarget.CompareTag("Blue") && mTarget.GetComponent<HoleyController>().mainStrawberry && mTarget.GetComponent<HoleyController>().isScaled);
+
 				// Set moveVector based on angle
 				moveVector = mTarget.transform.Position - transform.Position;
 
-				// Ignore y-axis
-				PS.GetLinearVelocity(ID, out vec3 currVelocity);
+				// Determine if flip move direction if afraid
+				moveVector *= isAfraid ? new vec3(-1, -1, -1) : vec3.Ones;
+
+                // Ignore y-axis
+                PS.GetLinearVelocity(ID, out vec3 currVelocity);
 				moveVector = new vec3(moveVector.x, 0, moveVector.z);
 				moveVector = moveVector.NormalizedSafe;
 				vec3 moveDir = moveVector * moveSpeed * Time.deltaTime;

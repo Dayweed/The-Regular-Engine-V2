@@ -27,8 +27,8 @@
       0,
       {
          "m_Active": true,
-         "m_GUID": "7498185414674504519",
-         "m_Index": 0,
+         "m_GUID": "14112341217849381041",
+         "m_Index": 1,
          "m_Name": "Star_VFX",
          "m_Tag": ""
       }
@@ -48,8 +48,8 @@
             0.0
          ],
          "m_Scale": [
-            100.0,
-            100.0,
+            1.0,
+            1.0,
             1.0
          ]
       }
@@ -101,12 +101,18 @@
             1.0,
             1.0
          ],
-         "Height": 1,
-         "RenderLayer": 0,
+         "Height": 55,
+         "RenderLayer": 10,
          "Texture": "92618220a6c79a0e",
-         "Width": 1,
+         "Width": 55,
          "m_IsVisible": false
       }
+   ],
+   [
+      0
+   ],
+   [
+      0
    ],
    [
       0

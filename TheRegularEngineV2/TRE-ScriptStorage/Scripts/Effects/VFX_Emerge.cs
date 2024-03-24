@@ -14,10 +14,11 @@ namespace TRE
 		vec3 ScaleVec;
 
 		// End is based on where the entity is at
-		vec3 EndScale;
-		vec3 EndPosition;
+		public vec3 EndScale;
+		public vec3 EndPosition;
 
 		const float PositionOffset = 0.5f;
+		const float RotationOffset = 0.5f;
 
 		vec3 RotateVec;
 
@@ -26,8 +27,9 @@ namespace TRE
 		bool emerging;
 		bool shrinking;
 		bool idle = true;
+		bool softrestting = false; // Move the values closer to the correct spot
 
-		const float scaleSpeed = 80.0f;
+		const float scaleSpeed = 1.5f;
 		const float rotateSpeed = 15.0f;
 		const float moveSpeed = 3f;
 
@@ -56,7 +58,7 @@ namespace TRE
 
 			// PositionVec = new vec3(-16, -9, 0);
 			// PositionVec = new vec3(-10, -6, 0);
-			EndPosition = new vec3(-880, -575, 0);
+			// EndPosition = new vec3(-880, -575, 0);
 		}
 
 		public void Update()
@@ -64,6 +66,12 @@ namespace TRE
 			if (idle) return;
 
 			transform.Rotation += RotateVec * rotateSpeed * Time.deltaTime;
+
+			if (softrestting)
+			{
+				SoftReset();
+				return;
+			}
 
 			if (!idle && (emerging || shrinking))
 			{
@@ -106,7 +114,8 @@ namespace TRE
 				}
 				else if (shrinking && ReachEndPosition())
 				{
-					Reset();
+					softrestting = true;
+                    SoftReset();
 				}
 			}
 			else if (!emerging && !shrinking && !idle && coolDown > 0)
@@ -120,7 +129,7 @@ namespace TRE
 			}
 		}
 
-		public void Emerge()
+		public void Emerge(vec3 startPos, vec3 endPos, vec3 endScale)
 		{
 			if (emerging) return;
 
@@ -130,34 +139,39 @@ namespace TRE
 
 			// PositionVec = new vec3(-16, -9, 0);
 			// PositionVec = new vec3(-10, -6, 0);
-			EndPosition = new vec3(-880, -575, 0);
+			// EndPosition = new vec3(-865, -440, 0);
+			transform.Position = startPos;
+            EndPosition = endPos;
+            EndScale = endScale;
 
-			// Force stop it using timer
-			TimerToStop = TimerToStopDefault;
+            // Force stop it using timer
+            TimerToStop = TimerToStopDefault;
 
 			MyRenderer.isVisible = true;
-			EndScale = transform.Scale;
 
 			emerging = true;
 			shrinking = false;
 			idle = false;
 
-			ScaleVec = (EndScale - StartScale).Normalized;
+			ScaleVec = (EndScale - StartScale);
+            if (ScaleVec.Length != 0) ScaleVec = ScaleVec.Normalized;
 
 			transform.Scale = StartScale;
 
-			vec3 scaOff = ScaleVec * scaleSpeed * 0.5f * Time.deltaTime;
-			MinScaleOffset = new vec3(
-				(EndScale.x - scaOff.x < EndScale.x + scaOff.x) ? EndScale.x - scaOff.x : EndScale.x + scaOff.x,
-				(EndScale.y - scaOff.y < EndScale.y + scaOff.y) ? EndScale.y - scaOff.y : EndScale.y + scaOff.y,
-				(EndScale.z - scaOff.z < EndScale.z + scaOff.z) ? EndScale.z - scaOff.z : EndScale.z + scaOff.z
-				);
-			MaxScaleOffset = new vec3(
-				(EndScale.x - scaOff.x > EndScale.x + scaOff.x) ? EndScale.x - scaOff.x : EndScale.x + scaOff.x,
-				(EndScale.y - scaOff.y > EndScale.y + scaOff.y) ? EndScale.y - scaOff.y : EndScale.y + scaOff.y,
-				(EndScale.z - scaOff.z > EndScale.z + scaOff.z) ? EndScale.z - scaOff.z : EndScale.z + scaOff.z
-				);
-		}
+			vec3 scaOff = ScaleVec * scaleSpeed * 0.75f * Time.deltaTime;
+			MinScaleOffset = new vec3(EndScale - scaOff);
+			MaxScaleOffset = new vec3(EndScale + scaOff);
+            //MinScaleOffset = new vec3(
+            //	(EndScale.x - scaOff.x < EndScale.x + scaOff.x) ? EndScale.x - scaOff.x : EndScale.x + scaOff.x,
+            //	(EndScale.y - scaOff.y < EndScale.y + scaOff.y) ? EndScale.y - scaOff.y : EndScale.y + scaOff.y,
+            //	(EndScale.z - scaOff.z < EndScale.z + scaOff.z) ? EndScale.z - scaOff.z : EndScale.z + scaOff.z
+            //	);
+            //MaxScaleOffset = new vec3(
+            //	(EndScale.x - scaOff.x > EndScale.x + scaOff.x) ? EndScale.x - scaOff.x : EndScale.x + scaOff.x,
+            //	(EndScale.y - scaOff.y > EndScale.y + scaOff.y) ? EndScale.y - scaOff.y : EndScale.y + scaOff.y,
+            //	(EndScale.z - scaOff.z > EndScale.z + scaOff.z) ? EndScale.z - scaOff.z : EndScale.z + scaOff.z
+            //	);
+        }
 
 		public void ShrinkBack()
 		{
@@ -173,7 +187,7 @@ namespace TRE
 
 			ScaleVec = (EndScale - StartScale).Normalized;
 
-			vec3 scaOff = ScaleVec * scaleSpeed * 0.5f * Time.deltaTime;
+			vec3 scaOff = ScaleVec * scaleSpeed * 2f;
 			MinScaleOffset = new vec3(
 				(EndScale.x - scaOff.x < EndScale.x + scaOff.x) ? EndScale.x - scaOff.x : EndScale.x + scaOff.x,
 				(EndScale.y - scaOff.y < EndScale.y + scaOff.y) ? EndScale.y - scaOff.y : EndScale.y + scaOff.y,
@@ -199,7 +213,21 @@ namespace TRE
 			return x && y && z;
 		}
 
-		public void Reset()
+		public bool FinishVFX()
+		{
+			return !MyRenderer.isVisible;
+        }
+
+		public void SoftReset()
+        {
+            if (Math.Abs(OriginalRotation.z - transform.Rotation.z) <= rotateSpeed * 5f)
+			{
+				softrestting = false;
+				HardReset();
+            }
+        }
+
+		public void HardReset()
 		{
 			transform.Position = OriginalPosition;
 			transform.Scale = OriginalScale;

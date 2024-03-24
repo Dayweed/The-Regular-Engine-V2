@@ -20,7 +20,7 @@ namespace TRE
 		public float activeDuration;
 		public float minDurationModifier = 0.3f;
 		public float maxDurationModifier = 1.2f;
-		public float delayDuration = 2;
+		public float delayDuration = 4;
 
 		private List<Entity> itemsToSpawn = new List<Entity>();
 		private List<float> itemsTimer = new List<float>();
@@ -184,6 +184,8 @@ namespace TRE
 				itemsToSpawn[i].transform.Position = newpos;
 				itemsToSpawn[i].SetActive(true);
 				itemsToSpawn[i].GetComponent<Rigidbody>().useGravity = true;
+				itemsToSpawn[i].GetComponent<FallingObj>().isGrounded = false;
+				PhysicsSystem.SetLinearVelocity(itemsToSpawn[i].ID, vec3.Zero);
 
 				itemsTimer[i] = activeDuration * Random.Range(minDurationModifier, maxDurationModifier);
 				itemsDelayTimer[i] = delayDuration;

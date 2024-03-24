@@ -38,6 +38,7 @@ namespace TRE
 		// bool displayStars = false;
 
 		Entity StarParticle;
+		List<vec3> StarParticlePositions = new List<vec3>() { new vec3(-865, -440, 0), new vec3(-760, -440, 0), new vec3(-655, -440, 0) };
 
 		private ulong endsceneBGM;
 		private ulong mainBGM;
@@ -305,13 +306,13 @@ namespace TRE
 				}
 				if (isCompleted)
 				{
-					IncrementStars(currentSceneName);
+					int currentStars = IncrementStars(currentSceneName);
 					triggerStars.RemoveAt(i);
-					if (StarEmerge != null)
+					if (StarEmerge != null && currentStars <= StarParticlePositions.Count)
 					{
 						StarParticle.GetComponent<Particle>().IsActive = true;
 						StarParticle.GetComponent<Transform>().Position = new GlmSharp.vec3(0f, -1500f, 0f);
-						StarEmerge.Emerge();
+						StarEmerge.Emerge(vec3.Zero, StarParticlePositions[currentStars - 1], new vec3(1.5f, 1.5f, 1));
 
 						if (!starSFXPlayed)
 						{
@@ -334,7 +335,7 @@ namespace TRE
 				//if (!displayStars && timerCurrent > 0) timerCurrent -= Time.deltaTime;
 				// Do for stars collected
 				// vec3 titleStarsCollectedPos = StarsCollected.GetComponent<Transform>().Position;
-				if (StarEmerge != null && StarEmerge.ReachEndPosition())
+				if (StarEmerge != null && StarEmerge.FinishVFX())
 				{
 					// goalYPos = displayYPos;
 					// Determine which stars to display
@@ -408,7 +409,8 @@ namespace TRE
 			}
 		}
 
-		public void IncrementStars(string mapName)
+		// Return current map stars
+		public int IncrementStars(string mapName)
 		{
 			if (int.TryParse(PersistentSystem.GetValue("TotalStarsObtained"), out int numStars))
 			{
@@ -422,7 +424,10 @@ namespace TRE
 				++mapStars;
 				PersistentSystem.SetValue(mapName + "StarsObtained", mapStars.ToString());
 				Debug.Log(mapName + " Stars " + PersistentSystem.GetValue(mapName + "StarsObtained"));
-			}
+				return mapStars;
+            }
+
+			return -1;
 		}
 
 		private void DetermineStarsDisplay(string mapName)

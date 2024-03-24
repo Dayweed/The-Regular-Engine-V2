@@ -329,9 +329,14 @@ namespace TRE
 			// Make it loose one of it's powerups
 			if (other.CompareTag("FallingObstacle") || other.CompareTag("RollingObstacle"))
 			{
+				// Ignore damage for fallingObstacle under the following conditions
+				PhysicsSystem.GetLinearVelocity(otherID, out vec3 speed);
+				// Falling object is no longer falling
+				if (other.CompareTag("FallingObstacle") && other.GetComponent<FallingObj>().isGrounded) return;
+
 				TakeDamage();
 
-				if (other.ID == ECSManager.FindIDFromName("FallingMaracca"))
+                if (other.name == "FallingMaracca" && ECSManager.IsValidEntity(fallingMaracaSFX))
 				{
 					if (ECSManager.IsValidEntity(fallingMaracaSFX))
 						AS.Play(fallingMaracaSFX);

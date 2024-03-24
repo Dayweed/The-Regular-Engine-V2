@@ -371,15 +371,18 @@ namespace TRE
 			//isGrounded = false;
 
 			Entity other = new Entity(otherID);
-			// Make it loose one of it's powerups
-			if (other.CompareTag("FallingObstacle") && isScaled && mainBlueberry)
-				return;
+            // Ignore damage for fallingObstacle under the following conditions
+            // Falling object is no longer falling
+            if (other.CompareTag("FallingObstacle") && other.GetComponent<FallingObj>().isGrounded) return;
+            // Moley is using the blueberry powerup
+            if (other.CompareTag("FallingObstacle") && mainBlueberry && isScaled) return;
 
-			if (other.CompareTag("FallingObstacle") || other.CompareTag("RollingObstacle"))
-			{
-				TakeDamage();
+            if (other.CompareTag("FallingObstacle") || other.CompareTag("RollingObstacle"))
+            {
+                // Make it loose one of it's powerups
+                TakeDamage();
 
-				if (other.ID == ECSManager.FindIDFromName("FallingMaracca"))
+				if (other.name == "FallingMaracca" && ECSManager.IsValidEntity(fallingMaracaSFX))
 				{
 					if (ECSManager.IsValidEntity(fallingMaracaSFX))
 						AS.Play(fallingMaracaSFX);

@@ -11,7 +11,9 @@ namespace TRE
 
 		public vec3 oriRot;
 
-		public void Update()
+		public bool isGrounded = false;
+
+        public void Update()
 		{
 			transform.Rotation = vec3.Zero;
 			// activeTimer -= Time.deltaTime;
@@ -36,5 +38,25 @@ namespace TRE
 			// SetActive(true);
 			// PhysicsSystem.SetLinearVelocity(ID, vec3.Zero);
 		}
-	}
+
+		public void OnCollisionStay(System.UInt64 otherID)
+        {
+            Entity other = new Entity(otherID);
+
+            if (other.CompareTag("Ground") || other.CompareTag("Platform"))
+            {
+                isGrounded = true;
+            }
+        }
+
+        public void OnCollisionExit(System.UInt64 otherID)
+        {
+            Entity other = new Entity(otherID);
+
+            if (other.CompareTag("Ground") || other.CompareTag("Platform"))
+            {
+                //isGrounded = false;
+            }
+        }
+    }
 }

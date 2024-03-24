@@ -1,4 +1,6 @@
-﻿namespace TRE
+﻿using GlmSharp;
+
+namespace TRE
 {
 	public class LevelOneObject : Entity
 	{
@@ -27,7 +29,8 @@
 			{
 				GetComponent<MeshRenderer>().Visible = false;
 				pickedUp = true;
-			}
+                LvlObjUI.GetComponent<VFX_Emerge>().Emerge(vec3.Zero, new vec3(-840f, -280f, 0f), new vec3(1.5f, 1.5f, 1));
+            }
 		}
 	}
 }
