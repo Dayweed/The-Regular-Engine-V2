@@ -18,7 +18,7 @@ namespace TRE
 		bool isOppositePlatformType;
 
 		/// <summary>An array of cardinal directions from 45 to 315</summary>
-		int[] directions = new int[7];
+		readonly int[] directions = new int[7];
 
 		/// <summary>The angle the platform must have to be in the ACTIVE position.</summary>
 		float platformActiveAngle;

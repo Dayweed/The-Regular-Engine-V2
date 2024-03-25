@@ -6,7 +6,7 @@ namespace TRE
 	public class OnOffPlatformManager : Entity
 	{
 		List<OnOffPlatform> platformList = new List<OnOffPlatform>();
-		List<Button> buttonList = new List<Button>();
+		readonly List<Button> buttonList = new List<Button>();
 
 		public void Start()
 		{

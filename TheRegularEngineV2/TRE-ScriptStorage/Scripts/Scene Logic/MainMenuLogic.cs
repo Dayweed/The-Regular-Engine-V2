@@ -516,8 +516,7 @@ namespace TRE
 			Stars2.SetActive(false);
 			Stars3.SetActive(false);
 
-			int mapStars = 0;
-			if (int.TryParse(PersistentSystem.GetValue(holeSceneName + "StarsObtained"), out mapStars))
+			if (int.TryParse(PersistentSystem.GetValue(holeSceneName + "StarsObtained"), out int mapStars))
 			{
 				//Debug.Log(holeSceneName + "StarsObtained: " + mapStars);
 			}
