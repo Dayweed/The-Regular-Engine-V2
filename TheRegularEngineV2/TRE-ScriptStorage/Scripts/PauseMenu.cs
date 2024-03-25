@@ -178,6 +178,11 @@ namespace TRE
 
 			// Get the current scene 
             CurrentScene = Scene.GetSceneName();
+            if (CurrentScene == "MainMenu")
+            {
+                // Hide the quit button
+                //options[2].GetComponent<SpriteRenderer>().Texture = "ui-button-quit.png";
+            }
 
 			Entity mainCam = ECSManager.FindEntityByName("Main Camera");
 			if (mainCam != null)
