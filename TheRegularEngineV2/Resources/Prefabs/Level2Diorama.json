@@ -1,12 +1,16 @@
 [
    [
-      3,
+      7,
       0,
       1,
-      2
+      2,
+      3,
+      4,
+      5,
+      6
    ],
    [
-      3,
+      7,
       0,
       {
          "m_IsMainPrefab": true,
@@ -30,35 +34,92 @@
          "m_Overrides": {},
          "m_PrefabGUID": "12860283383347389020",
          "m_RemovedComps": []
+      },
+      3,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "9602251378270956871",
+         "m_Overrides": {},
+         "m_PrefabGUID": "203951188914582111",
+         "m_RemovedComps": []
+      },
+      4,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "9602251378270956871",
+         "m_Overrides": {},
+         "m_PrefabGUID": "3401445935889242354",
+         "m_RemovedComps": []
+      },
+      5,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "9602251378270956871",
+         "m_Overrides": {},
+         "m_PrefabGUID": "10895953482529321619",
+         "m_RemovedComps": []
+      },
+      6,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "9602251378270956871",
+         "m_Overrides": {},
+         "m_PrefabGUID": "14015919487314449772",
+         "m_RemovedComps": []
       }
    ],
    [
-      3,
+      7,
       0,
       {
          "m_Children": [
-            "14342488672139979956",
-            "9559908120729601880"
+            "2027654049488694477",
+            "4492251253324786671",
+            "7687069534924732455",
+            "6546862037414297105"
          ],
          "m_Parent": ""
       },
       1,
       {
          "m_Children": [],
-         "m_Parent": "2277452980822317743"
+         "m_Parent": "14499084208362727681"
       },
       2,
       {
          "m_Children": [],
-         "m_Parent": "2277452980822317743"
+         "m_Parent": "14499084208362727681"
+      },
+      3,
+      {
+         "m_Children": [],
+         "m_Parent": "14499084208362727681"
+      },
+      4,
+      {
+         "m_Children": [
+            "10351519354490858714",
+            "12282824978112171508"
+         ],
+         "m_Parent": "14499084208362727681"
+      },
+      5,
+      {
+         "m_Children": [],
+         "m_Parent": "6546862037414297105"
+      },
+      6,
+      {
+         "m_Children": [],
+         "m_Parent": "6546862037414297105"
       }
    ],
    [
-      3,
+      7,
       0,
       {
          "m_Active": true,
-         "m_GUID": "2277452980822317743",
+         "m_GUID": "14499084208362727681",
          "m_Index": 1,
          "m_Name": "Level2Diorama",
          "m_Tag": ""
@@ -66,7 +127,7 @@
       1,
       {
          "m_Active": true,
-         "m_GUID": "14342488672139979956",
+         "m_GUID": "2027654049488694477",
          "m_Index": 2,
          "m_Name": "RULER",
          "m_Tag": ""
@@ -74,14 +135,46 @@
       2,
       {
          "m_Active": true,
-         "m_GUID": "9559908120729601880",
+         "m_GUID": "4492251253324786671",
          "m_Index": 3,
          "m_Name": "Level2Floor",
+         "m_Tag": ""
+      },
+      3,
+      {
+         "m_Active": true,
+         "m_GUID": "7687069534924732455",
+         "m_Index": 4,
+         "m_Name": "Pinata",
+         "m_Tag": ""
+      },
+      4,
+      {
+         "m_Active": true,
+         "m_GUID": "6546862037414297105",
+         "m_Index": 5,
+         "m_Name": "OnOffPlatformPivot",
+         "m_Tag": ""
+      },
+      5,
+      {
+         "m_Active": true,
+         "m_GUID": "10351519354490858714",
+         "m_Index": 6,
+         "m_Name": "Button",
+         "m_Tag": ""
+      },
+      6,
+      {
+         "m_Active": true,
+         "m_GUID": "12282824978112171508",
+         "m_Index": 7,
+         "m_Name": "OnOffPlatform",
          "m_Tag": ""
       }
    ],
    [
-      3,
+      7,
       0,
       {
          "m_Position": [
@@ -135,15 +228,87 @@
             0.029999999329447746,
             0.029999999329447746
          ]
+      },
+      3,
+      {
+         "m_Position": [
+            5.281937599182129,
+            5.34595251083374,
+            1.2255655527114868
+         ],
+         "m_Rotation": [
+            0.0,
+            -0.0,
+            0.0
+         ],
+         "m_Scale": [
+            0.5,
+            0.5,
+            0.5
+         ]
+      },
+      4,
+      {
+         "m_Position": [
+            4.8778228759765625,
+            1.0327308177947998,
+            4.848048210144043
+         ],
+         "m_Rotation": [
+            0.0,
+            89.95154571533203,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      5,
+      {
+         "m_Position": [
+            4.8778228759765625,
+            2.0519967079162598,
+            4.848048210144043
+         ],
+         "m_Rotation": [
+            0.0,
+            89.94404602050781,
+            0.0
+         ],
+         "m_Scale": [
+            0.5,
+            0.5,
+            0.5
+         ]
+      },
+      6,
+      {
+         "m_Position": [
+            4.879758358001709,
+            1.0327308177947998,
+            2.5591344833374023
+         ],
+         "m_Rotation": [
+            0.0,
+            89.93438720703125,
+            0.0
+         ],
+         "m_Scale": [
+            9.000001907348633,
+            1.0,
+            4.681057929992676
+         ]
       }
    ],
    [
-      2,
+      5,
       1,
       {
          "ASSET_GEOM_m_RenderObject": "f4fb57a5c93b0018",
          "ASSET_MAT_m_AnimationMaterialInstance": "0",
-         "ASSET_MAT_m_MaterialInstance": "0",
+         "ASSET_MAT_m_MaterialInstance": "302df7ab0d25313b",
          "m_DLightIndex": 0,
          "m_DrawShadow": true,
          "m_IsVisible": true
@@ -151,6 +316,33 @@
       2,
       {
          "ASSET_GEOM_m_RenderObject": "b090c24185ca5424",
+         "ASSET_MAT_m_AnimationMaterialInstance": "0",
+         "ASSET_MAT_m_MaterialInstance": "0",
+         "m_DLightIndex": 0,
+         "m_DrawShadow": true,
+         "m_IsVisible": true
+      },
+      3,
+      {
+         "ASSET_GEOM_m_RenderObject": "7b41732c06fff27e",
+         "ASSET_MAT_m_AnimationMaterialInstance": "0",
+         "ASSET_MAT_m_MaterialInstance": "926e47ce4f699fef",
+         "m_DLightIndex": 0,
+         "m_DrawShadow": true,
+         "m_IsVisible": true
+      },
+      5,
+      {
+         "ASSET_GEOM_m_RenderObject": "e89d9a3603a0e7a2",
+         "ASSET_MAT_m_AnimationMaterialInstance": "0",
+         "ASSET_MAT_m_MaterialInstance": "979f297952363a73",
+         "m_DLightIndex": 0,
+         "m_DrawShadow": true,
+         "m_IsVisible": true
+      },
+      6,
+      {
+         "ASSET_GEOM_m_RenderObject": "f4fb57a5c93b0018",
          "ASSET_MAT_m_AnimationMaterialInstance": "0",
          "ASSET_MAT_m_MaterialInstance": "0",
          "m_DLightIndex": 0,
