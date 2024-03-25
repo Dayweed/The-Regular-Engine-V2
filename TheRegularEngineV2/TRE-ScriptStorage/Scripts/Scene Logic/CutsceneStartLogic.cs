@@ -42,8 +42,10 @@ namespace TRE
 		private bool invitationSFXPlayed = false;
 
 		List<Entity> frames = new List<Entity>();
-		List<string> nextScenes = new List<string>();
-		List<string> forcedScenes = new List<string>(); // This requires the user to press space manually to go to the next scene
+		List<string> nextScenes = new List<string>();       // This will fade all out before going to the next frame
+		List<string> forcedScenes = new List<string>();     // This requires the user to press space manually to go to the next scene
+        List<string> autoAppearScenes = new List<string>(); // This will auto appear without fading in
+        List<string> autoDisappearScenes = new List<string>(); // This will auto appear without fading out
 
 		//Skip cutscene
 		public bool skipCutscene = false;
@@ -85,6 +87,8 @@ namespace TRE
 			frames = new List<Entity>() { Frame_1, Frame_2, Frame_3, Frame_4, Frame_5, Frame_6, Frame_7, Frame_8, Frame_9, Frame_10 };
 			nextScenes = new List<string>() { "Frame3", "Frame4", "Frame5", "Frame6", "Frame7", "Frame8", "Frame9" };
 			forcedScenes = new List<string>() { "Frame4", "Frame5", "Frame6", "Frame7", "Frame8" };
+            autoAppearScenes = new List<string>() { "Frame5", "Frame6", "Frame7", "Frame8" };
+            autoDisappearScenes = new List<string>() { "Frame4", "Frame5", "Frame6", "Frame7" };
 
 			birdSFX = ECSManager.FindIDFromName("SFX_Bird");
 			dialogueSFX = ECSManager.FindIDFromName("SFX_DIalogue");
@@ -236,7 +240,14 @@ namespace TRE
                     if (hasPlayerPressed || (currentFrame < frames.Count && !forcedScenes.Contains(frames[currentFrame].name) &&
                                                      frames[currentFrame].GetComponent<VFX_FadeIn>().DoneFading() && currentTime <= 0))
                     {
-                        frames[currentFrame].GetComponent<VFX_FadeIn>().ForceComplete();
+                        // Check if currentFrame still the same after this
+                        int oldFrame = currentFrame;
+
+                        // Force complete if havent yet
+                        if (!frames[currentFrame].GetComponent<VFX_FadeIn>().DoneFading())
+                        {
+                            frames[currentFrame].GetComponent<VFX_FadeIn>().ForceComplete();
+                        }
 
                         if (currentFrame >= 3 && currentFrame <= 7 && paragraphIsHalfWay)
                             ++pressSpaceCounter;
@@ -287,7 +298,16 @@ namespace TRE
 
                         // Fade In next frame
                         frames[currentFrame].SetActive(true);
-                        frames[currentFrame].GetComponent<VFX_FadeIn>().FadeIn();
+
+                        // Auto force complete for auto appear scenes
+                        if (autoAppearScenes.Contains(frames[currentFrame].name))
+                        {
+                            frames[currentFrame].GetComponent<VFX_FadeIn>().ForceComplete();
+                        }
+                        else if (oldFrame != currentFrame)
+                        {
+                            frames[currentFrame].GetComponent<VFX_FadeIn>().FadeIn();
+                        }
                     }
                 }
             }
@@ -298,9 +318,17 @@ namespace TRE
 			for (int i = 0; i < frames.Count; ++i)
 			{
 				//fade out all the previous frames
-				if (frames[i].GetComponent<VFX_FadeIn>().DoneFading())
-				{
-					frames[i].GetComponent<VFX_FadeOut>().FadeOut();
+				if (frames[i].GetComponent<VFX_FadeIn>().DoneFading() && i != currentFrame)
+                {
+                    // Auto force complete for auto appear scenes
+                    if (autoDisappearScenes.Contains(frames[i].name))
+                    {
+                        frames[i].GetComponent<VFX_FadeOut>().ForceComplete();
+                    }
+                    else
+                    {
+                        frames[i].GetComponent<VFX_FadeOut>().FadeOut();
+                    }
 				}
 			}
 		}

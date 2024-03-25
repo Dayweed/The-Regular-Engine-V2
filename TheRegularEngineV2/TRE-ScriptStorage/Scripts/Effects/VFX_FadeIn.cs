@@ -4,20 +4,29 @@ namespace TRE
 {
 	public class VFX_FadeIn : Entity
 	{
-		vec4 OriginalColor;
+		public vec4 OriginalColor;
 
-		bool fading = false;
+        public bool fading = false;
 		bool doneFading = false;
 
 		const float fadingSpeed = 0.5f;
 
 		SpriteRenderer MyRenderer;
 
+		public void Start()
+		{
+			if (HasComponent<SpriteRenderer>())
+            {
+                MyRenderer = GetComponent<SpriteRenderer>();
+                OriginalColor = MyRenderer.Color;
+            }
+         }
+
 		public void Update()
 		{
 			if (!fading) return;
 
-			if (HasComponent<SpriteRenderer>())
+            if (HasComponent<SpriteRenderer>())
 			{
 				//float w = MathF.Lerp(MyRenderer.Color.w, OriginalColor.w, fadingSpeed * Time.deltaTime);
 				float w = MyRenderer.Color.w + fadingSpeed * Time.deltaTime;
@@ -75,8 +84,12 @@ namespace TRE
 		}
 
 		public void ForceComplete()
-		{
-			MyRenderer.Color = new vec4(OriginalColor.x, OriginalColor.y, OriginalColor.z, 1);
+        {
+            if (HasComponent<SpriteRenderer>())
+            {
+                MyRenderer = GetComponent<SpriteRenderer>();
+                MyRenderer.Color = new vec4(OriginalColor.x, OriginalColor.y, OriginalColor.z, 1);
+            }
 			UpdateChildren(this, 1);
 			fading = false;
 			doneFading = true;
