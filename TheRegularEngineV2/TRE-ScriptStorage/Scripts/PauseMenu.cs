@@ -197,9 +197,15 @@ namespace TRE
 
 		public void Update()
 		{
-			if ((IS.GetKeyPress(InputKeys.Escape) && mainCamera.freeCamera)
-				|| IS.GetControllerButtonTriggered(0, IS.Button.Start)
-				|| IS.GetControllerButtonTriggered(1, IS.Button.Start))
+			bool playerPressedPause = IS.GetKeyPress(InputKeys.Escape) ||
+				IS.GetControllerButtonTriggered(0, IS.Button.Start) ||
+				IS.GetControllerButtonTriggered(1, IS.Button.Start);
+
+			// prevent pause menu from showing up in the level camera pans
+			// but allow it to show up it the MainMenu scene even if its camera is not free
+			bool canShowPauseMenu = CurrentScene == "MainMenu" || mainCamera.freeCamera;
+
+			if (playerPressedPause && canShowPauseMenu)
 			{
 				if (menustate == -1)
 				{
