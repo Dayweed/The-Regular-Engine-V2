@@ -2,7 +2,7 @@ Asset File Path:
 ../Assets/ui-button-quit.png
 
 Texture File Path:
-../Resources/47c420986824d93d.DDS
+../Resources/d929293b4758dc0f.DDS
 
 Compress:
 0
@@ -17,5 +17,5 @@ sRGB:
 1
 
 Transparent:
-0
+1
 
