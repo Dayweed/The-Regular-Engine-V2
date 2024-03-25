@@ -27,7 +27,7 @@
       0,
       {
          "m_Active": true,
-         "m_GUID": "12636337309715896765",
+         "m_GUID": "14882324479602042467",
          "m_Index": 1,
          "m_Name": "Blueberry",
          "m_Tag": "Blueberry"
@@ -122,9 +122,10 @@
       0,
       {
          "m_RegisteredScripts": [
-            "TRE.GetPowerUp"
+            "TRE.GetPowerUp",
+            "TRE.TextBounce"
          ],
-         "m_StoredClass": "TRE.GetPowerUp"
+         "m_StoredClass": "TRE.GetPowerUp,TRE.TextBounce"
       }
    ],
    [

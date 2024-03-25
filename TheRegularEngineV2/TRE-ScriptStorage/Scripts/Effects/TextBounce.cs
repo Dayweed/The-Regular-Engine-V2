@@ -10,7 +10,7 @@ namespace TRE
 
 		float initialYPos;
 		float timer = 0;
-		const float height = 10f;
+		float height = 10f;
 		const float period = 5f;
 
 		int dir = 1;
@@ -29,6 +29,10 @@ namespace TRE
 					dir = -1;
 				}
 			}
+
+			// Change the height for the powerups using this script
+			if (HasComponent<GetPowerUp>())
+				height = 0.3f;
 		}
 
 		public void Update()

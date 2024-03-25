@@ -121,6 +121,7 @@ namespace TRE
 			}
 			if (!collected)
 			{
+				// THIS CODE NEVER WORKED. :(
 				// Spin blueberry
 				float newRot = transform.Rotation.y + rotationSpeed * Time.deltaTime;
 				transform.Rotation = new vec3(0, newRot, 0);
