@@ -92,6 +92,7 @@ namespace TRE
 		//private Transform settingsPointerTransform;
 
 		private CameraController mainCamera;
+        private string CurrentScene;
 
 		public void Start()
 		{
@@ -174,6 +175,9 @@ namespace TRE
 			pauseMenu = ECSManager.FindEntityByName("PauseMenu");
 			cfmMenu = ECSManager.FindEntityByName("pauseMenu_destructive");
 			settingsMenu = ECSManager.FindEntityByName("settings_panel");
+
+			// Get the current scene 
+            CurrentScene = Scene.GetSceneName();
 
 			Entity mainCam = ECSManager.FindEntityByName("Main Camera");
 			if (mainCam != null)
@@ -718,12 +722,18 @@ namespace TRE
 					if (IS.GetKeyPress(InputKeys.Enter) || ControllerInput(MenuNavigation.CONFIRM))
 					{
 						if (menuOption == 0) // yes
-						{
-							// Quit game
-							//Game.CloseGame();
-
+                        {
 							// go back to the main menu
-							Scene.TransitionScene("MainMenu", 4.5f);
+                            if (CurrentScene == "MainMenu")
+                            {
+                                Game.CloseGame();
+                            }
+							
+                            else
+                            {
+                                Scene.TransitionScene("MainMenu", 4.5f);
+                            }
+                                
 						}
 						else if (menuOption == 1) // no
 						{
