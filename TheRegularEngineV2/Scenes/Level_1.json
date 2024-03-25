@@ -21375,9 +21375,10 @@
       4194341,
       {
          "m_RegisteredScripts": [
-            "TRE.GetPowerUp"
+            "TRE.GetPowerUp",
+            "TRE.TextBounce"
          ],
-         "m_StoredClass": "TRE.GetPowerUp"
+         "m_StoredClass": "TRE.GetPowerUp,TRE.TextBounce"
       },
       2097234,
       {
@@ -21396,9 +21397,10 @@
       3145743,
       {
          "m_RegisteredScripts": [
-            "TRE.GetPowerUp"
+            "TRE.GetPowerUp",
+            "TRE.TextBounce"
          ],
-         "m_StoredClass": "TRE.GetPowerUp"
+         "m_StoredClass": "TRE.GetPowerUp,TRE.TextBounce"
       },
       8388610,
       {
@@ -21466,9 +21468,10 @@
       2097291,
       {
          "m_RegisteredScripts": [
-            "TRE.GetPowerUp"
+            "TRE.GetPowerUp",
+            "TRE.TextBounce"
          ],
-         "m_StoredClass": "TRE.GetPowerUp"
+         "m_StoredClass": "TRE.GetPowerUp,TRE.TextBounce"
       },
       16777269,
       {
@@ -21739,9 +21742,10 @@
       2097306,
       {
          "m_RegisteredScripts": [
-            "TRE.GetPowerUp"
+            "TRE.GetPowerUp",
+            "TRE.TextBounce"
          ],
-         "m_StoredClass": "TRE.GetPowerUp"
+         "m_StoredClass": "TRE.GetPowerUp,TRE.TextBounce"
       },
       1048966,
       {

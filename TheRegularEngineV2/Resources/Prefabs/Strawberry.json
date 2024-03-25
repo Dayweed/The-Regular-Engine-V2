@@ -122,9 +122,10 @@
       0,
       {
          "m_RegisteredScripts": [
-            "TRE.GetPowerUp"
+            "TRE.GetPowerUp",
+            "TRE.TextBounce"
          ],
-         "m_StoredClass": "TRE.GetPowerUp"
+         "m_StoredClass": "TRE.GetPowerUp,TRE.TextBounce"
       }
    ],
    [

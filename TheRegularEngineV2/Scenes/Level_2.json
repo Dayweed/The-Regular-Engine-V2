@@ -25979,9 +25979,10 @@
       33554706,
       {
          "m_RegisteredScripts": [
-            "TRE.GetPowerUp"
+            "TRE.GetPowerUp",
+            "TRE.TextBounce"
          ],
-         "m_StoredClass": "TRE.GetPowerUp"
+         "m_StoredClass": "TRE.GetPowerUp,TRE.TextBounce"
       },
       60817564,
       {
@@ -26103,9 +26104,10 @@
       180355162,
       {
          "m_RegisteredScripts": [
-            "TRE.GetPowerUp"
+            "TRE.GetPowerUp",
+            "TRE.TextBounce"
          ],
-         "m_StoredClass": "TRE.GetPowerUp"
+         "m_StoredClass": "TRE.GetPowerUp,TRE.TextBounce"
       },
       47186044,
       {
