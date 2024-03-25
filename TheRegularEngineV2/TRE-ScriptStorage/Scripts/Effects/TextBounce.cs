@@ -33,6 +33,10 @@ namespace TRE
 			// Change the height for the powerups using this script
 			if (HasComponent<GetPowerUp>())
 				height = 0.3f;
+
+			// Similarly for the level one object
+			if (HasComponent<LevelOneObject>())
+				height = 0.5f;
 		}
 
 		public void Update()
