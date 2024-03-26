@@ -62,7 +62,12 @@
 					if (pauseMenu != null)
 						SilhouetteEffect.Engine_SetSilhouetteActive(!pauseMenu.isPaused);
 				}
-				DepthBlurEffect.Engine_SetDepthBlurActive(!pauseMenu.isPaused);
+
+				//If camera following player, enable depth blur
+				if(cameraController.freeCamera)
+					DepthBlurEffect.Engine_SetDepthBlurActive(!pauseMenu.isPaused);
+				else
+					DepthBlurEffect.Engine_SetDepthBlurActive(false);
 			}
 		}
 	}
