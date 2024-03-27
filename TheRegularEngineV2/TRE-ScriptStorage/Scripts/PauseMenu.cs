@@ -85,10 +85,8 @@ namespace TRE
 		//Graphics panel entities
 		private int mCurrentEditMember = -1;
 		private Entity mGammaPanel;
-		private Entity mGammaCheckbox;
-		private Entity mGammaTick;
-		//private Entity mGraphicsPointer;
-		bool mIsGammaOn = true;
+		private Entity mGammaValue;
+		private float mTempGammaValue = 2.2f;
 		//private Transform settingsPointerTransform;
 
 		private CameraController mainCamera;
@@ -159,9 +157,7 @@ namespace TRE
 
 			//graphics panel
 			mGammaPanel = ECSManager.FindEntityByName("gamma_panel");
-			mGammaCheckbox = ECSManager.FindEntityByName("checkbox_gamma");
-			mGammaTick = ECSManager.FindEntityByName("tick_gamma");
-			//mGraphicsPointer = ECSManager.FindEntityByName("graphics_pointer");
+			mGammaValue = ECSManager.FindEntityByName("gamma_value");
 
 			pointer = ECSManager.FindEntityByName("main_pointer");
 			pointerTransform = pointer.GetComponent<Transform>();
@@ -444,11 +440,7 @@ namespace TRE
 
 					//Show graphics panel
 					mGammaPanel.GetComponent<SpriteRenderer>().isVisible = showGraphicsPanel;
-					mGammaCheckbox.GetComponent<SpriteRenderer>().isVisible = showGraphicsPanel;
-					if (mIsGammaOn)
-					{
-						mGammaTick.GetComponent<SpriteRenderer>().isVisible = showGraphicsPanel;
-					}
+					mGammaValue.GetComponent<Text>().IsVisible = showGraphicsPanel;
 
 					//Not editing settings -> editing settings
 					//dont allow controls panel to move down for now
@@ -575,21 +567,21 @@ namespace TRE
 						if (mCurrentEditMember == 0)
 						{
 							settingsPointerTransform.Position = mGammaPanel.GetComponent<Transform>().Position;
-							//mGraphicsPointer.GetComponent<Transform>().Position = mGammaPanel.GetComponent<Transform>().Position;
+                            if (IS.GetKeyPress(InputKeys.A) || IS.GetKeyPress(InputKeys.Left))
+                            {
+								mTempGammaValue -= 0.1f;
+								Game.SetGammaValue(mTempGammaValue);
+								TextSystem.SetTextMessage(mGammaValue.ID, mTempGammaValue.ToString());
 
-							if (IS.GetKeyPress(InputKeys.Enter))
-							{
-								mIsGammaOn = !mIsGammaOn;
-								if (mIsGammaOn)
-								{
-									mGammaTick.GetComponent<SpriteRenderer>().isVisible = true;
-								}
-								else
-								{
-									mGammaTick.GetComponent<SpriteRenderer>().isVisible = false;
-								}
-							}
-						}
+                            }
+                            else if (IS.GetKeyPress(InputKeys.D) || IS.GetKeyPress(InputKeys.Right))
+                            {
+                                mTempGammaValue += 0.1f;
+                                Game.SetGammaValue(mTempGammaValue);
+                                TextSystem.SetTextMessage(mGammaValue.ID, mTempGammaValue.ToString());
+                            }
+
+                        }
 						else if (mCurrentEditMember == 1) //Can be smth else in future
 						{
 
@@ -845,9 +837,8 @@ namespace TRE
 						UIS.SetVisible(audioPanel[i].ID, false);
 				}
 
-				UIS.SetVisible(mGammaTick.ID, false);
 				UIS.SetVisible(mGammaPanel.ID, false);
-				UIS.SetVisible(mGammaCheckbox.ID, false);
+				TextSystem.SetVisible(mGammaValue.ID, false);
 
 				isChangeMenu = false;
 			}
@@ -922,9 +913,7 @@ namespace TRE
 			if (showGraphicsPanel)
 			{
 				UIS.SetVisible(mGammaPanel.ID, false);
-				UIS.SetVisible(mGammaCheckbox.ID, false);
-				UIS.SetVisible(mGammaTick.ID, false);
-				//UIS.SetVisible(mGraphicsPointer.ID, false);
+				TextSystem.SetVisible(mGammaValue.ID, false);
 				showGraphicsPanel = false;
 			}
 
