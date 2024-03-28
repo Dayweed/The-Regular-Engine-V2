@@ -76,15 +76,18 @@ namespace TRE
 
 				if (!source.m_Spatialize)
 				{
-					source.m_Channel->setVolume(source.m_Volume * m_MasterVolume);
-					/*if (source.m_ChannelGroup == m_MusicChannelGroup)
+					if (source.m_ChannelGroup == m_MusicChannelGroup)
 					{
 						source.m_Channel->setVolume(source.m_Volume * m_BGMVolume * m_MasterVolume);
 					}
 					else if (source.m_ChannelGroup == m_SFXChannelGroup)
 					{
 						source.m_Channel->setVolume(source.m_Volume * m_SFXVolume * m_MasterVolume);
-					}*/
+					}
+					else
+					{
+						source.m_Channel->setVolume(source.m_Volume * m_MasterVolume);
+					}
 				}
 			}
 			else
@@ -199,7 +202,7 @@ namespace TRE
 			TRE_CORE_ERROR("Unable to open audio file");
 		}
 
-		audio.m_Channel->setChannelGroup(m_MusicChannelGroup);
+		//audio.m_Channel->setChannelGroup(m_MusicChannelGroup);
 
 		ErrorCheck(m_System->createSound(m_FilePath.c_str(), FMOD_DEFAULT, nullptr, &audio.m_Sound), "FMOD: LoadFile()");
 	}
@@ -226,7 +229,7 @@ namespace TRE
 			TRE_CORE_ERROR("Unable to open audio file");
 		}
 
-		audio.m_Channel->setChannelGroup(m_MusicChannelGroup);
+		//audio.m_Channel->setChannelGroup(m_MusicChannelGroup);
 
 		ErrorCheck(m_System->createSound(m_FilePath.c_str(), FMOD_3D, nullptr, &audio.m_Sound), "FMOD: LoadFile()");
 	}
@@ -325,6 +328,16 @@ namespace TRE
 			LoadFile(go);
 		}
 		audio.m_Channel->setVolume(audio.m_Volume);
+		if (audio.m_FileName.find("sfx_") != std::string::npos || audio.m_FileName.find("SFX_") != std::string::npos)
+		{
+			audio.m_Channel->setChannelGroup(m_SFXChannelGroup);
+			audio.m_ChannelGroup = m_SFXChannelGroup;
+		}
+		else if (audio.m_FileName.find("bgm_") != std::string::npos || audio.m_FileName.find("BGM_") != std::string::npos)
+		{
+			audio.m_Channel->setChannelGroup(m_MusicChannelGroup);
+			audio.m_ChannelGroup = m_MusicChannelGroup;
+		}
 		audioMap.insert(go);
 		soundToRemove.insert({ go, audio.m_Sound });
 	}
@@ -371,10 +384,6 @@ namespace TRE
 
 			}
 		}
-
-		
-
-		
 	}
 
 	//void AudioSystem::PlayFootsteps(Entity& go)
@@ -440,7 +449,6 @@ namespace TRE
 		{
 			audio.m_ChannelGroup = m_SFXChannelGroup;
 		}
-
 	}
 
 	void AudioSystem::SetListenerPosition(Entity& go)

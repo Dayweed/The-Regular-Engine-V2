@@ -570,6 +570,8 @@ namespace TRE
                             if (IS.GetKeyPress(InputKeys.A) || IS.GetKeyPress(InputKeys.Left))
                             {
 								mTempGammaValue -= 0.1f;
+								if(mTempGammaValue < 1f)
+									mTempGammaValue = 1f;
 								Game.SetGammaValue(mTempGammaValue);
 								TextSystem.SetTextMessage(mGammaValue.ID, mTempGammaValue.ToString());
 
