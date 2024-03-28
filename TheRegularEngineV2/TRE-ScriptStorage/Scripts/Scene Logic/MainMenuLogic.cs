@@ -90,6 +90,10 @@ namespace TRE
 
 			TitleLevelSelect = ECSManager.FindEntityByName("TitleLevelSelect");
 			TitleQuitGame = ECSManager.FindEntityByName("TitleQuitGame");
+			// TitleTutorial = ECSManager.FindEntityByName("TitleTutorial");
+			// TitleLevel1 = ECSManager.FindEntityByName("TitleLevel1");
+			// TitleLevel2 = ECSManager.FindEntityByName("TitleLevel2");
+
 			TitleStarsCollected = ECSManager.FindEntityByName("TitleStarsCollected");
 			Stars1 = ECSManager.FindEntityByName("Star1");
 			Stars2 = ECSManager.FindEntityByName("Star2");
