@@ -57,6 +57,10 @@ namespace TRE
 		// Title to display
 		Entity TitleLevelSelect;
 		Entity TitleQuitGame;
+		Entity TitleTutorial;
+		Entity TitleLevel1;
+		Entity TitleLevel2;
+
 		Entity TitleStarsCollected;
 		Entity Stars1;
 		Entity Stars2;
@@ -90,9 +94,9 @@ namespace TRE
 
 			TitleLevelSelect = ECSManager.FindEntityByName("TitleLevelSelect");
 			TitleQuitGame = ECSManager.FindEntityByName("TitleQuitGame");
-			// TitleTutorial = ECSManager.FindEntityByName("TitleTutorial");
-			// TitleLevel1 = ECSManager.FindEntityByName("TitleLevel1");
-			// TitleLevel2 = ECSManager.FindEntityByName("TitleLevel2");
+			TitleTutorial = ECSManager.FindEntityByName("TitleTutorial");
+			TitleLevel1 = ECSManager.FindEntityByName("TitleLevel1");
+			TitleLevel2 = ECSManager.FindEntityByName("TitleLevel2");
 
 			TitleStarsCollected = ECSManager.FindEntityByName("TitleStarsCollected");
 			Stars1 = ECSManager.FindEntityByName("Star1");
@@ -101,6 +105,10 @@ namespace TRE
 
 			TitleLevelSelect.GetComponent<TextBounce>().Pause();
 			TitleQuitGame.GetComponent<TextBounce>().Pause();
+			TitleTutorial.GetComponent<TextBounce>().Pause();
+			TitleLevel1.GetComponent<TextBounce>().Pause();
+			TitleLevel2.GetComponent<TextBounce>().Pause();
+
 			TitleStarsCollected.GetComponent<TextBounce>().Pause();
 
 			// Determine where to spawn the moles based on previous scene
@@ -226,42 +234,134 @@ namespace TRE
 			#endregion
 
 			#region TitleLerpLogic
-			// Title: Determine which title to show
+
+			// Determine which title to show
 			vec3 titleLevelSelectPos = TitleLevelSelect.GetComponent<Transform>().Position;
 			vec3 titleQuitGamePos = TitleQuitGame.GetComponent<Transform>().Position;
-			if (ToLevelSelect.GetComponent<TunnelLogic>().MolesInside() || ToTutorialSelect.GetComponent<TunnelLogic>().MolesInside() || ToLevel1Select.GetComponent<TunnelLogic>().MolesInside() || ToLevel2Select.GetComponent<TunnelLogic>().MolesInside())
+			vec3 titleTutorialPos = TitleTutorial.GetComponent<Transform>().Position;
+			vec3 titleLevel1Pos = TitleLevel1.GetComponent<Transform>().Position;
+			vec3 titleLevel2Pos = TitleLevel2.GetComponent<Transform>().Position;
+
+			if (ToLevelSelect.GetComponent<TunnelLogic>().MolesInside() || ToReturnSelect.GetComponent<TunnelLogic>().MolesInside())
 			{
+				// display chosen title, hide all the rest
 				titleLevelSelectPos.y = displayYPos;
 				titleQuitGamePos.y = hiddenYPos;
+				titleTutorialPos.y = hiddenYPos;
+				titleLevel1Pos.y = hiddenYPos;
+				titleLevel2Pos.y = hiddenYPos;
+
+				// pause the rest of the titles
 				TitleQuitGame.GetComponent<TextBounce>().Pause();
+				TitleTutorial.GetComponent<TextBounce>().Pause();
+				TitleLevel1.GetComponent<TextBounce>().Pause();
+				TitleLevel2.GetComponent<TextBounce>().Pause();
 			}
 			else if (ToQuitSelect.GetComponent<TunnelLogic>().MolesInside())
 			{
+				// display chosen title, hide all the rest
 				titleLevelSelectPos.y = hiddenYPos;
 				titleQuitGamePos.y = displayYPos;
+				titleTutorialPos.y = hiddenYPos;
+				titleLevel1Pos.y = hiddenYPos;
+				titleLevel2Pos.y = hiddenYPos;
+
+				// pause the rest of the titles
 				TitleLevelSelect.GetComponent<TextBounce>().Pause();
+				TitleTutorial.GetComponent<TextBounce>().Pause();
+				TitleLevel1.GetComponent<TextBounce>().Pause();
+				TitleLevel2.GetComponent<TextBounce>().Pause();
+			}
+			else if (ToTutorialSelect.GetComponent<TunnelLogic>().MolesInside())
+			{
+				// display chosen title, hide all the rest
+				titleLevelSelectPos.y = hiddenYPos;
+				titleQuitGamePos.y = hiddenYPos;
+				titleTutorialPos.y = displayYPos;
+				titleLevel1Pos.y = hiddenYPos;
+				titleLevel2Pos.y = hiddenYPos;
+
+				// pause the rest of the titles
+				TitleLevelSelect.GetComponent<TextBounce>().Pause();
+				TitleQuitGame.GetComponent<TextBounce>().Pause();
+				TitleLevel1.GetComponent<TextBounce>().Pause();
+				TitleLevel2.GetComponent<TextBounce>().Pause();
+			}
+			else if (ToLevel1Select.GetComponent<TunnelLogic>().MolesInside())
+			{
+				// display chosen title, hide all the rest
+				titleLevelSelectPos.y = hiddenYPos;
+				titleQuitGamePos.y = hiddenYPos;
+				titleTutorialPos.y = hiddenYPos;
+				titleLevel1Pos.y = displayYPos;
+				titleLevel2Pos.y = hiddenYPos;
+
+				// pause the rest of the titles
+				TitleLevelSelect.GetComponent<TextBounce>().Pause();
+				TitleQuitGame.GetComponent<TextBounce>().Pause();
+				TitleTutorial.GetComponent<TextBounce>().Pause();
+				TitleLevel2.GetComponent<TextBounce>().Pause();
+			}
+			else if (ToLevel2Select.GetComponent<TunnelLogic>().MolesInside())
+			{
+				// display chosen title, hide all the rest
+				titleLevelSelectPos.y = hiddenYPos;
+				titleQuitGamePos.y = hiddenYPos;
+				titleTutorialPos.y = hiddenYPos;
+				titleLevel1Pos.y = hiddenYPos;
+				titleLevel2Pos.y = displayYPos;
+
+				// pause the rest of the titles
+				TitleLevelSelect.GetComponent<TextBounce>().Pause();
+				TitleQuitGame.GetComponent<TextBounce>().Pause();
+				TitleTutorial.GetComponent<TextBounce>().Pause();
+				TitleLevel1.GetComponent<TextBounce>().Pause();
 			}
 			else
 			{
+				// hide all titles
 				titleLevelSelectPos.y = hiddenYPos;
 				titleQuitGamePos.y = hiddenYPos;
+				titleTutorialPos.y = hiddenYPos;
+				titleLevel1Pos.y = hiddenYPos;
+				titleLevel2Pos.y = hiddenYPos;
+
+				// pause all titles
 				TitleLevelSelect.GetComponent<TextBounce>().Pause();
 				TitleQuitGame.GetComponent<TextBounce>().Pause();
+				TitleTutorial.GetComponent<TextBounce>().Pause();
+				TitleLevel1.GetComponent<TextBounce>().Pause();
+				TitleLevel2.GetComponent<TextBounce>().Pause();
 			}
+
 			// Lerp title to pos
 			float titleLevelSelectPosY = MathF.Lerp(TitleLevelSelect.GetComponent<Transform>().Position.y, titleLevelSelectPos.y, titleMoveSpeed * Time.deltaTime);
 			float titleQuitGamePosY = MathF.Lerp(TitleQuitGame.GetComponent<Transform>().Position.y, titleQuitGamePos.y, titleMoveSpeed * Time.deltaTime);
+			float titleTutorialPosY = MathF.Lerp(TitleTutorial.GetComponent<Transform>().Position.y, titleTutorialPos.y, titleMoveSpeed * Time.deltaTime);
+			float titleLevel1PosY = MathF.Lerp(TitleLevel1.GetComponent<Transform>().Position.y, titleLevel1Pos.y, titleMoveSpeed * Time.deltaTime);
+			float titleLevel2PosY = MathF.Lerp(TitleLevel2.GetComponent<Transform>().Position.y, titleLevel2Pos.y, titleMoveSpeed * Time.deltaTime);
+
 			TitleLevelSelect.GetComponent<Transform>().Position = new vec3(titleLevelSelectPos.x, titleLevelSelectPosY, titleLevelSelectPos.z);
 			TitleQuitGame.GetComponent<Transform>().Position = new vec3(titleQuitGamePos.x, titleQuitGamePosY, titleQuitGamePos.z);
+			TitleTutorial.GetComponent<Transform>().Position = new vec3(titleTutorialPos.x, titleTutorialPosY, titleTutorialPos.z);
+			TitleLevel1.GetComponent<Transform>().Position = new vec3(titleLevel1Pos.x, titleLevel1PosY, titleLevel1Pos.z);
+			TitleLevel2.GetComponent<Transform>().Position = new vec3(titleLevel2Pos.x, titleLevel2PosY, titleLevel2Pos.z);
+
 			// Resume Text Bounce if it is close to the position
 			if (TitleLevelSelect.GetComponent<TextBounce>().IsPaused() && titleLevelSelectPos.y == displayYPos && Math.Abs(titleLevelSelectPosY - titleLevelSelectPos.y) < titleOffset)
-			{
 				TitleLevelSelect.GetComponent<TextBounce>().Resume();
-			}
+
 			if (TitleQuitGame.GetComponent<TextBounce>().IsPaused() && titleQuitGamePos.y == displayYPos && Math.Abs(titleQuitGamePosY - titleQuitGamePos.y) < titleOffset)
-			{
 				TitleQuitGame.GetComponent<TextBounce>().Resume();
-			}
+
+			if (TitleTutorial.GetComponent<TextBounce>().IsPaused() && titleTutorialPos.y == displayYPos && Math.Abs(titleTutorialPosY - titleTutorialPos.y) < titleOffset)
+				TitleTutorial.GetComponent<TextBounce>().Resume();
+
+			if (TitleLevel1.GetComponent<TextBounce>().IsPaused() && titleLevel1Pos.y == displayYPos && Math.Abs(titleLevel1PosY - titleLevel1Pos.y) < titleOffset)
+				TitleLevel1.GetComponent<TextBounce>().Resume();
+
+			if (TitleLevel2.GetComponent<TextBounce>().IsPaused() && titleLevel2Pos.y == displayYPos && Math.Abs(titleLevel2PosY - titleLevel2Pos.y) < titleOffset)
+				TitleLevel2.GetComponent<TextBounce>().Resume();
 			#endregion
 
 			#region Stars
