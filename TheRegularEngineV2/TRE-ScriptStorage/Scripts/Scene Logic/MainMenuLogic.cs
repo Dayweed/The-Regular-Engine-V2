@@ -54,12 +54,8 @@ namespace TRE
 		float currentTimer = 0;
 		const float delayJumpingHole = 0.68f;
 
-		// Title to display
-		Entity TitleLevelSelect;
-		Entity TitleQuitGame;
-		Entity TitleTutorial;
-		Entity TitleLevel1;
-		Entity TitleLevel2;
+		/// <summary>An array of titles to manage in the Main Menu scene. Assigned in Start().</summary>
+		Entity[] titleList;
 
 		Entity TitleStarsCollected;
 		Entity Stars1;
@@ -92,22 +88,22 @@ namespace TRE
 			QuitConfirmationNo = ECSManager.FindEntityByName("NoQuit");
 			QuitYesNoPointer = ECSManager.FindEntityByName("CurrentButtonPointer");
 
-			TitleLevelSelect = ECSManager.FindEntityByName("TitleLevelSelect");
-			TitleQuitGame = ECSManager.FindEntityByName("TitleQuitGame");
-			TitleTutorial = ECSManager.FindEntityByName("TitleTutorial");
-			TitleLevel1 = ECSManager.FindEntityByName("TitleLevel1");
-			TitleLevel2 = ECSManager.FindEntityByName("TitleLevel2");
+			titleList = new Entity[]
+			{
+				ECSManager.FindEntityByName("TitleLevelSelect"),
+				ECSManager.FindEntityByName("TitleQuitGame"),
+				ECSManager.FindEntityByName("TitleTutorial"),
+				ECSManager.FindEntityByName("TitleLevel1"),
+				ECSManager.FindEntityByName("TitleLevel2")
+			};
 
 			TitleStarsCollected = ECSManager.FindEntityByName("TitleStarsCollected");
 			Stars1 = ECSManager.FindEntityByName("Star1");
 			Stars2 = ECSManager.FindEntityByName("Star2");
 			Stars3 = ECSManager.FindEntityByName("Star3");
 
-			TitleLevelSelect.GetComponent<TextBounce>().Pause();
-			TitleQuitGame.GetComponent<TextBounce>().Pause();
-			TitleTutorial.GetComponent<TextBounce>().Pause();
-			TitleLevel1.GetComponent<TextBounce>().Pause();
-			TitleLevel2.GetComponent<TextBounce>().Pause();
+			foreach (Entity title in titleList)
+				title.GetComponent<TextBounce>().Pause();
 
 			TitleStarsCollected.GetComponent<TextBounce>().Pause();
 
@@ -234,134 +230,51 @@ namespace TRE
 			#endregion
 
 			#region TitleLerpLogic
+			// Determine which title needs to be displayed.
+			vec3[] titlePositions = new vec3[titleList.Length];
+			for (int i = 0; i < titleList.Length; ++i)
+				titlePositions[i] = titleList[i].GetComponent<Transform>().Position;
 
-			// Determine which title to show
-			vec3 titleLevelSelectPos = TitleLevelSelect.GetComponent<Transform>().Position;
-			vec3 titleQuitGamePos = TitleQuitGame.GetComponent<Transform>().Position;
-			vec3 titleTutorialPos = TitleTutorial.GetComponent<Transform>().Position;
-			vec3 titleLevel1Pos = TitleLevel1.GetComponent<Transform>().Position;
-			vec3 titleLevel2Pos = TitleLevel2.GetComponent<Transform>().Position;
+			// initialized with an invalid value
+			int titleToDisplayIndex = -1;
 
 			if (ToLevelSelect.GetComponent<TunnelLogic>().MolesInside() || ToReturnSelect.GetComponent<TunnelLogic>().MolesInside())
-			{
-				// display chosen title, hide all the rest
-				titleLevelSelectPos.y = displayYPos;
-				titleQuitGamePos.y = hiddenYPos;
-				titleTutorialPos.y = hiddenYPos;
-				titleLevel1Pos.y = hiddenYPos;
-				titleLevel2Pos.y = hiddenYPos;
-
-				// pause the rest of the titles
-				TitleQuitGame.GetComponent<TextBounce>().Pause();
-				TitleTutorial.GetComponent<TextBounce>().Pause();
-				TitleLevel1.GetComponent<TextBounce>().Pause();
-				TitleLevel2.GetComponent<TextBounce>().Pause();
-			}
+				titleToDisplayIndex = 0;
 			else if (ToQuitSelect.GetComponent<TunnelLogic>().MolesInside())
-			{
-				// display chosen title, hide all the rest
-				titleLevelSelectPos.y = hiddenYPos;
-				titleQuitGamePos.y = displayYPos;
-				titleTutorialPos.y = hiddenYPos;
-				titleLevel1Pos.y = hiddenYPos;
-				titleLevel2Pos.y = hiddenYPos;
-
-				// pause the rest of the titles
-				TitleLevelSelect.GetComponent<TextBounce>().Pause();
-				TitleTutorial.GetComponent<TextBounce>().Pause();
-				TitleLevel1.GetComponent<TextBounce>().Pause();
-				TitleLevel2.GetComponent<TextBounce>().Pause();
-			}
+				titleToDisplayIndex = 1;
 			else if (ToTutorialSelect.GetComponent<TunnelLogic>().MolesInside())
-			{
-				// display chosen title, hide all the rest
-				titleLevelSelectPos.y = hiddenYPos;
-				titleQuitGamePos.y = hiddenYPos;
-				titleTutorialPos.y = displayYPos;
-				titleLevel1Pos.y = hiddenYPos;
-				titleLevel2Pos.y = hiddenYPos;
-
-				// pause the rest of the titles
-				TitleLevelSelect.GetComponent<TextBounce>().Pause();
-				TitleQuitGame.GetComponent<TextBounce>().Pause();
-				TitleLevel1.GetComponent<TextBounce>().Pause();
-				TitleLevel2.GetComponent<TextBounce>().Pause();
-			}
+				titleToDisplayIndex = 2;
 			else if (ToLevel1Select.GetComponent<TunnelLogic>().MolesInside())
-			{
-				// display chosen title, hide all the rest
-				titleLevelSelectPos.y = hiddenYPos;
-				titleQuitGamePos.y = hiddenYPos;
-				titleTutorialPos.y = hiddenYPos;
-				titleLevel1Pos.y = displayYPos;
-				titleLevel2Pos.y = hiddenYPos;
-
-				// pause the rest of the titles
-				TitleLevelSelect.GetComponent<TextBounce>().Pause();
-				TitleQuitGame.GetComponent<TextBounce>().Pause();
-				TitleTutorial.GetComponent<TextBounce>().Pause();
-				TitleLevel2.GetComponent<TextBounce>().Pause();
-			}
+				titleToDisplayIndex = 3;
 			else if (ToLevel2Select.GetComponent<TunnelLogic>().MolesInside())
-			{
-				// display chosen title, hide all the rest
-				titleLevelSelectPos.y = hiddenYPos;
-				titleQuitGamePos.y = hiddenYPos;
-				titleTutorialPos.y = hiddenYPos;
-				titleLevel1Pos.y = hiddenYPos;
-				titleLevel2Pos.y = displayYPos;
+				titleToDisplayIndex = 4;
 
-				// pause the rest of the titles
-				TitleLevelSelect.GetComponent<TextBounce>().Pause();
-				TitleQuitGame.GetComponent<TextBounce>().Pause();
-				TitleTutorial.GetComponent<TextBounce>().Pause();
-				TitleLevel1.GetComponent<TextBounce>().Pause();
-			}
-			else
+			// If there is a title to display, display it.
+			// Otherwise, hide it and pause its bouncing.
+			for (int i = 0; i < titleList.Length; ++i)
 			{
-				// hide all titles
-				titleLevelSelectPos.y = hiddenYPos;
-				titleQuitGamePos.y = hiddenYPos;
-				titleTutorialPos.y = hiddenYPos;
-				titleLevel1Pos.y = hiddenYPos;
-				titleLevel2Pos.y = hiddenYPos;
-
-				// pause all titles
-				TitleLevelSelect.GetComponent<TextBounce>().Pause();
-				TitleQuitGame.GetComponent<TextBounce>().Pause();
-				TitleTutorial.GetComponent<TextBounce>().Pause();
-				TitleLevel1.GetComponent<TextBounce>().Pause();
-				TitleLevel2.GetComponent<TextBounce>().Pause();
+				if (i != titleToDisplayIndex)
+				{
+					titlePositions[i].y = hiddenYPos;
+					titleList[i].GetComponent<TextBounce>().Pause();
+				}
+				else
+					titlePositions[i].y = displayYPos;
 			}
 
-			// Lerp title to pos
-			float titleLevelSelectPosY = MathF.Lerp(TitleLevelSelect.GetComponent<Transform>().Position.y, titleLevelSelectPos.y, titleMoveSpeed * Time.deltaTime);
-			float titleQuitGamePosY = MathF.Lerp(TitleQuitGame.GetComponent<Transform>().Position.y, titleQuitGamePos.y, titleMoveSpeed * Time.deltaTime);
-			float titleTutorialPosY = MathF.Lerp(TitleTutorial.GetComponent<Transform>().Position.y, titleTutorialPos.y, titleMoveSpeed * Time.deltaTime);
-			float titleLevel1PosY = MathF.Lerp(TitleLevel1.GetComponent<Transform>().Position.y, titleLevel1Pos.y, titleMoveSpeed * Time.deltaTime);
-			float titleLevel2PosY = MathF.Lerp(TitleLevel2.GetComponent<Transform>().Position.y, titleLevel2Pos.y, titleMoveSpeed * Time.deltaTime);
+			// Lerp title to pos.
+			float[] titlePositionsY = new float[titleList.Length];
+			for (int i = 0; i < titleList.Length; ++i)
+				titlePositionsY[i] = MathF.Lerp(titleList[i].GetComponent<Transform>().Position.y, titlePositions[i].y, titleMoveSpeed * Time.deltaTime);
 
-			TitleLevelSelect.GetComponent<Transform>().Position = new vec3(titleLevelSelectPos.x, titleLevelSelectPosY, titleLevelSelectPos.z);
-			TitleQuitGame.GetComponent<Transform>().Position = new vec3(titleQuitGamePos.x, titleQuitGamePosY, titleQuitGamePos.z);
-			TitleTutorial.GetComponent<Transform>().Position = new vec3(titleTutorialPos.x, titleTutorialPosY, titleTutorialPos.z);
-			TitleLevel1.GetComponent<Transform>().Position = new vec3(titleLevel1Pos.x, titleLevel1PosY, titleLevel1Pos.z);
-			TitleLevel2.GetComponent<Transform>().Position = new vec3(titleLevel2Pos.x, titleLevel2PosY, titleLevel2Pos.z);
+			// Set title's new position (with the lerped position above).
+			for (int i = 0; i < titleList.Length; ++i)
+				titleList[i].GetComponent<Transform>().Position = new vec3(titlePositions[i].x, titlePositionsY[i], titlePositions[i].z);
 
-			// Resume Text Bounce if it is close to the position
-			if (TitleLevelSelect.GetComponent<TextBounce>().IsPaused() && titleLevelSelectPos.y == displayYPos && Math.Abs(titleLevelSelectPosY - titleLevelSelectPos.y) < titleOffset)
-				TitleLevelSelect.GetComponent<TextBounce>().Resume();
-
-			if (TitleQuitGame.GetComponent<TextBounce>().IsPaused() && titleQuitGamePos.y == displayYPos && Math.Abs(titleQuitGamePosY - titleQuitGamePos.y) < titleOffset)
-				TitleQuitGame.GetComponent<TextBounce>().Resume();
-
-			if (TitleTutorial.GetComponent<TextBounce>().IsPaused() && titleTutorialPos.y == displayYPos && Math.Abs(titleTutorialPosY - titleTutorialPos.y) < titleOffset)
-				TitleTutorial.GetComponent<TextBounce>().Resume();
-
-			if (TitleLevel1.GetComponent<TextBounce>().IsPaused() && titleLevel1Pos.y == displayYPos && Math.Abs(titleLevel1PosY - titleLevel1Pos.y) < titleOffset)
-				TitleLevel1.GetComponent<TextBounce>().Resume();
-
-			if (TitleLevel2.GetComponent<TextBounce>().IsPaused() && titleLevel2Pos.y == displayYPos && Math.Abs(titleLevel2PosY - titleLevel2Pos.y) < titleOffset)
-				TitleLevel2.GetComponent<TextBounce>().Resume();
+			// Resume Text Bounce if it is close to the position.
+			for (int i = 0; i < titleList.Length; ++i)
+				if (titleList[i].GetComponent<TextBounce>().IsPaused() && titlePositions[i].y == displayYPos && Math.Abs(titlePositionsY[i] - titlePositions[i].y) < titleOffset)
+					titleList[i].GetComponent<TextBounce>().Resume();
 			#endregion
 
 			#region Stars
