@@ -14,8 +14,8 @@ namespace TRE
 
 		Entity ToOptionSelect;
 		Entity ToLevelSelect;
+		Entity ToCreditsSelect;
 		Entity ToQuitSelect;
-		Entity ToReturnSelect;
 
 		Entity QuitConfirmation;
 		Entity QuitConfirmationYes;
@@ -27,18 +27,19 @@ namespace TRE
 		bool CurrentButtonSelected = false;
 		bool selectedOption = false;
 		bool selectedLevel = false;
+		bool selectedCredits = false;
 		bool selectedQuit = false;
-		bool selectedReturn = false;
 
 		// Level Select
+		Entity ToReturnSelect;
 		Entity ToTutorialSelect;
 		Entity ToLevel1Select;
 		Entity ToLevel2Select;
 
+		bool selectedReturn = false;
 		bool selectedTutorial = false;
 		bool selectedLevel1 = false;
 		bool selectedLevel2 = false;
-		bool selectedLevelBonus = false;
 
 		// Controller UI
 		bool controller1 = false;
@@ -72,11 +73,12 @@ namespace TRE
 			Moley = ECSManager.FindEntityByName("Moley");
 			Holey = ECSManager.FindEntityByName("Holey");
 
-            ToOptionSelect = ECSManager.FindEntityByName("ToOptionSelect");
+			ToOptionSelect = ECSManager.FindEntityByName("ToOptionSelect");
 			ToLevelSelect = ECSManager.FindEntityByName("ToLevelSelect");
+			ToCreditsSelect = ECSManager.FindEntityByName("ToCreditsSelect");
 			ToQuitSelect = ECSManager.FindEntityByName("ToQuitSelect");
-			ToReturnSelect = ECSManager.FindEntityByName("ToReturnSelect");
 
+			ToReturnSelect = ECSManager.FindEntityByName("ToReturnSelect");
 			ToTutorialSelect = ECSManager.FindEntityByName("ToTutorialSelect");
 			ToLevel1Select = ECSManager.FindEntityByName("ToLevel1Select");
 			ToLevel2Select = ECSManager.FindEntityByName("ToLevel2Select");
@@ -129,6 +131,11 @@ namespace TRE
 			}
 			else if (prevScene == "Credits_Scene")
 			{
+				// Teleport Moley and Holey to another location
+				vec3 teleportPos = ToCreditsSelect.GetComponent<Transform>().Position;
+				Moley.GetComponent<Transform>().Position = new vec3(teleportPos.x - 5, teleportPos.y + 15, teleportPos.z);
+				Holey.GetComponent<Transform>().Position = new vec3(teleportPos.x + 5, teleportPos.y + 15, teleportPos.z);
+
 				JumpOutHole();
 			}
 		}
@@ -277,20 +284,31 @@ namespace TRE
 			}
 			#endregion
 
+			bool isAnythingSelected = selectedOption || selectedLevel || selectedCredits || selectedQuit ||
+				selectedReturn || selectedTutorial || selectedLevel1 || selectedLevel2;
+
 			// Determine what tunnels were approved by both moles
-			if (!(selectedOption || selectedLevel || selectedQuit || selectedReturn || selectedTutorial || selectedLevel1 || selectedLevel2 || selectedLevelBonus) && currentTimer <= 0)
+			if (!isAnythingSelected && currentTimer <= 0)
 			{
 				if (ToOptionSelect.GetComponent<TunnelLogic>().MolesApproved() && !selectedOption)
 				{
 					//selectedOption = true;
 					//JumpIntoHole();
 					//ToOptionSelect.GetComponent<TunnelLogic>().ResetMoles();
+
+					// SHOW OPTIONS
 				}
 				else if (ToLevelSelect.GetComponent<TunnelLogic>().MolesApproved() && !selectedLevel)
 				{
 					selectedLevel = true;
 					JumpIntoHole();
 					ToLevelSelect.GetComponent<TunnelLogic>().ResetMoles();
+				}
+				else if (ToCreditsSelect.GetComponent<TunnelLogic>().MolesApproved() && !selectedCredits)
+				{
+					selectedCredits = true;
+					JumpIntoHole();
+					ToCreditsSelect.GetComponent<TunnelLogic>().ResetMoles();
 				}
 				else if (ToQuitSelect.GetComponent<TunnelLogic>().MolesApproved() && !selectedQuit)
 				{
@@ -326,8 +344,11 @@ namespace TRE
 
 			if (currentTimer > 0) currentTimer -= Time.deltaTime;
 
+			isAnythingSelected = selectedOption || selectedLevel || selectedCredits || selectedQuit ||
+				selectedReturn || selectedTutorial || selectedLevel1 || selectedLevel2;
+
 			// Determine action of selection
-			if (currentTimer <= 0 && (selectedOption || selectedLevel || selectedQuit || selectedReturn || selectedTutorial || selectedLevel1 || selectedLevel2 || selectedLevelBonus))
+			if (currentTimer <= 0 && isAnythingSelected)
 			{
 				currentTimer = 0;
 
@@ -391,11 +412,11 @@ namespace TRE
 
 					Scene.TransitionScene("Level_2", sceneTransitionDelay);
 				}
-				else if (selectedLevelBonus)
+				else if (selectedCredits)
 				{
-					selectedLevelBonus = false;
+					selectedCredits = false;
 
-					Scene.TransitionScene("Level_Bonus", sceneTransitionDelay);
+					Scene.TransitionScene("Credits_Scene", sceneTransitionDelay);
 				}
 			}
 
@@ -434,17 +455,17 @@ namespace TRE
 				}
 			}
 
+			isAnythingSelected = selectedOption || selectedLevel || selectedCredits || selectedQuit ||
+				selectedReturn || selectedTutorial || selectedLevel1 || selectedLevel2;
+
 			// Return controls to moles if they land on the ground
-			if (!(selectedOption || selectedLevel || selectedQuit || selectedReturn || selectedTutorial || selectedLevel1 || selectedLevel2 || selectedLevelBonus))
+			if (!isAnythingSelected)
 			{
 				if (!Moley.GetComponent<MoleyController>().isControllable && Moley.GetComponent<MoleyController>().isGrounded && !Moley.GetComponent<CapsuleCollider>().IsTrigger)
-				{
 					Moley.GetComponent<MoleyController>().isControllable = true;
-				}
+
 				if (!Holey.GetComponent<HoleyController>().isControllable && Holey.GetComponent<HoleyController>().isGrounded && !Holey.GetComponent<CapsuleCollider>().IsTrigger)
-				{
 					Holey.GetComponent<HoleyController>().isControllable = true;
-				}
 			}
 		}
 
