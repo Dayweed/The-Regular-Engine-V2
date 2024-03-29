@@ -8,9 +8,9 @@
       0,
       {
          "m_IsMainPrefab": true,
-         "m_MainPrefabGUID": "8119697912220926596",
+         "m_MainPrefabGUID": "9905625984109159051",
          "m_Overrides": {},
-         "m_PrefabGUID": "8119697912220926596",
+         "m_PrefabGUID": "9905625984109159051",
          "m_RemovedComps": []
       }
    ],
@@ -27,9 +27,9 @@
       0,
       {
          "m_Active": true,
-         "m_GUID": "195265806172467206",
+         "m_GUID": "3204563591586941392",
          "m_Index": 1,
-         "m_Name": "Star Particle",
+         "m_Name": "Confetti Particle Left",
          "m_Tag": ""
       }
    ],
@@ -99,33 +99,33 @@
             1.0,
             1.0,
             1.0,
-            1.0004863739013672
+            1.0007250308990479
          ],
          "Fade": false,
          "FadeDuration": [
             0.25,
             0.75
          ],
-         "LifeTime": 10.0,
+         "LifeTime": 2.0,
          "Loop": false,
-         "ParticleCount": 80,
+         "ParticleCount": 50,
          "PlayOnStart": true,
-         "Size": 250.0,
-         "SpawnRadius": 850.0,
-         "Speed": 1000.0,
-         "Texture": "92618220a6c79a0e",
+         "Size": 200.0,
+         "SpawnRadius": 200.0,
+         "Speed": 750.0,
+         "Texture": "af6bd39a899d5868",
          "VariationSize": [
-            0.30000001192092896,
+            0.02500000037252903,
             1.0
          ],
          "VariationSpeed": [
-            0.05000000074505806,
+            0.0024999999441206455,
             1.0
          ],
          "Velocity": [
             0.0,
             1.0,
-            0.0
+            -1.0
          ]
       }
    ],
