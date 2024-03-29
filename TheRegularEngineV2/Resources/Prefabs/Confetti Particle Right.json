@@ -27,7 +27,7 @@
       0,
       {
          "m_Active": true,
-         "m_GUID": "16822957670571234346",
+         "m_GUID": "7088823456087820191",
          "m_Index": 1,
          "m_Name": "Confetti Particle Right",
          "m_Tag": ""
@@ -107,7 +107,7 @@
             0.75
          ],
          "LifeTime": 2.0,
-         "Loop": false,
+         "Loop": true,
          "ParticleCount": 50,
          "PlayOnStart": true,
          "Size": 200.0,
