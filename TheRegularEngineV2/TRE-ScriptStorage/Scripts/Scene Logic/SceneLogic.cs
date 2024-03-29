@@ -50,9 +50,6 @@ namespace TRE
 		private ulong starSFX;
 		private bool starSFXPlayed = false;
 
-		//Entity blueberryPrefab = new Entity(7670209894207584463);
-		//Entity strawberryPrefab = new Entity(13004780274330328106);
-
 		Entity ConfettiTrigger;
 		Entity EndingFlagTrigger;
 		Entity Holey;
@@ -157,18 +154,18 @@ namespace TRE
 			// timerCurrent = timerDisplay;
 
 			//Star VFX
-			StarParticle = ECSManager.Instantiate(new Entity(8119697912220926596));
+			StarParticle = ECSManager.Instantiate(new Entity(Prefab.GetPrefabIDFromName("Star Particle")));
 			StarParticle.GetComponent<Particle>().IsActive = false;
 
 			//Confetti VFX
-			ConfettiParticleLeft = ECSManager.Instantiate(new Entity(9905625984109159051)); 
-            ConfettiParticleRight = ECSManager.Instantiate(new Entity(2508553406564842757));
-            ConfettiParticleLeft.GetComponent<Particle>().IsActive = false;
+			ConfettiParticleLeft = ECSManager.Instantiate(new Entity(Prefab.GetPrefabIDFromName("Confetti Particle Left")));
+			ConfettiParticleRight = ECSManager.Instantiate(new Entity(Prefab.GetPrefabIDFromName("Confetti Particle Right")));
+			ConfettiParticleLeft.GetComponent<Particle>().IsActive = false;
 			ConfettiParticleRight.GetComponent<Particle>().IsActive = false;
 
 			//For ending flag
 			ConfettiTrigger = ECSManager.FindEntityByName("ConfettiTrigger");
-            EndingFlagTrigger = ECSManager.FindEntityByName("EndingTrigger");
+			EndingFlagTrigger = ECSManager.FindEntityByName("EndingTrigger");
 			Holey = ECSManager.FindEntityByName("Holey's Head Collider");
 			Moley = ECSManager.FindEntityByName("Moley's Head Collider");
 
@@ -199,12 +196,12 @@ namespace TRE
 					//first one is to rolling obj section, second one is to last platforming section, third one is all the way to the last section
 					//moley.GetComponent<Transform>().Position = new GlmSharp.vec3(180, 50, -330);
 					//moley.GetComponent<Transform>().Position = new GlmSharp.vec3(602.175f, 107, -189.596f);
-					moley.GetComponent<Transform>().Position = new GlmSharp.vec3(970, 108, -193);
+					moley.GetComponent<Transform>().Position = new vec3(970, 108, -193);
 
 					HoleyController holey = ECSManager.FindEntityByName("Holey").GetComponent<HoleyController>();
 					//holey.GetComponent<Transform>().Position = new GlmSharp.vec3(180, 50, -310);
 					//holey.GetComponent<Transform>().Position = new GlmSharp.vec3(602.175f, 107, -174.596f);
-					holey.GetComponent<Transform>().Position = new GlmSharp.vec3(970, 108, -167);
+					holey.GetComponent<Transform>().Position = new vec3(970, 108, -167);
 				}
 
 				//if ((InputSystem.GetKeyHold(InputKeys.LeftControl) || InputSystem.GetKeyHold(InputKeys.RightControl)) && InputSystem.GetKeyPress(InputKeys.D2))
@@ -229,13 +226,13 @@ namespace TRE
 					//moley.GetComponent<Transform>().Position = new GlmSharp.vec3(64, 30, -174);
 					//moley.GetComponent<Transform>().Position = new GlmSharp.vec3(293, 30, -138);
 					//moley.GetComponent<Transform>().Position = new GlmSharp.vec3(406, 19, -430);
-					moley.GetComponent<Transform>().Position = new GlmSharp.vec3(600, 19, -430);
+					moley.GetComponent<Transform>().Position = new vec3(600, 19, -430);
 
 					HoleyController holey = ECSManager.FindEntityByName("Holey").GetComponent<HoleyController>();
 					//holey.GetComponent<Transform>().Position = new GlmSharp.vec3(77, 30, -174);
 					//holey.GetComponent<Transform>().Position = new GlmSharp.vec3(293, 30, -120);
 					//holey.GetComponent<Transform>().Position = new GlmSharp.vec3(408, 19, -417);
-					holey.GetComponent<Transform>().Position = new GlmSharp.vec3(600, 19, -417);
+					holey.GetComponent<Transform>().Position = new vec3(600, 19, -417);
 				}
 			}
 
@@ -276,10 +273,10 @@ namespace TRE
 				Entity moley = ECSManager.FindEntityByName("Moley");
 				Entity holey = ECSManager.FindEntityByName("Holey");
 
-				Entity blueberryCheat = new Entity(7670209894207584463);
-				Entity strawberryCheat = new Entity(13004780274330328106);
-				GlmSharp.vec3 newMoleyPos = new GlmSharp.vec3(moley.GetComponent<Transform>().Position.x, moley.GetComponent<Transform>().Position.y + 5f, moley.GetComponent<Transform>().Position.z);
-				GlmSharp.vec3 newHoleyPos = new GlmSharp.vec3(holey.GetComponent<Transform>().Position.x, holey.GetComponent<Transform>().Position.y + 5f, holey.GetComponent<Transform>().Position.z);
+				Entity blueberryCheat = new Entity(Prefab.GetPrefabIDFromName("Blueberry"));
+				Entity strawberryCheat = new Entity(Prefab.GetPrefabIDFromName("Strawberry"));
+				vec3 newMoleyPos = new vec3(moley.GetComponent<Transform>().Position.x, moley.GetComponent<Transform>().Position.y + 5f, moley.GetComponent<Transform>().Position.z);
+				vec3 newHoleyPos = new vec3(holey.GetComponent<Transform>().Position.x, holey.GetComponent<Transform>().Position.y + 5f, holey.GetComponent<Transform>().Position.z);
 
 				Entity moleyBlueberry = ECSManager.Instantiate(blueberryCheat);
 				moleyBlueberry.GetComponent<Transform>().Position = newMoleyPos;
@@ -322,7 +319,7 @@ namespace TRE
 					if (StarEmerge != null && currentStars <= StarParticlePositions.Count)
 					{
 						StarParticle.GetComponent<Particle>().IsActive = true;
-						StarParticle.GetComponent<Transform>().Position = new GlmSharp.vec3(0f, -1500f, 0f);
+						StarParticle.GetComponent<Transform>().Position = new vec3(0f, -1500f, 0f);
 						StarEmerge.Emerge(vec3.Zero, StarParticlePositions[currentStars - 1], new vec3(1.5f, 1.5f, 1));
 
 						if (!starSFXPlayed)
@@ -334,33 +331,37 @@ namespace TRE
 
 
 						StarParticle.GetComponent<Transform>().Position = CameraSystem.GetMainCameraPosition();
-							StarParticle.GetComponent<Transform>().Position += CameraSystem.GetMainCameraForwardVec().Normalized * 55f;
-						StarParticle.GetComponent<Transform>().Position = new GlmSharp.vec3(StarParticle.GetComponent<Transform>().Position.x, StarParticle.GetComponent<Transform>().Position.y - 10f, StarParticle.GetComponent<Transform>().Position.z);
+						StarParticle.GetComponent<Transform>().Position += CameraSystem.GetMainCameraForwardVec().Normalized * 55f;
+						StarParticle.GetComponent<Transform>().Position = new vec3(StarParticle.GetComponent<Transform>().Position.x,
+																				   StarParticle.GetComponent<Transform>().Position.y - 10f, 
+																				   StarParticle.GetComponent<Transform>().Position.z);
 					}
 				}
 			}
 
-            if (PhysicsSystem.IsTriggerStay(Holey.ID, ConfettiTrigger.ID) && PhysicsSystem.IsTriggerStay(Moley.ID, ConfettiTrigger.ID) && !confettiTime)
-            {
-                ConfettiParticleLeft.GetComponent<Particle>().IsActive = true;
-                //ConfettiParticleLeft.GetComponent<Transform>().Position = new GlmSharp.vec3(0f, -1500f, 0f);
-                ConfettiParticleRight.GetComponent<Particle>().IsActive = true;
-                //ConfettiParticleRight.GetComponent<Transform>().Position = new GlmSharp.vec3(0f, -1500f, 0f);
-                ConfettiParticleLeft.GetComponent<Transform>().Position = CameraSystem.GetMainCameraPosition();
-                ConfettiParticleLeft.GetComponent<Transform>().Position += CameraSystem.GetMainCameraForwardVec().Normalized * 55f;
-                ConfettiParticleLeft.GetComponent<Transform>().Position = new GlmSharp.vec3(ConfettiParticleLeft.GetComponent<Transform>().Position.x,
-                                                                                            ConfettiParticleLeft.GetComponent<Transform>().Position.y - 10f,
-                                                                                            ConfettiParticleLeft.GetComponent<Transform>().Position.z);
-                ConfettiParticleRight.GetComponent<Transform>().Position = CameraSystem.GetMainCameraPosition();
-                ConfettiParticleRight.GetComponent<Transform>().Position += CameraSystem.GetMainCameraForwardVec().Normalized * 55f;
-                ConfettiParticleRight.GetComponent<Transform>().Position = new GlmSharp.vec3(ConfettiParticleRight.GetComponent<Transform>().Position.x,
-                                                                                            ConfettiParticleRight.GetComponent<Transform>().Position.y - 10f,
-                                                                                            ConfettiParticleRight.GetComponent<Transform>().Position.z);
-                confettiTime = true;
-            }
+			if (PhysicsSystem.IsTriggerStay(Holey.ID, ConfettiTrigger.ID) && PhysicsSystem.IsTriggerStay(Moley.ID, ConfettiTrigger.ID) && !confettiTime)
+			{
+				ConfettiParticleLeft.GetComponent<Particle>().IsActive = true;
+				//ConfettiParticleLeft.GetComponent<Transform>().Position = new GlmSharp.vec3(0f, -1500f, 0f);
+				ConfettiParticleRight.GetComponent<Particle>().IsActive = true;
+				//ConfettiParticleRight.GetComponent<Transform>().Position = new GlmSharp.vec3(0f, -1500f, 0f);
+				
+				ConfettiParticleLeft.GetComponent<Transform>().Position = CameraSystem.GetMainCameraPosition();
+				ConfettiParticleLeft.GetComponent<Transform>().Position += CameraSystem.GetMainCameraForwardVec().Normalized * 55f;
+				ConfettiParticleLeft.GetComponent<Transform>().Position = new vec3(ConfettiParticleLeft.GetComponent<Transform>().Position.x,
+																				   ConfettiParticleLeft.GetComponent<Transform>().Position.y - 10f,
+																				   ConfettiParticleLeft.GetComponent<Transform>().Position.z);
+				
+				ConfettiParticleRight.GetComponent<Transform>().Position = CameraSystem.GetMainCameraPosition();
+				ConfettiParticleRight.GetComponent<Transform>().Position += CameraSystem.GetMainCameraForwardVec().Normalized * 55f;
+				ConfettiParticleRight.GetComponent<Transform>().Position = new vec3(ConfettiParticleRight.GetComponent<Transform>().Position.x,
+																					ConfettiParticleRight.GetComponent<Transform>().Position.y - 10f,
+																					ConfettiParticleRight.GetComponent<Transform>().Position.z);
+				confettiTime = true;
+			}
 
-            #region Stars
-            if (ECSManager.IsValidEntity(StarsCollected.ID))
+			#region Stars
+			if (ECSManager.IsValidEntity(StarsCollected.ID))
 			{
 				//if (!displayStars && timerCurrent > 0) timerCurrent -= Time.deltaTime;
 				// Do for stars collected
@@ -405,7 +406,7 @@ namespace TRE
 				}
 			}
 
-            if (PhysicsSystem.IsTriggerStay(Holey.ID, EndingFlagTrigger.ID) && PhysicsSystem.IsTriggerStay(Moley.ID, EndingFlagTrigger.ID))
+			if (PhysicsSystem.IsTriggerStay(Holey.ID, EndingFlagTrigger.ID) && PhysicsSystem.IsTriggerStay(Moley.ID, EndingFlagTrigger.ID))
 				goToNextScene = true;
 
 			//go to next scene after a while
@@ -413,7 +414,7 @@ namespace TRE
 			{
 				if (!courseComplete.isVisible)
 				{
-                    courseComplete.isVisible = true;
+					courseComplete.isVisible = true;
 					ECSManager.FindEntityByName("CourseComplete").GetComponent<VFX_SlapOn>().SlapOn();
 
 					if (ECSManager.IsValidEntity(endsceneBGM))
@@ -455,7 +456,7 @@ namespace TRE
 				PersistentSystem.SetValue(mapName + "StarsObtained", mapStars.ToString());
 				Debug.Log(mapName + " Stars " + PersistentSystem.GetValue(mapName + "StarsObtained"));
 				return mapStars;
-            }
+			}
 
 			return -1;
 		}

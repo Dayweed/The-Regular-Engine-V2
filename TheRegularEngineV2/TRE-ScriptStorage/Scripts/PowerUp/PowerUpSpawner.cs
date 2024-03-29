@@ -20,9 +20,9 @@ namespace TRE
 		public void OnCreate()
 		{
 			if (CompareTag("SpawnStrawberry"))
-				powerUpPrefab = new Entity(13004780274330328106);
+				powerUpPrefab = new Entity(Prefab.GetPrefabIDFromName("Strawberry"));
 			else if (CompareTag("SpawnBlueberry"))
-				powerUpPrefab = new Entity(7670209894207584463);
+				powerUpPrefab = new Entity(Prefab.GetPrefabIDFromName("Blueberry"));
 			
 
 			positionOffset = new vec3(0, 2, 0);
