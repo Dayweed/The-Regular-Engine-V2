@@ -160,8 +160,18 @@ namespace TRE
                 //letter frames: 3, 4, 5, 6, 7
                 if (currentFrame >= 3 && currentFrame <= 7)
                 {
-                    if (ECSManager.IsValidEntity(dialogueSFX))
-                        AS.Play(dialogueSFX);
+					if (TextSystem.GetDialogueRunning(InvitationDialogue1.ID) || TextSystem.GetDialogueRunning(InvitationDialogue2.ID)
+                        || TextSystem.GetDialogueRunning(InvitationDialogue3.ID) || TextSystem.GetDialogueRunning(InvitationDialogue4.ID) 
+                        || TextSystem.GetDialogueRunning(InvitationDialogue5.ID))
+                    {
+						if (ECSManager.IsValidEntity(dialogueSFX))
+							AS.Play(dialogueSFX);
+					}
+                    else
+                    {
+						if (ECSManager.IsValidEntity(dialogueSFX))
+							AS.Stop(dialogueSFX);
+					}
                 }
 
                 if (currentFrame == 3)
@@ -250,7 +260,12 @@ namespace TRE
                         }
 
                         if (currentFrame >= 3 && currentFrame <= 7 && paragraphIsHalfWay)
-                            ++pressSpaceCounter;
+                        {
+							if (ECSManager.IsValidEntity(dialogueSFX))
+								AS.Stop(dialogueSFX);
+
+							++pressSpaceCounter;
+						}
 
                         //player can press double space to go next frame OR once the paragraph is done press space once to go next frame
                         if (currentFrame >= 3 && currentFrame <= 7 && (hasPlayerPressed && pressedSpaceTwice || !paragraphIsHalfWay))
@@ -262,9 +277,6 @@ namespace TRE
 
                         else if (!(currentFrame >= 3 && currentFrame <= 7))
                             ++currentFrame;
-
-                        if (ECSManager.IsValidEntity(dialogueSFX))
-                            AS.Stop(dialogueSFX);
 
                         //currentframe == 3/4/5/6/7, SpaceToContinueBlack
                         //letter frames + last frame + out of bounds frame will go through this if statement
