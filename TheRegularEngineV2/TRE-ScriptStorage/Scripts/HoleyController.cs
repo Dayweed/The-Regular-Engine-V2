@@ -330,7 +330,7 @@ namespace TRE
 			if (other.CompareTag("FallingObstacle") || other.CompareTag("RollingObstacle"))
 			{
 				// Ignore damage for fallingObstacle under the following conditions
-				PhysicsSystem.GetLinearVelocity(otherID, out vec3 speed);
+				PS.GetLinearVelocity(otherID, out vec3 speed);
 				// Falling object is no longer falling
 				if (other.CompareTag("FallingObstacle") && other.GetComponent<FallingObj>().isGrounded) return;
 
@@ -765,7 +765,7 @@ namespace TRE
 				isScaled = false;
 			}
 
-			if (IS.GetControllerButtonTriggered(ControllerNumber, InputSystem.Button.Y))
+			if (IS.GetControllerButtonTriggered(ControllerNumber, IS.Button.Y))
 			{
 				MyPowerManager.SwapPowerUps();
 				MyPowerUpUI.UpdateUI(MyPowerManager.powerUps);
@@ -782,7 +782,7 @@ namespace TRE
 				isScaled = false;
 			}
 
-			if (IS.GetControllerButtonTriggered(ControllerNumber, InputSystem.Button.B))
+			if (IS.GetControllerButtonTriggered(ControllerNumber, IS.Button.B))
 			{
 				MyPowerManager.DropMain();
 				isScaled = false;
@@ -843,7 +843,7 @@ namespace TRE
 				}
 			}
 
-			if (IS.GetControllerButtonTriggered(ControllerNumber, InputSystem.Button.X))
+			if (IS.GetControllerButtonTriggered(ControllerNumber, IS.Button.X))
 			{
 				if (mainBlueberry || mainStrawberry)
 				{

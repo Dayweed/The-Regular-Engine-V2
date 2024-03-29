@@ -182,6 +182,9 @@ namespace TRE
 
 		public void ReleasePowerUp()
 		{
+			// The powerup doesn't need to bob up & down when being released!
+			GetComponent<TextBounce>().Pause();
+
 			// Reset size
 			GetComponent<Transform>().Scale = originalScale;
 			GetComponent<MeshRenderer>().Visible = true;
