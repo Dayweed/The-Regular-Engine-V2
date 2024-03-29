@@ -101,14 +101,14 @@ namespace TRE
 			PipelineConfigurations Config{};
 			Config.Primitive = PrimitiveType::Triangles;
 			Config.Shader = ResourceManager::Instance().GetResource<Shader>(5);
-			Config.CullMode = VK_CULL_MODE_NONE;// VK_CULL_MODE_FRONT_BIT;
+			Config.CullMode = VK_CULL_MODE_NONE;
 			Config.EnableBlending = true;
 			m_ShadowPipeline = std::make_shared<Pipeline>(Config, m_ShadowRenderPass);
 
 			PipelineConfigurations ShadowAnimationPipelineConfig{};
 			ShadowAnimationPipelineConfig.Primitive = PrimitiveType::Triangles;
 			ShadowAnimationPipelineConfig.Shader = ResourceManager::Instance().GetResource<Shader>(10);
-			ShadowAnimationPipelineConfig.CullMode = VK_CULL_MODE_NONE;// VK_CULL_MODE_BACK_BIT;// VK_CULL_MODE_FRONT_BIT;
+			ShadowAnimationPipelineConfig.CullMode = VK_CULL_MODE_NONE;
 			ShadowAnimationPipelineConfig.UseAutoShaderVertexInput = false;
 			ShadowAnimationPipelineConfig.CustomVertexBufferInputLayout =
 			{
@@ -356,8 +356,7 @@ namespace TRE
 		m_ColorImages.clear();
 		m_DepthImages.clear();
 
-		vkDestroyFramebuffer(m_Device->GetLogicalDevice(), m_ShadowFramebuffer[0], nullptr);
-		vkDestroyFramebuffer(m_Device->GetLogicalDevice(), m_ShadowFramebuffer[1], nullptr);
+		vkDestroyFramebuffer(m_Device->GetLogicalDevice(), m_ShadowFramebuffer, nullptr);
 		vkDestroyFramebuffer(m_Device->GetLogicalDevice(), m_DepthPrepassFramebuffer, nullptr);
 		vkDestroyFramebuffer(m_Device->GetLogicalDevice(), m_IDPrepassFramebuffer, nullptr);
 		vkDestroyFramebuffer(m_Device->GetLogicalDevice(), m_BoxBlurPostpassFramebuffer, nullptr);
@@ -388,27 +387,16 @@ namespace TRE
 		bool recalculateShadowFrustum = ShadowFrustumCheck(baseCamera);
 		recalculateShadowFrustum = true;
 
-		auto DLights = ECSManager::Instance().GetEntities<DirectionalLight>();
-		std::sort(DLights.begin(), DLights.end(), [](const auto& first, const auto& sec)
-		{
-			return first->GetComponent<Properties>().m_Index < sec->GetComponent<Properties>().m_Index;
-		});
-
-		if (DLights.size() > 2)
-		{
-			TRE_CORE_CRITICAL("Engine does not support more than 2 directional light");
-		}
-
 		ShadowUBO UBO_Shadow{};
-
-		for (int x = 0; x < DLights.size(); x++)
+		const auto& DLights = ECSManager::Instance().GetEntities<DirectionalLight>();
+		if (DLights.size() > 0)
 		{
-			const auto& entity = DLights[x];
+			const auto& entity = DLights[0]; //Get first directional light
 			const auto& lightTransform = entity->GetComponent<Transform>();
 			const auto& light = entity->GetComponent<DirectionalLight>();
-			ubo.m_LightDirection[x] = glm::vec4(light.m_Direction, 1.f);
-			ubo.m_LightDirectionalColor[x] = light.m_DirectionalColor;
-			ubo.m_LightAmbientColor[x] = light.m_AmbientColor;
+			ubo.m_LightDirection = glm::vec4(light.m_Direction, 1.f);
+			ubo.m_LightDirectionalColor = light.m_DirectionalColor;
+			ubo.m_LightAmbientColor = light.m_AmbientColor;
 			ubo.m_ShadowIntensity = light.m_ShadowIntensity;
 
 			if (recalculateShadowFrustum)
@@ -437,18 +425,17 @@ namespace TRE
 				shadowDepthProjectionMatrix[3][2] = -(orthoNear) / (orthoFar - orthoNear);
 
 				shadowDepthViewMatrix = glm::inverse(shadowDepthViewMatrix);
-				m_EditorShadowView[x] = shadowDepthViewMatrix;
-				m_EditorShadowProj[x] = shadowDepthProjectionMatrix;
+				m_EditorShadowView = shadowDepthViewMatrix;
+				m_EditorShadowProj = shadowDepthProjectionMatrix;
 
-				UBO_Shadow.view[x] = m_EditorShadowView[x];
-				UBO_Shadow.proj[x] = m_EditorShadowProj[x];
+				UBO_Shadow.view = m_EditorShadowView;
+				UBO_Shadow.proj = m_EditorShadowProj;
 			}
 			
-			ubo.m_LightSpaceMatrix[x] = m_EditorShadowProj[x] * m_EditorShadowView[x];
+			ubo.m_LightSpaceMatrix = m_EditorShadowProj * m_EditorShadowView;
 		}
 
 		m_ShadowUBO->SetData(&UBO_Shadow, sizeof(ShadowUBO));
-
 		m_UBOBuffer->SetData(&ubo, sizeof(UBO));
 		m_UBOSkybox->SetData(&UBO_SkyBox, sizeof(SkyBoxUBO));
 
@@ -496,28 +483,21 @@ namespace TRE
 		recalculateShadowFrustum = true;
 
 		ShadowUBO UBO_Shadow{};
+		const auto& DLights = ECSManager::Instance().GetEntities<DirectionalLight>();
 
-		auto DLights = ECSManager::Instance().GetEntities<DirectionalLight>();
-		std::sort(DLights.begin(), DLights.end(), [](const auto& first, const auto& sec)
+		if (DLights.size() > 0)
 		{
-			return first->GetComponent<Properties>().m_Index < sec->GetComponent<Properties>().m_Index;
-		});
-
-		for (int x = 0; x < DLights.size(); x++)
-		{
-			const auto& entityDirectional = DLights[x];
+			const auto& entityDirectional = DLights[0]; //Get first directional light
 			const auto& lightTransform = entityDirectional->GetComponent<Transform>();
 			const auto& light = entityDirectional->GetComponent<DirectionalLight>();
-			ubo.m_LightDirection[x] = glm::vec4(light.m_Direction, 1.f);
-			ubo.m_LightDirectionalColor[x] = light.m_DirectionalColor;
-			ubo.m_LightAmbientColor[x] = light.m_AmbientColor;
+			ubo.m_LightDirection = glm::vec4(light.m_Direction, 1.f);
+			ubo.m_LightDirectionalColor = light.m_DirectionalColor;
+			ubo.m_LightAmbientColor = light.m_AmbientColor;
 			ubo.m_ShadowIntensity = light.m_ShadowIntensity;
 
 			if (recalculateShadowFrustum)
 			{
-				//RecreateShadowAABB(baseCamera.GetFrustumCorners(false, 0.033f));
 				RecreateShadowAABB(baseCamera.GetFrustumCorners(false, 0.17f));
-				//m_ShadowRenderPoint.y = lightTransform.m_Position.y;
 				glm::vec3 tempRotation = glm::radians(lightTransform.m_Rotation);
 				glm::mat4 rotationMat = glm::toMat4(glm::quat(tempRotation));
 				shadowDepthViewMatrix = glm::translate(glm::mat4(1.f), m_ShadowRenderPoint) * rotationMat;
@@ -543,19 +523,18 @@ namespace TRE
 				shadowDepthProjectionMatrix[3][2] = -(orthoNear) / (orthoFar - orthoNear);
 
 				shadowDepthViewMatrix = glm::inverse(shadowDepthViewMatrix);
-				m_ShadowView[x] = shadowDepthViewMatrix;
-				m_ShadowProj[x] = shadowDepthProjectionMatrix;
+				m_ShadowView = shadowDepthViewMatrix;
+				m_ShadowProj = shadowDepthProjectionMatrix;
 
-				UBO_Shadow.view[x] = m_ShadowView[x];
-				UBO_Shadow.proj[x] = m_ShadowProj[x];
+				UBO_Shadow.view = m_ShadowView;
+				UBO_Shadow.proj = m_ShadowProj;
 			}
 			
-			ubo.m_LightSpaceMatrix[x] = m_ShadowProj[x] * m_ShadowView[x];
+			ubo.m_LightSpaceMatrix = m_ShadowProj * m_ShadowView;
 		}
 
 		m_ShadowUBO->SetData(&UBO_Shadow, sizeof(ShadowUBO));
 
-		
 		{
 			DepthUBO depthUBO{};
 			depthUBO.view = baseCamera.m_ViewMatrix;
@@ -902,102 +881,89 @@ namespace TRE
 
 	void SceneRenderer::ShadowPass(uint32_t Index, const std::multimap<ResourceHandle, Entity>& MaterialSort)
 	{
-		for (int x = 0; x < 2; x++) //Render 2 shadow maps
+		VkClearValue clearValues[2];
+		clearValues[0].depthStencil = { 1.0f, 0 };
+		VkRenderPassBeginInfo renderPassInfo{};
+		renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+		renderPassInfo.renderPass = m_ShadowRenderPass->GetHandle();
+		renderPassInfo.framebuffer = m_ShadowFramebuffer;
+		renderPassInfo.renderArea.offset = { 0, 0 };
+		renderPassInfo.renderArea.extent = { m_ShadowMapWidth, m_ShadowMapHeight };
+		renderPassInfo.clearValueCount = 1;
+		renderPassInfo.pClearValues = clearValues;
+
+		vkCmdBeginRenderPass(m_CommandBuffer->GetInUseCommandBuffer(), &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
+
+		VkViewport viewport{};
+		viewport.x = 0.0f;
+		viewport.y = 0.0f;
+		viewport.width = (float)m_ShadowMapWidth;
+		viewport.height = (float)m_ShadowMapHeight;
+		viewport.minDepth = 0.0f;
+		viewport.maxDepth = 1.0f;
+		vkCmdSetViewport(m_CommandBuffer->GetInUseCommandBuffer(), 0, 1, &viewport);
+
+		VkRect2D scissor{};
+		scissor.extent = { m_ShadowMapWidth, m_ShadowMapHeight };
+		vkCmdSetScissor(m_CommandBuffer->GetInUseCommandBuffer(), 0, 1, &scissor);
+		vkCmdSetDepthBias(m_CommandBuffer->GetInUseCommandBuffer(), depthBiasConstant, 0.0f, depthBiasSlope);
+
+		Renderer::BindPipeline(m_CommandBuffer, m_ShadowPipeline);
+
+		for (const auto& go_mr : MaterialSort)
 		{
-			VkClearValue clearValues[2];
-			clearValues[0].depthStencil = { 1.0f, 0 };
-			VkRenderPassBeginInfo renderPassInfo{};
-			renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-			renderPassInfo.renderPass = m_ShadowRenderPass->GetHandle();
-			renderPassInfo.framebuffer = m_ShadowFramebuffer[x];
-			renderPassInfo.renderArea.offset = { 0, 0 };
-			renderPassInfo.renderArea.extent = { m_ShadowMapWidth, m_ShadowMapHeight };
-			renderPassInfo.clearValueCount = 1;
-			renderPassInfo.pClearValues = clearValues;
+			const MeshRenderer& mr = go_mr.second->GetComponent<MeshRenderer>();
+			ResourceHandle currentMaterialHandle = go_mr.first;
 
-			vkCmdBeginRenderPass(m_CommandBuffer->GetInUseCommandBuffer(), &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
-
-			VkViewport viewport2{};
-			viewport2.x = 0.0f;
-			viewport2.y = 0.0f;
-			viewport2.width = (float)m_ShadowMapWidth;
-			viewport2.height = (float)m_ShadowMapHeight;
-			viewport2.minDepth = 0.0f;
-			viewport2.maxDepth = 1.0f;
-			vkCmdSetViewport(m_CommandBuffer->GetInUseCommandBuffer(), 0, 1, &viewport2);
-
-			VkRect2D scissor2{};
-			scissor2.extent = { m_ShadowMapWidth, m_ShadowMapHeight };
-			vkCmdSetScissor(m_CommandBuffer->GetInUseCommandBuffer(), 0, 1, &scissor2);
-
-			vkCmdSetDepthBias(m_CommandBuffer->GetInUseCommandBuffer(), depthBiasConstant, 0.0f, depthBiasSlope);
-
-			Renderer::BindPipeline(m_CommandBuffer, m_ShadowPipeline);
-
-			for (const auto& go_mr : MaterialSort)
-			{
-				const MeshRenderer& mr = go_mr.second->GetComponent<MeshRenderer>();
-				ResourceHandle currentMaterialHandle = go_mr.first;
-
-				if (mr.m_DLightIndex != x)
-					continue;
-
-				PushConstant pc{};
-				pc.m_Model = go_mr.second->GetComponent<Transform>().m_WorldXform;
-				pc.m_DLightIndex = mr.m_DLightIndex;
+			PushConstant pc{};
+			pc.m_Model = go_mr.second->GetComponent<Transform>().m_WorldXform;
 				
-				vkCmdPushConstants(m_CommandBuffer->GetInUseCommandBuffer(), m_ShadowPipeline->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
+			vkCmdPushConstants(m_CommandBuffer->GetInUseCommandBuffer(), m_ShadowPipeline->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
 
-				if (m_IsEditorScene)
-				{
-					m_ShadowMaterial->UpdateForEditorSceneRendering(m_ShadowUBO, Index);
-					vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_ShadowPipeline->GetPipelineLayout(), 0, 1, &m_ShadowMaterial->GetEditorDescriptor(Index), 0, NULL);
-				}
-				else
-				{
-					m_ShadowMaterial->UpdateForRendering(m_ShadowUBO, Index);
-					vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_ShadowPipeline->GetPipelineLayout(), 0, 1, &m_ShadowMaterial->GetDescriptor(Index), 0, NULL);
-				}
-
-				mr.m_RenderObject->Bind(m_CommandBuffer->GetInUseCommandBuffer());
-				mr.m_RenderObject->Draw(m_CommandBuffer->GetInUseCommandBuffer());
-
-				m_PreviousMaterialHandle = currentMaterialHandle;
-			}
-			m_PreviousMaterialHandle = 0;
-
-			Renderer::BindPipeline(m_CommandBuffer, m_ShadowAnimationPipeline);
-
-			for (const auto& Entity : ECSManager::Instance().GetEntities<AnimationComponent, MeshRenderer>())
+			if (m_IsEditorScene)
 			{
-				const MeshRenderer& MeshComp = Entity->GetComponent<MeshRenderer>();
-				const AnimationComponent& AnimComp = Entity->GetComponent<AnimationComponent>();
-
-				if (MeshComp.m_DLightIndex != x)
-					continue;
-
-				PushConstant pc{};
-				pc.m_Model = Entity->GetComponent<Transform>().m_WorldXform;
-				pc.m_DLightIndex = MeshComp.m_DLightIndex;
-				vkCmdPushConstants(m_CommandBuffer->GetInUseCommandBuffer(), m_ShadowAnimationPipeline->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
-
-				if (m_IsEditorScene)
-				{
-					AnimComp.m_ShadowAnimationMaterial->UpdateForEditorAnimationRendering(m_ShadowUBO, Index, AnimComp.m_UBO);
-					vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_ShadowAnimationPipeline->GetPipelineLayout(), 0, 1, &AnimComp.m_ShadowAnimationMaterial->GetEditorDescriptor(Index), 0, NULL);
-				}
-				else
-				{
-					AnimComp.m_ShadowAnimationMaterial->UpdateForAnimationRendering(m_ShadowUBO, Index, AnimComp.m_UBO);
-					vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_ShadowAnimationPipeline->GetPipelineLayout(), 0, 1, &AnimComp.m_ShadowAnimationMaterial->GetDescriptor(Index), 0, NULL);
-				}
-
-				MeshComp.m_RenderObject->BindAnimation(m_CommandBuffer->GetInUseCommandBuffer());
+				m_ShadowMaterial->UpdateForEditorSceneRendering(m_ShadowUBO, Index);
+				vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_ShadowPipeline->GetPipelineLayout(), 0, 1, &m_ShadowMaterial->GetEditorDescriptor(Index), 0, NULL);
+			}
+			else
+			{
+				m_ShadowMaterial->UpdateForRendering(m_ShadowUBO, Index);
+				vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_ShadowPipeline->GetPipelineLayout(), 0, 1, &m_ShadowMaterial->GetDescriptor(Index), 0, NULL);
 			}
 
-			Renderer::EndRenderPass(m_CommandBuffer);
+			mr.m_RenderObject->Bind(m_CommandBuffer->GetInUseCommandBuffer());
+			mr.m_RenderObject->Draw(m_CommandBuffer->GetInUseCommandBuffer());
 
+			m_PreviousMaterialHandle = currentMaterialHandle;
 		}
+		m_PreviousMaterialHandle = 0;
+
+		Renderer::BindPipeline(m_CommandBuffer, m_ShadowAnimationPipeline);
+
+		for (const auto& Entity : ECSManager::Instance().GetEntities<AnimationComponent, MeshRenderer>())
+		{
+			const MeshRenderer& MeshComp = Entity->GetComponent<MeshRenderer>();
+			const AnimationComponent& AnimComp = Entity->GetComponent<AnimationComponent>();
+
+			PushConstant pc{};
+			pc.m_Model = Entity->GetComponent<Transform>().m_WorldXform;
+			vkCmdPushConstants(m_CommandBuffer->GetInUseCommandBuffer(), m_ShadowAnimationPipeline->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
+
+			if (m_IsEditorScene)
+			{
+				AnimComp.m_ShadowAnimationMaterial->UpdateForEditorAnimationRendering(m_ShadowUBO, Index, AnimComp.m_UBO);
+				vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_ShadowAnimationPipeline->GetPipelineLayout(), 0, 1, &AnimComp.m_ShadowAnimationMaterial->GetEditorDescriptor(Index), 0, NULL);
+			}
+			else
+			{
+				AnimComp.m_ShadowAnimationMaterial->UpdateForAnimationRendering(m_ShadowUBO, Index, AnimComp.m_UBO);
+				vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_ShadowAnimationPipeline->GetPipelineLayout(), 0, 1, &AnimComp.m_ShadowAnimationMaterial->GetDescriptor(Index), 0, NULL);
+			}
+
+			MeshComp.m_RenderObject->BindAnimation(m_CommandBuffer->GetInUseCommandBuffer());
+		}
+
+		Renderer::EndRenderPass(m_CommandBuffer);
 	}
 
 	void SceneRenderer::DepthPrepass(uint32_t Index, const std::multimap<ResourceHandle, Entity>& MaterialSort)
@@ -1378,9 +1344,6 @@ namespace TRE
 		if (m_SceneImages.contains(SceneImage::ShadowMap) == false)
 			m_SceneImages[SceneImage::ShadowMap] = std::make_shared<Image2D>(ImgConfig);
 
-		if (m_SceneImages.contains(SceneImage::shadowMap2) == false)
-			m_SceneImages[SceneImage::shadowMap2] = std::make_shared<Image2D>(ImgConfig);
-
 		m_ShadowRenderPass = std::make_shared<RenderPass>(m_Device, true);
 
 		auto attachments = m_SceneImages[SceneImage::ShadowMap]->GetImageData().ImageView;
@@ -1393,23 +1356,7 @@ namespace TRE
 		framebufferCreateInfo.height = m_ShadowMapHeight;
 		framebufferCreateInfo.layers = 1;
 
-		if (auto Result = vkCreateFramebuffer(m_Device->GetLogicalDevice(), &framebufferCreateInfo, nullptr, &m_ShadowFramebuffer[0]); Result != VK_SUCCESS)
-		{
-			assert(Result == VK_SUCCESS && "Unable to create image sampler for shadow");
-		}
-
-
-		auto attachments2 = m_SceneImages[SceneImage::shadowMap2]->GetImageData().ImageView;
-		VkFramebufferCreateInfo framebufferCreateInfo2{};
-		framebufferCreateInfo2.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
-		framebufferCreateInfo2.renderPass = m_ShadowRenderPass->GetHandle();
-		framebufferCreateInfo2.attachmentCount = 1;
-		framebufferCreateInfo2.width = m_ShadowMapWidth;
-		framebufferCreateInfo2.height = m_ShadowMapHeight;
-		framebufferCreateInfo2.layers = 1;
-		framebufferCreateInfo2.pAttachments = &attachments2;
-
-		if (auto Result = vkCreateFramebuffer(m_Device->GetLogicalDevice(), &framebufferCreateInfo2, nullptr, &m_ShadowFramebuffer[1]); Result != VK_SUCCESS)
+		if (auto Result = vkCreateFramebuffer(m_Device->GetLogicalDevice(), &framebufferCreateInfo, nullptr, &m_ShadowFramebuffer); Result != VK_SUCCESS)
 		{
 			assert(Result == VK_SUCCESS && "Unable to create image sampler for shadow");
 		}

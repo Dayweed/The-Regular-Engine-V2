@@ -34,22 +34,21 @@ namespace TRE
 	struct PushConstant
 	{
 		glm::mat4 m_Model; //Model to world
-		int m_DLightIndex;
 	};
 
 	//Hardcoded to support 2 directional light
 	struct UBO
 	{
 		glm::mat4 m_ProjView{ 1.f };																	//World to view to projection
-		glm::mat4 m_LightSpaceMatrix[2] = { glm::mat4(1.f) };																//Matrix to transform to light space coordinates
+		glm::mat4 m_LightSpaceMatrix = { glm::mat4(1.f) };																//Matrix to transform to light space coordinates
 
 		glm::vec4 m_LightPosition{ 0.f, 0.f, 0.f, 0.f};														//Light position for now will be the camera in world space
 		#pragma warning (suppress: 4324)																// warning C4324: 'TRE::UBO': structure was padded due to alignment specifier	
 		glm::vec4 m_LightColor { 1.f, 1.f, 1.f, 10.f };										//Light color, w for intensity
 		glm::vec4 m_CameraPosition{0.f, 0.f, 0.f, 1.f};													//Camera position in world space
-		glm::vec4 m_LightDirection[2] = { glm::vec4(glm::normalize(glm::vec3(1.0f, -1.f, 1.f)), 1.f), glm::vec4(glm::normalize(glm::vec3(1.0f, -1.f, 1.f)), 1.f) }; //Directional Light in world space
-		glm::vec4 m_LightDirectionalColor[2] = { glm::vec4(1.f, 1.f, 1.f, 1.f), glm::vec4(1.f, 1.f, 1.f, 1.f) };			    	    //Color for directional light
-		glm::vec4 m_LightAmbientColor[2] = { glm::vec4(1.f, 1.f, 1.f, 1.f), glm::vec4(1.f, 1.f, 1.f, 1.f) };				    	    //Color for ambient light
+		glm::vec4 m_LightDirection = { glm::vec4(glm::normalize(glm::vec3(1.0f, -1.f, 1.f)), 1.f) }; //Directional Light in world space
+		glm::vec4 m_LightDirectionalColor = { glm::vec4(1.f, 1.f, 1.f, 1.f) };			    	    //Color for directional light
+		glm::vec4 m_LightAmbientColor = { glm::vec4(1.f, 1.f, 1.f, 1.f) };				    	    //Color for ambient light
 		float m_ShadowIntensity = { 0.85f };																//Shadow intensity
 
 		float m_Gamma = { 2.2f };
@@ -64,8 +63,8 @@ namespace TRE
 
 	struct ShadowUBO
 	{
-		glm::mat4 view[2];
-		glm::mat4 proj[2];
+		glm::mat4 view;
+		glm::mat4 proj;
 	};
 
 	struct DepthUBO
@@ -122,7 +121,6 @@ namespace TRE
 			enum class SceneImage
 			{
 				ShadowMap = 0,
-				shadowMap2 = 1,
 				DepthMap,
 				IDMap,
 				BoxBlurMap
@@ -169,7 +167,7 @@ namespace TRE
 			std::shared_ptr<UniformBuffer> m_ShadowUBO;
 			uint32_t m_ShadowMapWidth = 1600;
 			uint32_t m_ShadowMapHeight = 900;
-			VkFramebuffer m_ShadowFramebuffer[2];
+			VkFramebuffer m_ShadowFramebuffer;
 			float m_ShadowAABBPadding = 10.f;
 
 			//Depth Prepass
@@ -210,15 +208,15 @@ namespace TRE
 			glm::vec3 m_ShadowAABBMin;
 			glm::vec3 m_ShadowAABBMax;
 			glm::vec3 m_ShadowRenderPoint;
-			glm::mat4 m_ShadowView [2];
-			glm::mat4 m_ShadowProj [2];
+			glm::mat4 m_ShadowView;
+			glm::mat4 m_ShadowProj;
 
 			//Editor viewport
 			glm::vec3 m_EditorShadowAABBMin;
 			glm::vec3 m_EditorShadowAABBMax;
 			glm::vec3 m_EditorShadowRenderPoint;
-			glm::mat4 m_EditorShadowView [2];
-			glm::mat4 m_EditorShadowProj [2];
+			glm::mat4 m_EditorShadowView;
+			glm::mat4 m_EditorShadowProj;
 			float m_EditorShadowRatio = 0.05f;
 
 			//AnimationPass

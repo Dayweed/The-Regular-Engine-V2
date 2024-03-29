@@ -118,13 +118,6 @@ namespace TRE
 					else
 						Write.pImageInfo = &m_EmptyImageInfo;
 				}
-				else if (Write.dstBinding == 10)
-				{
-					if (SceneRenderer::m_SceneImages.contains(SceneRenderer::SceneImage::shadowMap2))
-						Write.pImageInfo = &(SceneRenderer::m_SceneImages[SceneRenderer::SceneImage::shadowMap2]->GetDescriptorImageInfo());
-					else
-						Write.pImageInfo = &m_EmptyImageInfo;
-				}
 				else if (Write.dstBinding == 11)
 				{
 					if (SceneRenderer::m_SceneImages.contains(SceneRenderer::SceneImage::BoxBlurMap))
@@ -179,15 +172,6 @@ namespace TRE
 					else
 						Write.pImageInfo = &m_EmptyImageInfo;
 				}
-				else if (Write.dstBinding == 10)
-				{
-					if (SceneRenderer::m_SceneImages.contains(SceneRenderer::SceneImage::shadowMap2))
-					{
-						Write.pImageInfo = &(SceneRenderer::m_SceneImages[SceneRenderer::SceneImage::shadowMap2]->GetDescriptorImageInfo());
-					}
-					else
-						Write.pImageInfo = &m_EmptyImageInfo;
-				}
 				else
 				{
 					if (m_Textures[Name] != nullptr)
@@ -232,15 +216,6 @@ namespace TRE
 					else
 						Write.pImageInfo = &m_EmptyImageInfo;
 				}
-				else if (Write.dstBinding == 10)
-				{
-					if (SceneRenderer::m_SceneImages.contains(SceneRenderer::SceneImage::shadowMap2))
-					{
-						Write.pImageInfo = &(SceneRenderer::m_SceneImages[SceneRenderer::SceneImage::shadowMap2]->GetDescriptorImageInfo());
-					}
-					else
-						Write.pImageInfo = &m_EmptyImageInfo;
-				}
 				else
 				{
 					if (m_Textures[Name] != nullptr)
@@ -278,15 +253,6 @@ namespace TRE
 					if (SceneRenderer::m_SceneImages.contains(SceneRenderer::SceneImage::ShadowMap))
 					{
 						Write.pImageInfo = &(SceneRenderer::m_SceneImages[SceneRenderer::SceneImage::ShadowMap]->GetDescriptorImageInfo());
-					}
-					else
-						Write.pImageInfo = &m_EmptyImageInfo;
-				}
-				else if (Write.dstBinding == 10)
-				{
-					if (SceneRenderer::m_SceneImages.contains(SceneRenderer::SceneImage::shadowMap2))
-					{
-						Write.pImageInfo = &(SceneRenderer::m_SceneImages[SceneRenderer::SceneImage::shadowMap2]->GetDescriptorImageInfo());
 					}
 					else
 						Write.pImageInfo = &m_EmptyImageInfo;

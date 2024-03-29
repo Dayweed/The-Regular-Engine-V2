@@ -11,18 +11,17 @@ layout(location = 5) in vec2 inTexCoord;
 layout(push_constant) uniform Push
 {
 	mat4 m_Model;
-    int  m_DLightIndex;
 } push;
 
 layout (binding = 0) uniform UBO 
 {
-	mat4 view[2];
-    mat4 projection[2];
+	mat4 view;
+    mat4 projection;
 } ubo;
 
 void main() 
 {
-    gl_Position = ubo.projection[push.m_DLightIndex] * ubo.view[push.m_DLightIndex] * push.m_Model * vec4(inPosition, 1.0);
+    gl_Position = ubo.projection * ubo.view * push.m_Model * vec4(inPosition, 1.0);
 }
 
 #version 450
