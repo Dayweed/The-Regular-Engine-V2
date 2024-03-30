@@ -592,8 +592,21 @@ namespace TRE
 					else if (showGraphicsPanel)
 					{
 						settingsPointer.GetComponent<SpriteRenderer>().isVisible = true;
-						//mGraphicsPointer.GetComponent<SpriteRenderer>().isVisible = true;
-						if (mCurrentEditMember == 0)
+                        if (IS.GetKeyPress(InputKeys.W))
+                        {
+                            Debug.Log("press up");
+                            if (mCurrentEditMember <= 0)
+                            {
+                                mCurrentEditMember = -1;
+                                mIsEditingSettings = false;
+                            }
+                            else
+                                --mCurrentEditMember;
+
+                            Debug.Log("mCurrentEditMember: " + mCurrentEditMember);
+                        }
+
+                        if (mCurrentEditMember == 0)
 						{
 							settingsPointerTransform.Position = mGammaPanel.GetComponent<Transform>().Position;
                             if (IS.GetKeyPress(InputKeys.A) || IS.GetKeyPress(InputKeys.Left))
@@ -715,8 +728,9 @@ namespace TRE
 						}
 					}
 
-					if (IS.GetKeyPress(InputKeys.W) || IS.GetControllerButtonTriggered(0, IS.Button.Start) || IS.GetControllerButtonTriggered(1, IS.Button.Start))
+					if ((IS.GetKeyPress(InputKeys.W) && !settingsPointer.GetComponent<SpriteRenderer>().isVisible) || IS.GetControllerButtonTriggered(0, IS.Button.Start) || IS.GetControllerButtonTriggered(1, IS.Button.Start))
 					{
+
 						Debug.Log("Triggered ESC to not editing settings");
 						mIsEditingSettings = false; //Set to not editing any option
 						menustate = 1;
