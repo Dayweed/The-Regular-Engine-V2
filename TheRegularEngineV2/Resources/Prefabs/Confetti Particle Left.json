@@ -27,7 +27,7 @@
       0,
       {
          "m_Active": true,
-         "m_GUID": "10399259832732308727",
+         "m_GUID": "496552587672092390",
          "m_Index": 1,
          "m_Name": "Confetti Particle Left",
          "m_Tag": ""
@@ -106,13 +106,13 @@
             0.25,
             0.75
          ],
-         "LifeTime": 2.0,
+         "LifeTime": 1.0,
          "Loop": true,
-         "ParticleCount": 50,
+         "ParticleCount": 80,
          "PlayOnStart": true,
          "Size": 200.0,
          "SpawnRadius": 200.0,
-         "Speed": 750.0,
+         "Speed": 800.0,
          "Texture": "af6bd39a899d5868",
          "VariationSize": [
             0.02500000037252903,
@@ -123,7 +123,7 @@
             1.0
          ],
          "Velocity": [
-            0.0,
+            -1.0,
             1.0,
             -1.0
          ]

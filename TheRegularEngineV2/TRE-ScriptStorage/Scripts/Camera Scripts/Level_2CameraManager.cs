@@ -152,10 +152,10 @@ namespace TRE
 			{
 				//first hitw
 				expectedPosition = new vec3(0, 10, 20);
-				expectedRotation = new vec3(30, 90, 0);
-				expectedDistance = 50;
+				expectedRotation = new vec3(25, 90, 0);
+				expectedDistance = 40;
 				cameraController.lookOnlyBool = false;
-				cameraController.expectedYPos = 35f;
+				cameraController.expectedYPos = 30f;
 				cameraController.offsetX = 0f;
 				cameraController.offsetZ = 0f;
 				expectedDuration = 0.8f;
@@ -321,6 +321,21 @@ namespace TRE
 				cameraController.offsetZ = 0f;
 				expectedDuration = 0.8f;
 				CheckTransition(Trigger_O);
+			}
+
+			if (regionP)
+			{
+				//last hitw
+				cameraController.forceXaxis = false;
+				expectedPosition = new vec3(0, 10, 20);
+				expectedRotation = new vec3(30, 0, 0);
+				expectedDistance = 80;
+				cameraController.lookOnlyBool = false;
+				cameraController.expectedYPos = 6f;
+				cameraController.offsetX = 0f;
+				cameraController.offsetZ = 0f;
+				expectedDuration = 0.8f;
+				CheckTransition(Trigger_P);
 			}
 
 			cameraController.expectedPosition = expectedPosition;

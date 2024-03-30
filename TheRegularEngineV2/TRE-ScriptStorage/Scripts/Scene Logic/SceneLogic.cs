@@ -341,10 +341,11 @@ namespace TRE
 
 			if (PhysicsSystem.IsTriggerStay(Holey.ID, ConfettiTrigger.ID) && PhysicsSystem.IsTriggerStay(Moley.ID, ConfettiTrigger.ID) && !confettiTime)
 			{
+				Debug.Log("wee");
 				ConfettiParticleLeft.GetComponent<Particle>().IsActive = true;
-				//ConfettiParticleLeft.GetComponent<Transform>().Position = new GlmSharp.vec3(0f, -1500f, 0f);
+				ConfettiParticleLeft.GetComponent<Transform>().Position = new GlmSharp.vec3(0f, -1500f, 0f);
 				ConfettiParticleRight.GetComponent<Particle>().IsActive = true;
-				//ConfettiParticleRight.GetComponent<Transform>().Position = new GlmSharp.vec3(0f, -1500f, 0f);
+				ConfettiParticleRight.GetComponent<Transform>().Position = new GlmSharp.vec3(0f, -1500f, 0f);
 				
 				ConfettiParticleLeft.GetComponent<Transform>().Position = CameraSystem.GetMainCameraPosition();
 				ConfettiParticleLeft.GetComponent<Transform>().Position += CameraSystem.GetMainCameraForwardVec().Normalized * 55f;
