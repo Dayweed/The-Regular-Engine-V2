@@ -1,4 +1,5 @@
 using System;
+using System.Text;
 using GlmSharp;
 
 namespace TRE
@@ -48,6 +49,9 @@ namespace TRE
 		bool lastController2 = false;
 		bool changeUI = false;
 
+        private Entity pauseButtonUI;
+		
+
 		const float sceneTransitionDelay = 2.5f;
 
 		// Timer for animation
@@ -70,6 +74,7 @@ namespace TRE
 		public void Start()
 		{
 			UIControls = ECSManager.FindEntityByName("Controls_UI");
+			pauseButtonUI = ECSManager.FindEntityByName("PauseHUD");
 			Moley = ECSManager.FindEntityByName("Moley");
 			Holey = ECSManager.FindEntityByName("Holey");
 
@@ -196,16 +201,19 @@ namespace TRE
 			if (controller1 && !controller2 && changeUI)
 			{
 				UIControls.GetComponent<SpriteRenderer>().Texture = "ui-mm-controls-controller1.png";
+				pauseButtonUI.GetComponent<SpriteRenderer>().Texture = "ui-pause-button-controller.png";
 				controller1 = false;
 			}
 			else if (controller1 && controller2 && changeUI)
 			{
 				UIControls.GetComponent<SpriteRenderer>().Texture = "ui-mm-controls-controller2.png";
+                pauseButtonUI.GetComponent<SpriteRenderer>().Texture = "ui-pause-button-controller.png";
 				controller1 = false;
 			}
 			else if (!controller1 && !controller2 && changeUI)
 			{
 				UIControls.GetComponent<SpriteRenderer>().Texture = "ui-mm-controls.png";
+                pauseButtonUI.GetComponent<SpriteRenderer>().Texture = "ui-pause-button.png";
 				changeUI = false;
 			}
 
