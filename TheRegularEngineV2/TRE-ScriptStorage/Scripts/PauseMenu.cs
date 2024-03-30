@@ -92,6 +92,8 @@ namespace TRE
 		private Entity mGammaValue;
 		private float mTempGammaValue = 2.2f;
 
+		//Controls panel entities
+
 		private CameraController mainCamera;
 		private string CurrentScene;
 
@@ -135,37 +137,48 @@ namespace TRE
 			sfx = ECSManager.FindIDFromName("PauseMenu");
 
 			//audio panel
-			audioPanel = new List<Entity>();
-			int total_children = ECSManager.FindEntityByName("audio_selected").parenting.GetTotalChildren();
-			for (int i = 0; i < total_children; i++)
 			{
-				string childName = ECSManager.FindEntityByName("audio_selected").parenting.GetChild(i).name;
-				audioPanel.Add(ECSManager.FindEntityByName(childName));
+				audioPanel = new List<Entity>();
+				int total_children = ECSManager.FindEntityByName("audio_selected").parenting.GetTotalChildren();
+				for (int i = 0; i < total_children; i++)
+				{
+					string childName = ECSManager.FindEntityByName("audio_selected").parenting.GetChild(i).name;
+					audioPanel.Add(ECSManager.FindEntityByName(childName));
+				}
+				masterVolumeEnt = ECSManager.FindEntityByName("master_volume");
+				musicVolumeEnt = ECSManager.FindEntityByName("music_volume");
+				sfxVolumeEnt = ECSManager.FindEntityByName("sfx_volume");
+				TS.SetTextMessage(masterVolumeEnt.ID, masterVolume.ToString());
+				TS.SetTextMessage(musicVolumeEnt.ID, musicVolume.ToString());
+				TS.SetTextMessage(sfxVolumeEnt.ID, sfxVolume.ToString());
+				AS.SetMasterVolume(masterVolume / 100f);
 			}
-			masterVolumeEnt = ECSManager.FindEntityByName("master_volume");
-			musicVolumeEnt = ECSManager.FindEntityByName("music_volume");
-			sfxVolumeEnt = ECSManager.FindEntityByName("sfx_volume");
-			TS.SetTextMessage(masterVolumeEnt.ID, masterVolume.ToString());
-			TS.SetTextMessage(musicVolumeEnt.ID, musicVolume.ToString());
-			TS.SetTextMessage(sfxVolumeEnt.ID, sfxVolume.ToString());
-			AS.SetMasterVolume(masterVolume / 100f);
 
 			//gameplay panel
-			power_ups_panel = ECSManager.FindEntityByName("power_ups_panel");
-			on_button_pwrUp = ECSManager.FindEntityByName("on_button_pwrUp");
-			on_button_backing_pwrUp = ECSManager.FindEntityByName("on_button_backing_pwrUp");
-			off_button_pwrUp = ECSManager.FindEntityByName("off_button_pwrUp");
-			off_button_backing_pwrUp = ECSManager.FindEntityByName("off_button_backing_pwrUp");
-			invulnerability_panel = ECSManager.FindEntityByName("invulnerability_panel");
-			on_button_inv = ECSManager.FindEntityByName("on_button_inv");
-			on_button_backing_inv = ECSManager.FindEntityByName("on_button_backing_inv");
-			off_button_inv = ECSManager.FindEntityByName("off_button_inv");
-			off_button_backing_inv = ECSManager.FindEntityByName("off_button_backing_inv");
-			settingsClose = ECSManager.FindEntityByName("close_settings");
+			{
+				power_ups_panel = ECSManager.FindEntityByName("power_ups_panel");
+				on_button_pwrUp = ECSManager.FindEntityByName("on_button_pwrUp");
+				on_button_backing_pwrUp = ECSManager.FindEntityByName("on_button_backing_pwrUp");
+				off_button_pwrUp = ECSManager.FindEntityByName("off_button_pwrUp");
+				off_button_backing_pwrUp = ECSManager.FindEntityByName("off_button_backing_pwrUp");
+				invulnerability_panel = ECSManager.FindEntityByName("invulnerability_panel");
+				on_button_inv = ECSManager.FindEntityByName("on_button_inv");
+				on_button_backing_inv = ECSManager.FindEntityByName("on_button_backing_inv");
+				off_button_inv = ECSManager.FindEntityByName("off_button_inv");
+				off_button_backing_inv = ECSManager.FindEntityByName("off_button_backing_inv");
+				settingsClose = ECSManager.FindEntityByName("close_settings");
+			}
 
 			//graphics panel
-			mGammaPanel = ECSManager.FindEntityByName("gamma_panel");
-			mGammaValue = ECSManager.FindEntityByName("gamma_value");
+			{
+				mGammaPanel = ECSManager.FindEntityByName("gamma_panel");
+				mGammaValue = ECSManager.FindEntityByName("gamma_value");
+			}
+
+			//controls panel
+			{
+
+			}
 
 			pointer = ECSManager.FindEntityByName("main_pointer");
 			pointerTransform = pointer.GetComponent<Transform>();
