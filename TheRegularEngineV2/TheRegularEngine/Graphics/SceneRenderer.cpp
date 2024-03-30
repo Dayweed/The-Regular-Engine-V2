@@ -732,7 +732,13 @@ namespace TRE
 
 			VkDeviceSize offsets[] = { 0 };
 			VkBuffer VB = VK_NULL_HANDLE;
-			VB = m_Sprite3DVertexBuffer->GetBuffer();
+
+			if (Comp.m_IsSpriteSheet)
+			{
+				VB = Comp.GetCurrentVertex()->GetBuffer();
+			}
+			else
+				VB = m_Sprite3DVertexBuffer->GetBuffer();
 
 			vkCmdBindVertexBuffers(m_CommandBuffer->GetInUseCommandBuffer(), 0, 1, &VB, offsets);
 			vkCmdBindIndexBuffer(m_CommandBuffer->GetInUseCommandBuffer(), m_Sprite3DIndexBuffer->GetBuffer(), 0, VK_INDEX_TYPE_UINT32);
