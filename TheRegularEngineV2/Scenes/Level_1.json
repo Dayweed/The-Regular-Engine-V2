@@ -21628,10 +21628,9 @@
       {
          "m_RegisteredScripts": [
             "TRE.LevelOneObject",
-            "TRE.TextBounce",
-            "TRE.DioramaSpin"
+            "TRE.TextBounce"
          ],
-         "m_StoredClass": "TRE.LevelOneObject,TRE.TextBounce,TRE.DioramaSpin"
+         "m_StoredClass": "TRE.LevelOneObject,TRE.TextBounce"
       },
       390070771,
       {

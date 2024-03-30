@@ -31,9 +31,9 @@ namespace TRE
 		private const float rotationSpeed = 20;
 
 		private ulong collectedSFX;
-        float rotSpeed = rotationSpeed;
+		float rotSpeed = rotationSpeed;
 
-        public void Start()
+		public void Start()
 		{
 			collectedSFX = ECSManager.FindIDFromName("SFX_PowerUpsCollected");
 			originalScale = GetComponent<Transform>().Scale;
@@ -122,21 +122,19 @@ namespace TRE
 			}
 			if (!collected)
 			{
-                // THIS CODE NEVER WORKED. :(
-                // Spin blueberry
-                TransformSystem.GetRotation(this.ID, out vec3 rot);
+				// Spin powerup
+				TransformSystem.GetRotation(this.ID, out vec3 rot);
 
-                rot.y += rotSpeed * Time.deltaTime;
-                if (rot.y >= 90)
-                {
-                    rotSpeed = rotationSpeed * -1;
-                }
-                else if (rot.y <= -90)
-                {
-                    rotSpeed = rotationSpeed;
-                }
-                TransformSystem.SetRotation(this.ID, rot);
-                return;
+				rot.y += rotSpeed * Time.deltaTime;
+				
+				if (rot.y >= 90)
+					rotSpeed = rotationSpeed * -1;
+				
+				else if (rot.y <= -90)
+					rotSpeed = rotationSpeed;
+
+				TransformSystem.SetRotation(this.ID, rot);
+				return;
 			}
 			if (cooldownCurrent >= 0) cooldownCurrent -= Time.deltaTime;
 			SetToPlayer();
