@@ -42,8 +42,10 @@ namespace TRE
 		Entity ConfettiParticleLeft;
 		Entity ConfettiParticleRight;
 		private bool confettiTime = false;
+		private float mConfettiTimeDurian = 3f;
+		private bool mConfettispawned = false;
 
-		private ulong endsceneBGM;
+        private ulong endsceneBGM;
 		private ulong mainBGM;
 
 		//Audio
@@ -171,7 +173,11 @@ namespace TRE
 
 			endsceneBGM = ECSManager.FindIDFromName("BGM_End");
 			mainBGM = ECSManager.FindIDFromName("BGM");
-		}
+
+			confettiTime = false;
+            mConfettispawned = false;
+            mConfettiTimeDurian = 3f;
+        }
 
 		public void Update()
 		{
@@ -290,10 +296,10 @@ namespace TRE
 				Entity holeyStrawberry = ECSManager.Instantiate(strawberryCheat);
 				holeyStrawberry.GetComponent<Transform>().Position = newHoleyPos;
 			}
-			#endregion
-
-			// Late Start to ensure transform for stars arent screwed by parenting
-			if (lateStart < 2) ++lateStart;
+            #endregion
+            //Debug.Log(CameraSystem.GetMainCameraPosition().x.ToString() + " Y: " + CameraSystem.GetMainCameraPosition().y.ToString() + "Z: " + CameraSystem.GetMainCameraPosition().z.ToString());
+            // Late Start to ensure transform for stars arent screwed by parenting
+            if (lateStart < 2) ++lateStart;
 			if (lateStart == 2 && ECSManager.IsValidEntity(StarsCollected.ID) && ECSManager.IsValidEntity(Stars1.ID) && ECSManager.IsValidEntity(Stars2.ID) && ECSManager.IsValidEntity(Stars3.ID))
 			{
 				DetermineStarsDisplay(currentSceneName);
@@ -339,26 +345,36 @@ namespace TRE
 				}
 			}
 
-			if (PhysicsSystem.IsTriggerStay(Holey.ID, ConfettiTrigger.ID) && PhysicsSystem.IsTriggerStay(Moley.ID, ConfettiTrigger.ID) && !confettiTime)
+            if (PhysicsSystem.IsTriggerStay(Holey.ID, ConfettiTrigger.ID) && PhysicsSystem.IsTriggerStay(Moley.ID, ConfettiTrigger.ID))
 			{
-				Debug.Log("wee");
-				ConfettiParticleLeft.GetComponent<Particle>().IsActive = true;
-				ConfettiParticleLeft.GetComponent<Transform>().Position = new GlmSharp.vec3(0f, -1500f, 0f);
-				ConfettiParticleRight.GetComponent<Particle>().IsActive = true;
-				ConfettiParticleRight.GetComponent<Transform>().Position = new GlmSharp.vec3(0f, -1500f, 0f);
-				
-				ConfettiParticleLeft.GetComponent<Transform>().Position = CameraSystem.GetMainCameraPosition();
-				ConfettiParticleLeft.GetComponent<Transform>().Position += CameraSystem.GetMainCameraForwardVec().Normalized * 55f;
-				ConfettiParticleLeft.GetComponent<Transform>().Position = new vec3(ConfettiParticleLeft.GetComponent<Transform>().Position.x,
-																				   ConfettiParticleLeft.GetComponent<Transform>().Position.y - 10f,
-																				   ConfettiParticleLeft.GetComponent<Transform>().Position.z);
-				
-				ConfettiParticleRight.GetComponent<Transform>().Position = CameraSystem.GetMainCameraPosition();
-				ConfettiParticleRight.GetComponent<Transform>().Position += CameraSystem.GetMainCameraForwardVec().Normalized * 55f;
-				ConfettiParticleRight.GetComponent<Transform>().Position = new vec3(ConfettiParticleRight.GetComponent<Transform>().Position.x,
-																					ConfettiParticleRight.GetComponent<Transform>().Position.y - 10f,
-																					ConfettiParticleRight.GetComponent<Transform>().Position.z);
 				confettiTime = true;
+			}
+
+            if (confettiTime)
+			{
+				mConfettiTimeDurian -= Time.GetDeltaTime();
+				if (mConfettiTimeDurian <= 0)
+				{
+					confettiTime = false;
+                    ConfettiParticleLeft.GetComponent<Particle>().IsActive = false;
+                    ConfettiParticleRight.GetComponent<Particle>().IsActive = false;
+                }
+				else
+				{
+					if (!mConfettispawned)
+					{
+						ConfettiParticleLeft.GetComponent<Particle>().IsActive = true;
+						ConfettiParticleRight.GetComponent<Particle>().IsActive = true;
+						ConfettiParticleLeft.GetComponent<Transform>().Position = new vec3(CameraSystem.GetMainCameraPosition());
+						ConfettiParticleRight.GetComponent<Transform>().Position = new vec3(CameraSystem.GetMainCameraPosition());
+						ConfettiParticleLeft.GetComponent<Transform>().Position += new vec3(100f, -130f, -100f);
+						ConfettiParticleRight.GetComponent<Transform>().Position += new vec3(100f, -130f, -100f);
+						mConfettispawned = true;
+					}
+
+                    ConfettiParticleLeft.GetComponent<Transform>().Position = new vec3(ConfettiParticleLeft.GetComponent<Transform>().Position.x, ConfettiParticleLeft.GetComponent<Transform>().Position.y - 1f, ConfettiParticleLeft.GetComponent<Transform>().Position.z);
+					ConfettiParticleRight.GetComponent<Transform>().Position = new vec3(ConfettiParticleRight.GetComponent<Transform>().Position.x, ConfettiParticleRight.GetComponent<Transform>().Position.y - 1f, ConfettiParticleRight.GetComponent<Transform>().Position.z);
+				}
 			}
 
 			#region Stars
@@ -411,7 +427,7 @@ namespace TRE
 				goToNextScene = true;
 
 			//go to next scene after a while
-			if (goToNextScene || forceGoToNextScene)
+			if ((goToNextScene || forceGoToNextScene) && mConfettiTimeDurian <= 0)
 			{
 				if (!courseComplete.isVisible)
 				{
