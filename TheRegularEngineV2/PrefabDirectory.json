@@ -51,7 +51,8 @@
             "16334699758206833652",
             "4137868201156863779",
             "9602251378270956871",
-            "2508553406564842757"
+            "2508553406564842757",
+            "16789651771424100150"
         ],
         "m_ExistingPrefabsValue": [
             "../Resources/Prefabs/FallingMaracca.json",
@@ -104,7 +105,8 @@
             "../Resources/Prefabs/EffectsManager.json",
             "../Resources/Prefabs/Level1Diorama.json",
             "../Resources/Prefabs/Level2Diorama.json",
-            "../Resources/Prefabs/Confetti Particle Right.json"
+            "../Resources/Prefabs/Confetti Particle Right.json",
+            "../Resources/Prefabs/PauseMenu_Updated.json"
         ]
     }
 }

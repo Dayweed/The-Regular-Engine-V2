@@ -49,6 +49,9 @@ namespace TRE
 		private Entity settingsPointer;
 		private Transform settingsPointerTransform;
 
+		private Entity controlsPointer;
+		private Transform controlsPointerTransform;
+
 		// Pause menu options
 		private List<Entity> options;
 		private List<Entity> DestructiveActionConfirmations;
@@ -88,7 +91,6 @@ namespace TRE
 		private Entity mGammaPanel;
 		private Entity mGammaValue;
 		private float mTempGammaValue = 2.2f;
-		//private Transform settingsPointerTransform;
 
 		private CameraController mainCamera;
 		private string CurrentScene;
@@ -173,8 +175,11 @@ namespace TRE
 
 			settingsPointer = ECSManager.FindEntityByName("settings_pointer");
 			settingsPointerTransform = settingsPointer.GetComponent<Transform>();
+            
+            controlsPointer = ECSManager.FindEntityByName("ControlsPointer");
+			controlsPointerTransform = controlsPointer.GetComponent<Transform>();
 
-			pauseMenu = ECSManager.FindEntityByName("PauseMenu");
+            pauseMenu = ECSManager.FindEntityByName("PauseMenu");
 			cfmMenu = ECSManager.FindEntityByName("pauseMenu_destructive");
 			settingsMenu = ECSManager.FindEntityByName("settings_panel");
 
@@ -246,6 +251,7 @@ namespace TRE
 					menustate = 1;
 					mIsEditingSettings = false;
 					UIS.SetVisible(settingsPointer.ID, false);
+					UIS.SetVisible(controlsPointer.ID, false);
 					Debug.Log("Trigger: Get out of editing state");
 				}
 				else if (!mIsEditingSettings && menustate == 1)
@@ -455,8 +461,11 @@ namespace TRE
 						off_button_backing_inv.GetComponent<SpriteRenderer>().isVisible = showGameplayPanel;
 					}
 
-					//show audio panel
+					//don't show pointer when switching panels
 					settingsPointer.GetComponent<SpriteRenderer>().isVisible = false;
+					controlsPointer.GetComponent<SpriteRenderer>().isVisible = false;
+					
+					//show audio panel
 					for (int i = 0; i < audioPanel.Count; ++i)
 					{
 						//show text
@@ -472,8 +481,7 @@ namespace TRE
 					mGammaValue.GetComponent<Text>().IsVisible = showGraphicsPanel;
 
 					//Not editing settings -> editing settings
-					//dont allow controls panel to move down for now
-					if (!mIsEditingSettings && IS.GetKeyPress(InputKeys.S) && (showGameplayPanel || showGraphicsPanel || showAudioPanel))
+					if (!mIsEditingSettings && IS.GetKeyPress(InputKeys.S))
 					{
 						mIsEditingSettings = true;
 						mCurrentEditMember = 0; //Set it to be 0th member always at the start
@@ -633,8 +641,21 @@ namespace TRE
 					}
 					else if (showControlsPanel)
 					{
+						//show thick boy (pointer)
+                        settingsPointer.GetComponent<SpriteRenderer>().isVisible = false;
+						controlsPointer.GetComponent<SpriteRenderer>().isVisible = true;
 
-					}
+                        //move pointer
+                        switch (mCurrentEditMember)
+                        {
+                            case 0:
+                                //controlsPointerTransform.Position = audioPanel[0].GetComponent<Transform>().Position;
+                                break;
+                            case 1:
+                                //controlsPointerTransform.Position = audioPanel[1].GetComponent<Transform>().Position;
+                                break;
+                        }
+                    }
 					else if (showGameplayPanel)
 					{
 						settingsPointer.GetComponent<SpriteRenderer>().isVisible = true;
@@ -736,8 +757,8 @@ namespace TRE
 						menustate = 1;
 
 						//Set every pointer back to false
-						//mGraphicsPointer.GetComponent<SpriteRenderer>().isVisible = false;
 						settingsPointer.GetComponent<SpriteRenderer>().isVisible = false;
+						controlsPointer.GetComponent<SpriteRenderer>().isVisible = false;
 
 						if (ECSManager.IsValidEntity(sfx))
 							AS.Play(sfx);
@@ -979,7 +1000,8 @@ namespace TRE
 
 			if (showControlsPanel)
 			{
-				showControlsPanel = false;
+                UIS.SetVisible(controlsPointer.ID, false);
+                showControlsPanel = false;
 			}
 
 			if (showGameplayPanel)
