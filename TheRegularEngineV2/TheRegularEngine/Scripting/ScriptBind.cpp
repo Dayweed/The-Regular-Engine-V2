@@ -536,6 +536,7 @@ namespace TRE
 	static bool BindHasComponent(CSEntityID ID, MonoReflectionType* type)
 	{
 		Entity entity = VALIDATEENTITY(ID);
+		if (!entity) return false;
 
 		MonoType* monoType = mono_reflection_type_get_type(type);
 		ComponentsID componentID = Tools::ConvertComponentNameToID(mono_type_get_name(monoType));
