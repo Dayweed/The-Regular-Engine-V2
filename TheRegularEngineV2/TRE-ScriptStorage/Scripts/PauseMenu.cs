@@ -59,6 +59,7 @@ namespace TRE
 		private Entity pauseMenu;
 		private Entity cfmMenu;
 		private Entity settingsMenu;
+        private Entity settingsClose;
 
 		//Gameplay panel entities
 		private Entity power_ups_panel;
@@ -91,6 +92,10 @@ namespace TRE
 
 		private CameraController mainCamera;
 		private string CurrentScene;
+
+		private bool controllerConnected = false;
+		private bool controllerConnectedLast = false;
+		private bool changeUI = false;
 
 		public void Start()
 		{
@@ -154,6 +159,7 @@ namespace TRE
 			on_button_backing_inv = ECSManager.FindEntityByName("on_button_backing_inv");
 			off_button_inv = ECSManager.FindEntityByName("off_button_inv");
 			off_button_backing_inv = ECSManager.FindEntityByName("off_button_backing_inv");
+			settingsClose = ECSManager.FindEntityByName("close_settings");
 
 			//graphics panel
 			mGammaPanel = ECSManager.FindEntityByName("gamma_panel");
@@ -196,6 +202,29 @@ namespace TRE
 			bool playerPressedPause = IS.GetKeyPress(InputKeys.Escape) ||
 				IS.GetControllerButtonTriggered(0, IS.Button.Start) ||
 				IS.GetControllerButtonTriggered(1, IS.Button.Start);
+
+			// Is controller connected
+			controllerConnected = IS.GetControllerConnected(0) || IS.GetControllerConnected(1);
+
+            if (controllerConnected != controllerConnectedLast)
+            {
+				changeUI = true;
+				controllerConnectedLast = controllerConnected;
+            }
+
+            if (controllerConnected && changeUI)
+            {
+				// change the texture for the settings_close button
+				//settingsClose.GetComponent<SpriteRenderer>().Texture = "ui-button-back-controller.png";
+				changeUI = false;
+            }
+			else if (!controllerConnected && changeUI)
+            {
+                // change the texture for the settings_close button
+                //settingsClose.GetComponent<SpriteRenderer>().Texture = "ui-button-back.png";
+				changeUI = false;
+            }
+
 
 			// prevent pause menu from showing up in the level camera pans
 			// but allow it to show up it the MainMenu scene even if its camera is not free
@@ -782,6 +811,7 @@ namespace TRE
 						case 1:
 							//show settings menu
 							UIS.SetVisible(settingsMenu.ID, true);
+							UIS.SetVisible(settingsClose.ID, true);
 
 							//                     //set confirmation stuff as invisible
 							//                     UISystem.SetVisible(cfmMenu.ID, false);
@@ -822,6 +852,7 @@ namespace TRE
 					UIS.SetVisible(DestructiveActionConfirmations[i].ID, false);
 
 				UIS.SetVisible(settingsMenu.ID, false);
+				UIS.SetVisible(settingsClose.ID, false);
 				for (int i = 0; i < settingsPanel.Count; i++)
 				{
 					UIS.SetVisible(settingsPanel[i].ID, false);
@@ -911,6 +942,7 @@ namespace TRE
 
 			UIS.SetVisible(settingsMenu.ID, false);
 			UIS.SetVisible(settingsPointer.ID, false);
+			UIS.SetVisible(settingsClose.ID, false);
 
 			if (showGraphicsPanel)
 			{
