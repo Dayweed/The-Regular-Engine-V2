@@ -31,14 +31,12 @@ namespace TRE
 		private const float rotationSpeed = 20;
 
 		private ulong collectedSFX;
-        float rotSpeed = rotationSpeed;
 
-        public void Start()
+		public void Start()
 		{
 			collectedSFX = ECSManager.FindIDFromName("SFX_PowerUpsCollected");
 			originalScale = GetComponent<Transform>().Scale;
 			//Debug.Log("MY NAME IS " + name);
-
 		}
 
 		public void OnTriggerStay(/*Collider*/System.UInt64 otherID)
@@ -123,24 +121,11 @@ namespace TRE
 			}
 			if (!collected)
 			{
-                // THIS CODE NEVER WORKED. :(
-                // Spin blueberry
-                TransformSystem.GetRotation(this.ID, out vec3 rot);
-				
-                rot.y += rotSpeed * Time.deltaTime;
-                if (rot.y >= 90)
-				{
-                    rotSpeed = rotationSpeed * -1;
-                }
-				else if(rot.y <= -90)
-				{
-                    rotSpeed = rotationSpeed;
-
-                }
-				
-                TransformSystem.SetRotation(this.ID, rot);
-				Debug.Log("Rotation is " + rot.y);
-                return;
+				// THIS CODE NEVER WORKED. :(
+				// Spin blueberry
+				float newRot = transform.Rotation.y + rotationSpeed * Time.deltaTime;
+				transform.Rotation = new vec3(0, newRot, 0);
+				return;
 			}
 			if (cooldownCurrent >= 0) cooldownCurrent -= Time.deltaTime;
 			SetToPlayer();
