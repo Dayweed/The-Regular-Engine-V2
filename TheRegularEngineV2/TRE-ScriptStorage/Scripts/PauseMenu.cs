@@ -93,8 +93,30 @@ namespace TRE
 		private float mTempGammaValue = 2.2f;
 
 		//Controls panel entities
+		private Entity P1_panel;
+		private Entity P1_keyboard_panel;
+		private Entity P1_keyboard_preset1;
+		private Entity P1_keyboard_preset2;
+		private Entity P1_keyboard_preset3;
+		private Entity P1_controller_panel;
+		private Entity P1_controller_preset1;
+		private Entity P1_controller_preset2;
+		private Entity P2_panel;
+		private Entity P2_keyboard_panel;
+		private Entity P2_keyboard_preset1;
+		private Entity P2_keyboard_preset2;
+		private Entity P2_keyboard_preset3;
+		private Entity P2_controller_panel;
+		private Entity P2_controller_preset1;
+		private Entity P2_controller_preset2;
+        private bool P1_IsKeyboard = true;
+        private bool P2_IsKeyboard = true;
+		private int P1_KeyboardPreset = 0;
+		private int P2_KeyboardPreset = 1;
+		private int P1_ControllerPreset = 0;
+		private int P2_ControllerPreset = 0;
 
-		private CameraController mainCamera;
+        private CameraController mainCamera;
 		private string CurrentScene;
 
 		private bool controllerConnected = false;
@@ -177,8 +199,27 @@ namespace TRE
 
 			//controls panel
 			{
+				P1_panel = ECSManager.FindEntityByName("P1_panel");
+                P2_panel = ECSManager.FindEntityByName("P2_panel");
 
-			}
+				P1_keyboard_panel = ECSManager.FindEntityByName("P1_keyboard_panel");
+				P1_keyboard_preset1 = ECSManager.FindEntityByName("P1_keyboard_preset1");
+                P1_keyboard_preset2 = ECSManager.FindEntityByName("P1_keyboard_preset2");
+                P1_keyboard_preset3 = ECSManager.FindEntityByName("P1_keyboard_preset3");
+
+                P1_controller_panel = ECSManager.FindEntityByName("P1_controller_panel");
+                P1_controller_preset1 = ECSManager.FindEntityByName("P1_controller_preset1");
+                P1_controller_preset2 = ECSManager.FindEntityByName("P1_controller_preset2");
+
+                P2_keyboard_panel = ECSManager.FindEntityByName("P2_keyboard_panel");
+                P2_keyboard_preset1 = ECSManager.FindEntityByName("P2_keyboard_preset1");
+                P2_keyboard_preset2 = ECSManager.FindEntityByName("P2_keyboard_preset2");
+                P2_keyboard_preset3 = ECSManager.FindEntityByName("P2_keyboard_preset3");
+
+                P2_controller_panel = ECSManager.FindEntityByName("P2_controller_panel");
+                P2_controller_preset1 = ECSManager.FindEntityByName("P2_controller_preset1");
+                P2_controller_preset2 = ECSManager.FindEntityByName("P2_controller_preset2");
+            }
 
 			pointer = ECSManager.FindEntityByName("main_pointer");
 			pointerTransform = pointer.GetComponent<Transform>();
@@ -450,36 +491,36 @@ namespace TRE
 						}
 					}
 
-					//show gameplay panel
-					power_ups_panel.GetComponent<SpriteRenderer>().isVisible = showGameplayPanel;
-					invulnerability_panel.GetComponent<SpriteRenderer>().isVisible = showGameplayPanel;
-					if (IsPowerUpOn)
-					{
-						on_button_pwrUp.GetComponent<SpriteRenderer>().isVisible = showGameplayPanel;
-						on_button_backing_pwrUp.GetComponent<SpriteRenderer>().isVisible = showGameplayPanel;
-					}
-					else
-					{
-						off_button_pwrUp.GetComponent<SpriteRenderer>().isVisible = showGameplayPanel;
-						off_button_backing_pwrUp.GetComponent<SpriteRenderer>().isVisible = showGameplayPanel;
-					}
-					if (IsInvulnerabilityOn)
-					{
-						on_button_inv.GetComponent<SpriteRenderer>().isVisible = showGameplayPanel;
-						on_button_backing_inv.GetComponent<SpriteRenderer>().isVisible = showGameplayPanel;
-					}
-					else
-					{
-						off_button_inv.GetComponent<SpriteRenderer>().isVisible = showGameplayPanel;
-						off_button_backing_inv.GetComponent<SpriteRenderer>().isVisible = showGameplayPanel;
-					}
-
 					//don't show pointer when switching panels
 					settingsPointer.GetComponent<SpriteRenderer>().isVisible = false;
 					controlsPointer.GetComponent<SpriteRenderer>().isVisible = false;
-					
-					//show audio panel
-					for (int i = 0; i < audioPanel.Count; ++i)
+
+                    //show gameplay panel
+                    power_ups_panel.GetComponent<SpriteRenderer>().isVisible = showGameplayPanel;
+                    invulnerability_panel.GetComponent<SpriteRenderer>().isVisible = showGameplayPanel;
+                    if (IsPowerUpOn)
+                    {
+                        on_button_pwrUp.GetComponent<SpriteRenderer>().isVisible = showGameplayPanel;
+                        on_button_backing_pwrUp.GetComponent<SpriteRenderer>().isVisible = showGameplayPanel;
+                    }
+                    else
+                    {
+                        off_button_pwrUp.GetComponent<SpriteRenderer>().isVisible = showGameplayPanel;
+                        off_button_backing_pwrUp.GetComponent<SpriteRenderer>().isVisible = showGameplayPanel;
+                    }
+                    if (IsInvulnerabilityOn)
+                    {
+                        on_button_inv.GetComponent<SpriteRenderer>().isVisible = showGameplayPanel;
+                        on_button_backing_inv.GetComponent<SpriteRenderer>().isVisible = showGameplayPanel;
+                    }
+                    else
+                    {
+                        off_button_inv.GetComponent<SpriteRenderer>().isVisible = showGameplayPanel;
+                        off_button_backing_inv.GetComponent<SpriteRenderer>().isVisible = showGameplayPanel;
+                    }
+
+                    //show audio panel
+                    for (int i = 0; i < audioPanel.Count; ++i)
 					{
 						//show text
 						if (audioPanel[i].HasComponent<Text>())
@@ -493,8 +534,13 @@ namespace TRE
 					mGammaPanel.GetComponent<SpriteRenderer>().isVisible = showGraphicsPanel;
 					mGammaValue.GetComponent<Text>().IsVisible = showGraphicsPanel;
 
-					//Not editing settings -> editing settings
-					if (!mIsEditingSettings && IS.GetKeyPress(InputKeys.S))
+                    //show controls panel
+                    P1_panel.GetComponent<SpriteRenderer>().isVisible = showControlsPanel;
+                    P2_panel.GetComponent<SpriteRenderer>().isVisible = showControlsPanel;
+                    showControlPanel();
+
+                    //Not editing settings -> editing settings
+                    if (!mIsEditingSettings && IS.GetKeyPress(InputKeys.S))
 					{
 						mIsEditingSettings = true;
 						mCurrentEditMember = 0; //Set it to be 0th member always at the start
@@ -655,17 +701,129 @@ namespace TRE
 					else if (showControlsPanel)
 					{
 						//show thick boy (pointer)
-                        settingsPointer.GetComponent<SpriteRenderer>().isVisible = false;
 						controlsPointer.GetComponent<SpriteRenderer>().isVisible = true;
+
+                        if (IS.GetKeyPress(InputKeys.W))
+                        {
+                            Debug.Log("press up");
+                            mCurrentEditMember = -1;
+                            mIsEditingSettings = false;
+
+                            Debug.Log("mCurrentEditMember: " + mCurrentEditMember);
+                        }
+
+                        if (IS.GetKeyPress(InputKeys.Tab))
+                        {
+                            if (mCurrentEditMember == 0)
+                                mCurrentEditMember = 1;
+                            else if (mCurrentEditMember == 1)
+                                mCurrentEditMember = 0;
+
+                            Debug.Log("mCurrentEditMember: " + mCurrentEditMember);
+                        }
+
+						switch (mCurrentEditMember)
+						{
+							case 0: //player 1
+								if (P1_IsKeyboard)
+								{
+									if (IS.GetKeyPress(InputKeys.A))
+									{
+										Debug.Log("in controls panel");
+										if (P1_KeyboardPreset <= 0)
+                                            P1_KeyboardPreset = 2;
+										else
+											--P1_KeyboardPreset;
+
+										Debug.Log("P1_KeyboardPreset: " + P1_KeyboardPreset);
+									}
+
+									if (IS.GetKeyPress(InputKeys.D))
+									{
+										Debug.Log("press right");
+										if (P1_KeyboardPreset >= 2)
+                                            P1_KeyboardPreset = 0;
+										else
+											++P1_KeyboardPreset;
+
+										Debug.Log("P1_KeyboardPreset: " + P1_KeyboardPreset);
+									}
+								}
+								else
+								{
+                                    if (IS.GetKeyPress(InputKeys.A))
+                                    {
+                                        Debug.Log("in controls panel");
+										P1_ControllerPreset = 0;
+
+                                        Debug.Log("P1_ControllerPreset: " + P1_KeyboardPreset);
+                                    }
+
+                                    if (IS.GetKeyPress(InputKeys.D))
+                                    {
+                                        Debug.Log("press right");
+                                        P1_ControllerPreset = 1;
+
+                                        Debug.Log("P1_ControllerPreset: " + P1_KeyboardPreset);
+                                    }
+                                }
+                                break;
+							case 1: //player 2
+                                if (P2_IsKeyboard)
+                                {
+                                    if (IS.GetKeyPress(InputKeys.A))
+                                    {
+                                        Debug.Log("in controls panel");
+                                        if (P2_KeyboardPreset <= 0)
+                                            P2_KeyboardPreset = 2;
+                                        else
+                                            --P2_KeyboardPreset;
+
+                                        Debug.Log("P2_KeyboardPreset: " + P2_KeyboardPreset);
+                                    }
+
+                                    if (IS.GetKeyPress(InputKeys.D))
+                                    {
+                                        Debug.Log("press right");
+                                        if (P2_KeyboardPreset >= 2)
+                                            P2_KeyboardPreset = 0;
+                                        else
+                                            ++P2_KeyboardPreset;
+
+                                        Debug.Log("P2_KeyboardPreset: " + P2_KeyboardPreset);
+                                    }
+                                }
+								else
+								{
+                                    if (IS.GetKeyPress(InputKeys.A))
+                                    {
+                                        Debug.Log("in controls panel");
+                                        P2_ControllerPreset = 0;
+
+                                        Debug.Log("P2_ControllerPreset: " + P1_KeyboardPreset);
+                                    }
+
+                                    if (IS.GetKeyPress(InputKeys.D))
+                                    {
+                                        Debug.Log("press right");
+                                        P2_ControllerPreset = 1;
+
+                                        Debug.Log("P2_ControllerPreset: " + P1_KeyboardPreset);
+                                    }
+                                }
+                                break;
+						}
+
+						showControlPanel();
 
                         //move pointer
                         switch (mCurrentEditMember)
                         {
                             case 0:
-                                //controlsPointerTransform.Position = audioPanel[0].GetComponent<Transform>().Position;
+                                controlsPointerTransform.Position = P1_keyboard_panel.GetComponent<Transform>().Position;
                                 break;
                             case 1:
-                                //controlsPointerTransform.Position = audioPanel[1].GetComponent<Transform>().Position;
+                                controlsPointerTransform.Position = P2_keyboard_panel.GetComponent<Transform>().Position;
                                 break;
                         }
                     }
@@ -909,11 +1067,9 @@ namespace TRE
 
 				for (int i = 0; i < audioPanel.Count; ++i)
 				{
-					//show text
 					if (audioPanel[i].HasComponent<Text>())
 						TS.SetVisible(audioPanel[i].ID, false);
 
-					//show UI
 					else
 						UIS.SetVisible(audioPanel[i].ID, false);
 				}
@@ -1014,6 +1170,22 @@ namespace TRE
 			if (showControlsPanel)
 			{
                 UIS.SetVisible(controlsPointer.ID, false);
+                UIS.SetVisible(P1_panel.ID, false);
+                UIS.SetVisible(P1_keyboard_panel.ID, false);
+                UIS.SetVisible(P1_keyboard_preset1.ID, false);
+                UIS.SetVisible(P1_keyboard_preset2.ID, false);
+                UIS.SetVisible(P1_keyboard_preset3.ID, false);
+                UIS.SetVisible(P1_controller_panel.ID, false);
+                UIS.SetVisible(P1_controller_preset1.ID, false);
+                UIS.SetVisible(P1_controller_preset2.ID, false);
+                UIS.SetVisible(P2_panel.ID, false);
+                UIS.SetVisible(P2_keyboard_panel.ID, false);
+                UIS.SetVisible(P2_keyboard_preset1.ID, false);
+                UIS.SetVisible(P2_keyboard_preset2.ID, false);
+                UIS.SetVisible(P2_keyboard_preset3.ID, false);
+                UIS.SetVisible(P2_controller_panel.ID, false);
+                UIS.SetVisible(P2_controller_preset1.ID, false);
+                UIS.SetVisible(P2_controller_preset2.ID, false);
                 showControlsPanel = false;
 			}
 
@@ -1032,5 +1204,90 @@ namespace TRE
 				UIS.SetVisible(off_button_backing_inv.ID, false);
 			}
 		}
+
+		private void showControlPanel()
+		{
+            if (P1_IsKeyboard)
+            {
+                P1_keyboard_panel.GetComponent<SpriteRenderer>().isVisible = showControlsPanel;
+                P1_controller_panel.GetComponent<SpriteRenderer>().isVisible = false;
+
+                switch (P1_KeyboardPreset)
+                {
+                    case 0:
+                        P1_keyboard_preset1.GetComponent<SpriteRenderer>().isVisible = showControlsPanel;
+                        P1_keyboard_preset2.GetComponent<SpriteRenderer>().isVisible = false;
+                        P1_keyboard_preset3.GetComponent<SpriteRenderer>().isVisible = false;
+                        break;
+                    case 1:
+                        P1_keyboard_preset1.GetComponent<SpriteRenderer>().isVisible = false;
+                        P1_keyboard_preset2.GetComponent<SpriteRenderer>().isVisible = showControlsPanel;
+                        P1_keyboard_preset3.GetComponent<SpriteRenderer>().isVisible = false;
+                        break;
+                    case 2:
+                        P1_keyboard_preset1.GetComponent<SpriteRenderer>().isVisible = false;
+                        P1_keyboard_preset2.GetComponent<SpriteRenderer>().isVisible = false;
+                        P1_keyboard_preset3.GetComponent<SpriteRenderer>().isVisible = showControlsPanel;
+                        break;
+                }
+            }
+            else
+            {
+                P1_keyboard_panel.GetComponent<SpriteRenderer>().isVisible = false;
+                P1_controller_panel.GetComponent<SpriteRenderer>().isVisible = showControlsPanel;
+
+                if (P1_ControllerPreset == 0)
+                {
+                    P1_controller_preset1.GetComponent<SpriteRenderer>().isVisible = showControlsPanel;
+                    P1_controller_preset2.GetComponent<SpriteRenderer>().isVisible = false;
+                }
+                else if (P1_ControllerPreset == 1)
+                {
+                    P1_controller_preset1.GetComponent<SpriteRenderer>().isVisible = false;
+                    P1_controller_preset2.GetComponent<SpriteRenderer>().isVisible = showControlsPanel;
+                }
+            }
+
+            if (P2_IsKeyboard)
+            {
+                P2_keyboard_panel.GetComponent<SpriteRenderer>().isVisible = showControlsPanel;
+                P2_controller_panel.GetComponent<SpriteRenderer>().isVisible = false;
+
+                switch (P2_KeyboardPreset)
+                {
+                    case 0:
+                        P2_keyboard_preset1.GetComponent<SpriteRenderer>().isVisible = showControlsPanel;
+                        P2_keyboard_preset2.GetComponent<SpriteRenderer>().isVisible = false;
+                        P2_keyboard_preset3.GetComponent<SpriteRenderer>().isVisible = false;
+                        break;
+                    case 1:
+                        P2_keyboard_preset1.GetComponent<SpriteRenderer>().isVisible = false;
+                        P2_keyboard_preset2.GetComponent<SpriteRenderer>().isVisible = showControlsPanel;
+                        P2_keyboard_preset3.GetComponent<SpriteRenderer>().isVisible = false;
+                        break;
+                    case 2:
+                        P2_keyboard_preset1.GetComponent<SpriteRenderer>().isVisible = false;
+                        P2_keyboard_preset2.GetComponent<SpriteRenderer>().isVisible = false;
+                        P2_keyboard_preset3.GetComponent<SpriteRenderer>().isVisible = showControlsPanel;
+                        break;
+                }
+            }
+            else
+            {
+                P2_keyboard_panel.GetComponent<SpriteRenderer>().isVisible = false;
+                P2_controller_panel.GetComponent<SpriteRenderer>().isVisible = showControlsPanel;
+
+                if (P2_ControllerPreset == 0)
+                {
+                    P2_controller_preset1.GetComponent<SpriteRenderer>().isVisible = showControlsPanel;
+                    P2_controller_preset2.GetComponent<SpriteRenderer>().isVisible = false;
+                }
+                else if (P2_ControllerPreset == 1)
+                {
+                    P2_controller_preset1.GetComponent<SpriteRenderer>().isVisible = false;
+                    P2_controller_preset2.GetComponent<SpriteRenderer>().isVisible = showControlsPanel;
+                }
+            }
+        }
 	}
 }
