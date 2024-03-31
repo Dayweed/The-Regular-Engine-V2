@@ -1,0 +1,315 @@
+[
+   [
+      4,
+      0,
+      1,
+      2,
+      3
+   ],
+   [
+      4,
+      0,
+      {
+         "m_IsMainPrefab": true,
+         "m_MainPrefabGUID": "7016629013215293783",
+         "m_Overrides": {},
+         "m_PrefabGUID": "7016629013215293783",
+         "m_RemovedComps": []
+      },
+      1,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "7016629013215293783",
+         "m_Overrides": {},
+         "m_PrefabGUID": "1779554678979579917",
+         "m_RemovedComps": []
+      },
+      2,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "7016629013215293783",
+         "m_Overrides": {},
+         "m_PrefabGUID": "4800923413372154977",
+         "m_RemovedComps": []
+      },
+      3,
+      {
+         "m_IsMainPrefab": false,
+         "m_MainPrefabGUID": "7016629013215293783",
+         "m_Overrides": {},
+         "m_PrefabGUID": "16597551895197350232",
+         "m_RemovedComps": []
+      }
+   ],
+   [
+      4,
+      0,
+      {
+         "m_Children": [
+            "12897725340148288218",
+            "16250663970286912669",
+            "17990547329746113176"
+         ],
+         "m_Parent": ""
+      },
+      1,
+      {
+         "m_Children": [],
+         "m_Parent": "3467037925335912844"
+      },
+      2,
+      {
+         "m_Children": [],
+         "m_Parent": "3467037925335912844"
+      },
+      3,
+      {
+         "m_Children": [],
+         "m_Parent": "3467037925335912844"
+      }
+   ],
+   [
+      4,
+      0,
+      {
+         "m_Active": true,
+         "m_GUID": "3467037925335912844",
+         "m_Index": 513,
+         "m_Name": "Slope_Building_1",
+         "m_Tag": ""
+      },
+      1,
+      {
+         "m_Active": true,
+         "m_GUID": "12897725340148288218",
+         "m_Index": 514,
+         "m_Name": "Slope_Building_1_Ground",
+         "m_Tag": ""
+      },
+      2,
+      {
+         "m_Active": true,
+         "m_GUID": "16250663970286912669",
+         "m_Index": 515,
+         "m_Name": "Building_04_Collider_02",
+         "m_Tag": ""
+      },
+      3,
+      {
+         "m_Active": true,
+         "m_GUID": "17990547329746113176",
+         "m_Index": 516,
+         "m_Name": "Building_04_Collider_01",
+         "m_Tag": ""
+      }
+   ],
+   [
+      4,
+      0,
+      {
+         "m_Position": [
+            64.17562866210938,
+            3.012401819229126,
+            -31.196142196655273
+         ],
+         "m_Rotation": [
+            0.0,
+            -90.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      1,
+      {
+         "m_Position": [
+            70.5780029296875,
+            23.052154541015625,
+            -31.195999145507813
+         ],
+         "m_Rotation": [
+            0.0,
+            -90.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      },
+      2,
+      {
+         "m_Position": [
+            57.37477111816406,
+            1.476513147354126,
+            -31.196292877197266
+         ],
+         "m_Rotation": [
+            17.744670867919922,
+            -89.98021697998047,
+            4.969740867614746
+         ],
+         "m_Scale": [
+            0.9999998211860657,
+            0.9999997615814209,
+            0.9999997019767761
+         ]
+      },
+      3,
+      {
+         "m_Position": [
+            64.17581176757813,
+            -10.911792755126953,
+            -31.1962947845459
+         ],
+         "m_Rotation": [
+            0.0,
+            -89.9720230102539,
+            0.0
+         ],
+         "m_Scale": [
+            0.9999999403953552,
+            1.0,
+            0.9999999403953552
+         ]
+      }
+   ],
+   [
+      1,
+      0,
+      {
+         "ASSET_GEOM_m_RenderObject": "ddc35a63ccbc63c0",
+         "ASSET_MAT_m_AnimationMaterialInstance": "0",
+         "ASSET_MAT_m_MaterialInstance": "bf488ad32857cbb2",
+         "m_DLightIndex": 0,
+         "m_DrawShadow": true,
+         "m_IsVisible": true
+      }
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      4,
+      0,
+      {
+         "m_CollisionLayer.m_LayerID": 0,
+         "m_HalfExtents": [
+            19.0,
+            20.0,
+            8.5
+         ],
+         "m_IsActive": true,
+         "m_IsTrigger": false,
+         "m_Offset": [
+            6.400000095367432,
+            -0.20000000298023224,
+            0.0
+         ],
+         "m_PhysicsMaterial.m_MaterialID": 0
+      },
+      1,
+      {
+         "m_CollisionLayer.m_LayerID": 0,
+         "m_HalfExtents": [
+            19.0,
+            0.20000000298023224,
+            8.5
+         ],
+         "m_IsActive": true,
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_PhysicsMaterial.m_MaterialID": 0
+      },
+      2,
+      {
+         "m_CollisionLayer.m_LayerID": 0,
+         "m_HalfExtents": [
+            19.0,
+            3.5,
+            7.5
+         ],
+         "m_IsActive": true,
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_PhysicsMaterial.m_MaterialID": 0
+      },
+      3,
+      {
+         "m_CollisionLayer.m_LayerID": 0,
+         "m_HalfExtents": [
+            19.0,
+            11.5,
+            14.5
+         ],
+         "m_IsActive": true,
+         "m_IsTrigger": false,
+         "m_Offset": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_PhysicsMaterial.m_MaterialID": 0
+      }
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ]
+]
