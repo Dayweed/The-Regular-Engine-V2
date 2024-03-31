@@ -609,7 +609,8 @@ namespace TRE
 	bool AudioSystem::GetIsPlaying(Entity& go) const
 	{
 		Audio& source = go->GetComponent<Audio>();
-		return source.m_Channel->isPlaying(&source.m_isPlaying);
+		source.m_Channel->isPlaying(&source.m_isPlaying);
+		return source.m_isPlaying;
 
 		//std::cout << "IsPlaying: " << source.m_isPlaying << source.m_FileName << std::endl;
 	}

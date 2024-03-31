@@ -20,6 +20,7 @@ namespace TRE
 		bool m_Repeat = true;
 		bool m_Reverse = true; // Will loop from start if false [Disabled if m_Repeat is false]
 		bool m_PlayAudioDirectionChange = false; // Will play an audio if direction change if have audio component
+		bool m_DirectionChange = false;
 
 		glm::vec3 m_OldPosition{};	// Old position from previous movement
 

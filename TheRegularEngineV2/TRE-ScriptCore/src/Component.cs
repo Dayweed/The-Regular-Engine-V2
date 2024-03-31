@@ -623,6 +623,14 @@ namespace TRE
 		{
 			DirectPathfindingSystem.Engine_ResetPathfinding(entity.ID);
 		}
+
+		public bool directionChange
+		{
+			get
+			{
+				return DirectPathfindingSystem.Engine_GetDirectionChangePathfinding(entity.ID);
+			}
+		}
 	}
 
 	public class Text : Component

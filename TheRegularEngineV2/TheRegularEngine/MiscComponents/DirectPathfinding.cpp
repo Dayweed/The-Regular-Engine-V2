@@ -67,6 +67,7 @@ namespace TRE
 						audioSystem->Play(go, true);
 						go->GetComponent<Audio>().m_Play = true;
 					}
+					path.m_DirectionChange = true;
 
 					if (path.m_Direction) ++path.m_CurrentIndex; else --path.m_CurrentIndex;
 					if ((path.m_CurrentIndex >= path.m_WayPoints.size() || path.m_CurrentIndex < 0) && path.m_Repeat)
@@ -83,10 +84,13 @@ namespace TRE
 					}
 					path.m_CurrentTime = path.m_Delay;
 				}
+				else
+					path.m_DirectionChange = false;
 			}
 			else
 			{
 				path.m_CurrentTime -= Engine::GetInstance().GetWindow()->GetDeltaTime();
+				path.m_DirectionChange = false;
 			}
 		}
 	}
