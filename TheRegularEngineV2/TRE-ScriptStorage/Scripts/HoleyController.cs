@@ -13,8 +13,9 @@ namespace TRE
 	using PRS = PersistentSystem;
 
 	public class HoleyController : Entity
-	{
-		public PauseMenu MyPauseMenu;
+    {
+        public Entity mainCamera;
+        public PauseMenu MyPauseMenu;
 		public PowerUpUI MyPowerUpUI;
 		public PowerUpManager MyPowerManager;
 
@@ -231,9 +232,10 @@ namespace TRE
 			landingSFX = ECSManager.FindIDFromName("SFX_HoleyLand");
 			walkingSFXVolume = AS.GetVolume(walkingSFX);
 			startCheerSFX = ECSManager.FindIDFromName("SFX_Holey_Cheer1");
-			#endregion
+            #endregion
 
-			moley_ref = ECSManager.FindEntityByName("Moley");
+            mainCamera = ECSManager.FindEntityByName("Main Camera");
+            moley_ref = ECSManager.FindEntityByName("Moley");
 			oriScale = holeyTransform.Scale;
 
 			holey_dust = ECSManager.FindEntityByName("Holey_Dust");
@@ -359,8 +361,16 @@ namespace TRE
 			}
 
 			if (mIsImpacted)
-			{
-				mImpactedVFXTimer -= Time.GetDeltaTime();
+            {
+                // Always look at the main camera
+                if (mainCamera != null)
+                {
+                    // Rotate Character to look at target
+                    vec2 rotAxis = MathF.GetLookAtAxis(mImpactedVFX.transform.Position, mainCamera.transform.Position);
+                    mImpactedVFX.transform.Rotation = new vec3(rotAxis.x, rotAxis.y, 0);
+                }
+
+                mImpactedVFXTimer -= Time.GetDeltaTime();
 				if (mImpactedVFXTimer < 0 )
 				{
 					mIsImpacted = false;

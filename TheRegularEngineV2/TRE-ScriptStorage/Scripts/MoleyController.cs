@@ -15,6 +15,7 @@ namespace TRE
 
 	public class MoleyController : Entity
 	{
+		public Entity mainCamera;
 		public PauseMenu MyPauseMenu;
 		public PowerUpUI MyPowerUpUI;
 		public PowerUpManager MyPowerManager;
@@ -206,9 +207,10 @@ namespace TRE
 			MyPowerManager.MyPowerUpUI = MyPowerUpUI;
 			MyPowerUpUI.UpdateUI(MyPowerManager.powerUps);
 			CharacterUI = ECSManager.FindEntityByName("LeftCharacter_HUD");
-			#endregion
+            #endregion
 
-			UIPopup2 = ECSManager.FindEntityByName("PopupUI2");
+            mainCamera = ECSManager.FindEntityByName("Main Camera");
+            UIPopup2 = ECSManager.FindEntityByName("PopupUI2");
 			IsActivated = false;
 			HasBeenTriggeredBefore = false;
 
@@ -385,6 +387,14 @@ namespace TRE
 
             if (mIsImpacted)
             {
+                // Always look at the main camera
+                if (mainCamera != null)
+                {
+                    // Rotate Character to look at target
+                    vec2 rotAxis = MathF.GetLookAtAxis(mImpactedVFX.transform.Position, mainCamera.transform.Position);
+                    mImpactedVFX.transform.Rotation = new vec3(rotAxis.x, rotAxis.y, 0);
+                }
+
                 mImpactedVFXTimer -= Time.GetDeltaTime();
                 if (mImpactedVFXTimer < 0)
                 {

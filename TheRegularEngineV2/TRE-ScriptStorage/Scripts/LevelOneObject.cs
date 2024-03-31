@@ -6,8 +6,9 @@ namespace TRE
 	{
 		// private Entity LevelObject;
 		private Entity LvlObjUI;
+        public Entity mainCamera;
 
-		public bool pickedUp = false;
+        public bool pickedUp = false;
 
 		private const float rotationSpeed = 20;
 		float rotSpeed = rotationSpeed;
@@ -19,8 +20,9 @@ namespace TRE
 
 		public void OnCreate()
 		{
-			// LevelObject = ECSManager.FindEntityByName("LevelObject_PickMe");
-			LvlObjUI = ECSManager.FindEntityByName("LevelObject");
+            // LevelObject = ECSManager.FindEntityByName("LevelObject_PickMe");
+            mainCamera = ECSManager.FindEntityByName("Main Camera");
+            LvlObjUI = ECSManager.FindEntityByName("LevelObject");
             mRadialVFX = ECSManager.FindEntityByName("RadialEffectVFX");
         }
 
@@ -46,7 +48,15 @@ namespace TRE
 
 			if (mIsRadialVFX)
 			{
-				mRadialVFXDuration -= Time.GetDeltaTime();
+                // Always look at the main camera
+                if (mainCamera != null)
+                {
+                    // Rotate Character to look at target
+                    vec2 rotAxis = MathF.GetLookAtAxis(mRadialVFX.transform.Position, mainCamera.transform.Position);
+                    mRadialVFX.transform.Rotation = new vec3(rotAxis.x, rotAxis.y, 0);
+                }
+
+                mRadialVFXDuration -= Time.GetDeltaTime();
 				if (mRadialVFXDuration < 0 )
 				{
 					mRadialVFXDuration = 3f;
