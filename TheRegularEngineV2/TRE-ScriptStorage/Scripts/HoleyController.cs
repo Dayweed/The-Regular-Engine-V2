@@ -10,6 +10,7 @@ namespace TRE
 	using PS = PhysicsSystem;
 	using TS = TransformSystem;
 	using PS3D = ParticleSystem3D;
+	using PRS = PersistentSystem;
 
 	public class HoleyController : Entity
 	{
@@ -53,17 +54,26 @@ namespace TRE
 		private bool changeUI = false;
 		private Entity CharacterUI;
 
+        public int ControllerPreset = 0;
+		public int KeyboardPreset = 1;
+
 		// the controls/keys that THIS player (Holey) will use
 		#region Player Controls
-		const InputKeys playerUpKey = InputKeys.I;
-		const InputKeys playerDownKey = InputKeys.K;
-		const InputKeys playerLeftKey = InputKeys.J;
-		const InputKeys playerRightKey = InputKeys.L;
-		const InputKeys playerJumpKey = InputKeys.Enter;
-		const InputKeys playerSwapKey = InputKeys.Backslash;
-		const InputKeys playerDropKey = InputKeys.RightShift;
-		const InputKeys playerAbilityKey = InputKeys.Backspace;
+        InputKeys playerUpKey = InputKeys.I;
+        InputKeys playerDownKey = InputKeys.K;
+		InputKeys playerLeftKey = InputKeys.J;
+		InputKeys playerRightKey = InputKeys.L;
+		InputKeys playerJumpKey = InputKeys.Enter;
+		InputKeys playerSwapKey = InputKeys.Backslash;
+		InputKeys playerDropKey = InputKeys.RightShift;
+		InputKeys playerAbilityKey = InputKeys.Backspace;
 		#endregion
+
+        // Controller Preset
+        IS.Button jump = IS.Button.A;
+        IS.Button swap = IS.Button.Y;
+        IS.Button drop = IS.Button.B;
+        IS.Button ability = IS.Button.X;
 
 		private const int ControllerNumber = 1;
 
@@ -222,10 +232,33 @@ namespace TRE
 			oriScale = holeyTransform.Scale;
 
 			holey_dust = ECSManager.FindEntityByName("Holey_Dust");
+
+			// Presistent Controls
+            if (int.TryParse(PRS.GetValue("HoleyKB"), out int result))
+            {
+                KeyboardPreset = result;
+				SetKeyboardPreset(result);
+            }
+            else
+            {
+                PRS.SetValue("HoleyKB", "1");
+            }
+
+            if (int.TryParse(PRS.GetValue("HoleyController"), out result))
+            {
+                ControllerPreset = result;
+				SetControllerPreset(result);
+            }
+            else
+            {
+                PRS.SetValue("HoleyController", "0");
+            }
+            
 		}
 
 		public void Update()
 		{
+			#region UI
 			// check if controller connected
 			isControllerConnected = IS.GetControllerConnected(ControllerNumber);
 			if (lastControllerConnected != isControllerConnected)
@@ -245,6 +278,7 @@ namespace TRE
 				changeUI = false;
 				CharacterUI.GetComponent<SpriteRenderer>().Texture = "CharacterUI_Left.png";
 			}
+			#endregion
 
 			CheckControllability();
 
@@ -612,27 +646,88 @@ namespace TRE
 				// controller is connected
 				else if (!MyPauseMenu.isPaused && isControllable && isControllerConnected)
 				{
-					float x = IS.GetControllerStickX(ControllerNumber, false); // false for left thumbstick
-					float y = IS.GetControllerStickY(ControllerNumber, false); // false for left thumbstick
-
-					// calculate the direction vector
-					isWalking = x != 0 || y != 0;
-
-					// calculate the angle of the direction vector
-					if (isWalking)
+					if (ControllerPreset == 0)
 					{
-						lastPlayerDirection = (int)(Math.Atan2(y, x) * 180 / Math.PI - 90 + 360) % 360;
+                        float x = IS.GetControllerStickX(ControllerNumber, false); // false for left thumbstick
+                        float y = IS.GetControllerStickY(ControllerNumber, false); // false for left thumbstick
 
-						// handle the dirVec
-						if (y > 0)
-							dirVec += CS.GetMainCameraForwardVec();
-						if (y < 0)
-							dirVec -= CS.GetMainCameraForwardVec();
-						if (x > 0)
-							dirVec -= CS.GetMainCameraRightVec();
-						if (x < 0)
-							dirVec += CS.GetMainCameraRightVec();
+                        // calculate the direction vector
+                        isWalking = x != 0 || y != 0;
+
+                        // calculate the angle of the direction vector
+                        if (isWalking)
+                        {
+                            lastPlayerDirection = (int)(Math.Atan2(y, x) * 180 / Math.PI - 90 + 360) % 360;
+
+                            // handle the dirVec
+                            if (y > 0)
+                                dirVec += CS.GetMainCameraForwardVec();
+                            if (y < 0)
+                                dirVec -= CS.GetMainCameraForwardVec();
+                            if (x > 0)
+                                dirVec -= CS.GetMainCameraRightVec();
+                            if (x < 0)
+                                dirVec += CS.GetMainCameraRightVec();
+                        }
 					}
+                    else
+                    {
+                        if (IS.GetControllerButtonPress(ControllerNumber, IS.Button.DPadUp))
+                        {
+                            dirVec += CS.GetMainCameraForwardVec();
+                            lastPlayerDirection = 0;
+                            isWalking = true;
+                        }
+
+                        if (IS.GetControllerButtonPress(ControllerNumber, IS.Button.DPadDown))
+                        {
+                            dirVec -= CS.GetMainCameraForwardVec();
+                            lastPlayerDirection = 180;
+                            isWalking = true;
+                        }
+
+                        if (IS.GetControllerButtonPress(ControllerNumber, IS.Button.DPadLeft))
+                        {
+                            dirVec += CS.GetMainCameraRightVec();
+                            lastPlayerDirection = 90;
+                            isWalking = true;
+                        }
+
+                        if (IS.GetControllerButtonPress(ControllerNumber, IS.Button.DPadRight))
+                        {
+                            dirVec -= CS.GetMainCameraRightVec();
+                            lastPlayerDirection = 270;
+                            isWalking = true;
+                        }
+
+                        if (IS.GetControllerButtonPress(ControllerNumber, IS.Button.DPadUp))
+                        {
+                            if (IS.GetControllerButtonPress(ControllerNumber, IS.Button.DPadRight))
+                                lastPlayerDirection = 315;
+
+                            if (IS.GetControllerButtonPress(ControllerNumber, IS.Button.DPadLeft))
+                                lastPlayerDirection = 45;
+                        }
+
+                        if (IS.GetControllerButtonPress(ControllerNumber, IS.Button.DPadDown))
+                        {
+                            if (IS.GetControllerButtonPress(ControllerNumber, IS.Button.DPadRight))
+                                lastPlayerDirection = 225;
+
+                            if (IS.GetControllerButtonPress(ControllerNumber, IS.Button.DPadLeft))
+                                lastPlayerDirection = 135;
+                        }
+
+                        if (!IS.GetControllerButtonPress(ControllerNumber, IS.Button.DPadUp) &&
+                            !IS.GetControllerButtonPress(ControllerNumber, IS.Button.DPadDown) &&
+                            !IS.GetControllerButtonPress(ControllerNumber, IS.Button.DPadLeft) &&
+                            !IS.GetControllerButtonPress(ControllerNumber, IS.Button.DPadRight))
+                        {
+                            isWalking = false;
+                        }
+
+                    }
+
 
 					//When the space bar is released, the player will stop mid jump
 					if (jumpCancelled && isJumping && currVelocity.y > 0)
@@ -650,7 +745,7 @@ namespace TRE
 						coyoteTimeCounter -= Time.deltaTime;
 					}
 					//check if space is pressed within the buffer time
-					if (IS.GetControllerButtonTriggered(ControllerNumber, IS.Button.A))
+					if (IS.GetControllerButtonTriggered(ControllerNumber, jump))
 					{
 						// jumpHeight += Time.deltaTime;
 						jumpBufferCounter = jumpBufferTime;
@@ -664,7 +759,7 @@ namespace TRE
 					if (isJumping)
 					{
 						//check if space is released then cancel jump
-						if (IS.GetControllerButtonReleased(ControllerNumber, IS.Button.A))
+						if (IS.GetControllerButtonReleased(ControllerNumber, jump))
 						{
 							jumpCancelled = true;
 							coyoteTimeCounter = 0f;
@@ -681,7 +776,7 @@ namespace TRE
 					//check if player is on the ground and space is not released
 					else
 					{
-						if (IS.GetControllerButtonReleased(ControllerNumber, IS.Button.A))
+						if (IS.GetControllerButtonReleased(ControllerNumber, jump))
 						{
 							isJumping = false;
 						}
@@ -780,7 +875,7 @@ namespace TRE
 				isScaled = false;
 			}
 
-			if (IS.GetControllerButtonTriggered(ControllerNumber, IS.Button.Y))
+			if (IS.GetControllerButtonTriggered(ControllerNumber, swap))
 			{
 				MyPowerManager.SwapPowerUps();
 				MyPowerUpUI.UpdateUI(MyPowerManager.powerUps);
@@ -797,7 +892,7 @@ namespace TRE
 				isScaled = false;
 			}
 
-			if (IS.GetControllerButtonTriggered(ControllerNumber, IS.Button.B))
+			if (IS.GetControllerButtonTriggered(ControllerNumber, drop))
 			{
 				MyPowerManager.DropMain();
 				isScaled = false;
@@ -858,7 +953,7 @@ namespace TRE
 				}
 			}
 
-			if (IS.GetControllerButtonTriggered(ControllerNumber, IS.Button.X))
+			if (IS.GetControllerButtonTriggered(ControllerNumber, ability))
 			{
 				if (mainBlueberry || mainStrawberry)
 				{
@@ -1129,5 +1224,61 @@ namespace TRE
 			}
 			return newVolume;
 		}
+
+        public void SetControllerPreset(int preset)
+        {
+            switch (preset)
+            {
+                case 0 :
+                    jump = IS.Button.A;
+                    swap = IS.Button.B;
+                    ability = IS.Button.X;
+                    drop = IS.Button.Y;
+                    break;
+                case 1 :
+                    jump = IS.Button.B;
+                    swap = IS.Button.A;
+                    ability = IS.Button.Y;
+                    drop = IS.Button.X;
+                    break;
+            }
+        }
+
+        public void SetKeyboardPreset(int preset)
+        {
+            switch (preset)
+            {
+                case 0 :
+                    playerUpKey = InputKeys.W;
+                    playerDownKey = InputKeys.S;
+                    playerLeftKey = InputKeys.A;
+                    playerRightKey = InputKeys.D;
+                    playerJumpKey = InputKeys.Space;
+                    playerSwapKey = InputKeys.Q;
+                    playerAbilityKey = InputKeys.E;
+                    playerDropKey = InputKeys.LeftShift;
+                    break;
+                case 1 :
+                    playerUpKey = InputKeys.I;
+                    playerDownKey = InputKeys.K;
+                    playerLeftKey = InputKeys.J;
+                    playerRightKey = InputKeys.L;
+                    playerJumpKey = InputKeys.Enter;
+                    playerSwapKey = InputKeys.Backslash;
+                    playerAbilityKey = InputKeys.Backspace;
+                    playerDropKey = InputKeys.RightShift;
+                    break;
+                case 2 :
+                    playerUpKey = InputKeys.Up;
+                    playerDownKey = InputKeys.Down;
+                    playerLeftKey = InputKeys.Left;
+                    playerRightKey = InputKeys.Right;
+                    playerJumpKey = InputKeys.Slash;
+                    playerSwapKey = InputKeys.Comma;
+                    playerAbilityKey = InputKeys.Period;
+                    playerDropKey = InputKeys.M;
+                    break;
+            }
+        }
 	}
 }

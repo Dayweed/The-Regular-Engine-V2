@@ -1,5 +1,6 @@
 ﻿using GlmSharp;
 using System;
+using System.Security;
 
 namespace TRE
 {
@@ -10,6 +11,7 @@ namespace TRE
 	using PS = PhysicsSystem;
 	using TS = TransformSystem;
 	using PS3D = ParticleSystem3D;
+	using PRS = PersistentSystem;
 
 	public class MoleyController : Entity
 	{
@@ -50,17 +52,26 @@ namespace TRE
 		private bool changeUI = false;
 		private Entity CharacterUI;
 
+        public int ControllerPreset = 0;
+        public int KeyboardPreset = 0;
+
 		// the controls/keys that THIS player (Moley) will use
 		#region Player Controls
-		const InputKeys playerUpKey = InputKeys.W;
-		const InputKeys playerDownKey = InputKeys.S;
-		const InputKeys playerLeftKey = InputKeys.A;
-		const InputKeys playerRightKey = InputKeys.D;
-		const InputKeys playerJumpKey = InputKeys.Space;
-		const InputKeys playerSwapKey = InputKeys.Q;
-		const InputKeys playerDropKey = InputKeys.LeftShift;
-		const InputKeys playerAbilityKey = InputKeys.E;
+        InputKeys playerUpKey = InputKeys.W;
+        InputKeys playerDownKey = InputKeys.S;
+		InputKeys playerLeftKey = InputKeys.A;
+		InputKeys playerRightKey = InputKeys.D;
+		InputKeys playerJumpKey = InputKeys.Space;
+		InputKeys playerSwapKey = InputKeys.Q;
+		InputKeys playerDropKey = InputKeys.LeftShift;
+		InputKeys playerAbilityKey = InputKeys.E;
 		#endregion
+
+		// Controller Preset
+		IS.Button jump = IS.Button.A;
+		IS.Button swap = IS.Button.Y;
+		IS.Button drop = IS.Button.B;
+		IS.Button ability = IS.Button.X;
 
 		private const int ControllerNumber = 0;
 
@@ -242,6 +253,30 @@ namespace TRE
 			GetComponent<MeshRenderer>().Mesh = defaultWalkingMesh;
 			GetComponent<MeshRenderer>().Material = defaultMaterial;
 			GetComponent<MeshRenderer>().AnimMaterial = defaultAnimationMaterial;
+
+			// Keyboard Persistent
+            // Presistent Controls
+            if (int.TryParse(PRS.GetValue("MoleyKB"), out int result))
+            {
+                KeyboardPreset = result;
+                SetKeyboardPreset(result);
+            }
+            else
+            {
+				//write the default value to the file
+				PRS.SetValue("MoleyKB", "0");
+            }
+
+            if (int.TryParse(PRS.GetValue("MoleyController"), out result))
+            {
+                ControllerPreset = result;
+                SetControllerPreset(result);
+            }
+            else
+            {
+				//write the default value to the file
+				PRS.SetValue("MoleyController", "0");
+            }
 		}
 
 		public void Update()
@@ -654,27 +689,87 @@ namespace TRE
 				// controller is connected
 				else if (!MyPauseMenu.isPaused && isControllable && isControllerConnected)
 				{
-					float x = IS.GetControllerStickX(ControllerNumber, false); // false for left thumbstick
-					float y = IS.GetControllerStickY(ControllerNumber, false); // false for left thumbstick
-
-					// calculate the direction vector
-					isWalking = x != 0 || y != 0;
-
-					// calculate the angle of the direction vector
-					if (isWalking)
+					if (ControllerPreset == 0)
 					{
-						lastPlayerDirection = (int)(Math.Atan2(y, x) * 180 / Math.PI - 90 + 360) % 360;
+                        float x = IS.GetControllerStickX(ControllerNumber, false); // false for left thumbstick
+                        float y = IS.GetControllerStickY(ControllerNumber, false); // false for left thumbstick
 
-						// handle the dirVec
-						if (y > 0)
-							dirVec += CS.GetMainCameraForwardVec();
-						if (y < 0)
-							dirVec -= CS.GetMainCameraForwardVec();
-						if (x > 0)
-							dirVec -= CS.GetMainCameraRightVec();
-						if (x < 0)
-							dirVec += CS.GetMainCameraRightVec();
+                        // calculate the direction vector
+                        isWalking = x != 0 || y != 0;
+
+                        // calculate the angle of the direction vector
+                        if (isWalking)
+                        {
+                            lastPlayerDirection = (int)(Math.Atan2(y, x) * 180 / Math.PI - 90 + 360) % 360;
+
+                            // handle the dirVec
+                            if (y > 0)
+                                dirVec += CS.GetMainCameraForwardVec();
+                            if (y < 0)
+                                dirVec -= CS.GetMainCameraForwardVec();
+                            if (x > 0)
+                                dirVec -= CS.GetMainCameraRightVec();
+                            if (x < 0)
+                                dirVec += CS.GetMainCameraRightVec();
+                        }
 					}
+                    else
+                    {
+                        if (IS.GetControllerButtonPress(ControllerNumber, IS.Button.DPadUp))
+                        {
+                            dirVec += CS.GetMainCameraForwardVec();
+                            lastPlayerDirection = 0;
+                            isWalking = true;
+                        }
+
+                        if (IS.GetControllerButtonPress(ControllerNumber, IS.Button.DPadDown))
+                        {
+                            dirVec -= CS.GetMainCameraForwardVec();
+                            lastPlayerDirection = 180;
+                            isWalking = true;
+                        }
+
+                        if (IS.GetControllerButtonPress(ControllerNumber, IS.Button.DPadLeft))
+                        {
+                            dirVec += CS.GetMainCameraRightVec();
+                            lastPlayerDirection = 90;
+                            isWalking = true;
+                        }
+
+                        if (IS.GetControllerButtonPress(ControllerNumber, IS.Button.DPadRight))
+                        {
+                            dirVec -= CS.GetMainCameraRightVec();
+                            lastPlayerDirection = 270;
+                            isWalking = true;
+                        }
+
+                        if (IS.GetControllerButtonPress(ControllerNumber, IS.Button.DPadUp))
+                        {
+                            if (IS.GetControllerButtonPress(ControllerNumber, IS.Button.DPadRight))
+                                lastPlayerDirection = 315;
+
+                            if (IS.GetControllerButtonPress(ControllerNumber, IS.Button.DPadLeft))
+                                lastPlayerDirection = 45;
+                        }
+
+                        if (IS.GetControllerButtonPress(ControllerNumber, IS.Button.DPadDown))
+                        {
+                            if (IS.GetControllerButtonPress(ControllerNumber, IS.Button.DPadRight))
+                                lastPlayerDirection = 225;
+
+                            if (IS.GetControllerButtonPress(ControllerNumber, IS.Button.DPadLeft))
+                                lastPlayerDirection = 135;
+                        }
+
+                        if (!IS.GetControllerButtonPress(ControllerNumber, IS.Button.DPadUp) &&
+                            !IS.GetControllerButtonPress(ControllerNumber, IS.Button.DPadDown) &&
+                            !IS.GetControllerButtonPress(ControllerNumber, IS.Button.DPadLeft) &&
+                            !IS.GetControllerButtonPress(ControllerNumber, IS.Button.DPadRight))
+                        {
+                            isWalking = false;
+                        }
+
+                    }
 
 					//When the space bar is released, the player will stop mid jump
 					if (jumpCancelled && isJumping && currVelocity.y > 0)
@@ -692,7 +787,7 @@ namespace TRE
 						coyoteTimeCounter -= Time.deltaTime;
 					}
 					//check if space is pressed within the buffer time
-					if (IS.GetControllerButtonTriggered(ControllerNumber, IS.Button.A))
+					if (IS.GetControllerButtonTriggered(ControllerNumber, jump))
 					{
 						// jumpHeight += Time.deltaTime;
 						jumpBufferCounter = jumpBufferTime;
@@ -706,7 +801,7 @@ namespace TRE
 					if (isJumping)
 					{
 						//check if space is released then cancel jump
-						if (IS.GetControllerButtonReleased(ControllerNumber, IS.Button.A))
+						if (IS.GetControllerButtonReleased(ControllerNumber, jump))
 						{
 							jumpCancelled = true;
 							coyoteTimeCounter = 0f;
@@ -723,7 +818,7 @@ namespace TRE
 					//check if player is on the ground and space is not released
 					else
 					{
-						if (IS.GetControllerButtonReleased(ControllerNumber, IS.Button.A))
+						if (IS.GetControllerButtonReleased(ControllerNumber, jump))
 						{
 							isJumping = false;
 						}
@@ -822,7 +917,7 @@ namespace TRE
 				isScaled = false;
 			}
 
-			if (IS.GetControllerButtonTriggered(ControllerNumber, IS.Button.Y))
+			if (IS.GetControllerButtonTriggered(ControllerNumber, swap))
 			{
 				MyPowerManager.SwapPowerUps();
 				MyPowerUpUI.UpdateUI(MyPowerManager.powerUps);
@@ -839,7 +934,7 @@ namespace TRE
 				isScaled = false;
 			}
 
-			if (IS.GetControllerButtonTriggered(ControllerNumber, IS.Button.B))
+			if (IS.GetControllerButtonTriggered(ControllerNumber, drop))
 			{
 				MyPowerManager.DropMain();
 				isScaled = false;
@@ -878,7 +973,7 @@ namespace TRE
 				}
 			}
 
-			if (IS.GetControllerButtonTriggered(ControllerNumber, IS.Button.X))
+			if (IS.GetControllerButtonTriggered(ControllerNumber, swap))
 			{
 				if (mainBlueberry || mainStrawberry)
 				{
@@ -1142,5 +1237,61 @@ namespace TRE
 			}
 			return newVolume;
 		}
-	}
+
+        public void SetControllerPreset(int preset)
+        {
+            switch (preset)
+            {
+                case 0 :
+                    jump = IS.Button.A;
+                    swap = IS.Button.B;
+                    ability = IS.Button.X;
+                    drop = IS.Button.Y;
+                    break;
+                case 1 :
+                    jump = IS.Button.B;
+                    swap = IS.Button.A;
+                    ability = IS.Button.Y;
+                    drop = IS.Button.X;
+                    break;
+            }
+        }
+
+        public void SetKeyboardPreset(int preset)
+        {
+            switch (preset)
+            {
+				case 0 :
+                    playerUpKey = InputKeys.W;
+					playerDownKey = InputKeys.S;
+					playerLeftKey = InputKeys.A;
+					playerRightKey = InputKeys.D;
+					playerJumpKey = InputKeys.Space;
+					playerSwapKey = InputKeys.Q;
+					playerAbilityKey = InputKeys.E;
+					playerDropKey = InputKeys.LeftShift;
+					break;
+				case 1 :
+                    playerUpKey = InputKeys.I;
+					playerDownKey = InputKeys.K;
+					playerLeftKey = InputKeys.J;
+					playerRightKey = InputKeys.L;
+					playerJumpKey = InputKeys.Enter;
+					playerSwapKey = InputKeys.Backslash;
+					playerAbilityKey = InputKeys.Backspace;
+					playerDropKey = InputKeys.RightShift;
+                    break;
+                case 2 :
+					playerUpKey = InputKeys.Up;
+					playerDownKey = InputKeys.Down;
+					playerLeftKey = InputKeys.Left;
+					playerRightKey = InputKeys.Right;
+					playerJumpKey = InputKeys.Slash;
+					playerSwapKey = InputKeys.Comma;
+					playerAbilityKey = InputKeys.Period;
+					playerDropKey = InputKeys.M;
+                    break;
+            }
+        }
+    }
 }
