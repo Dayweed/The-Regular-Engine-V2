@@ -686,6 +686,15 @@ namespace TRE
 								startcheerPlayed = true;
 							}
 
+							if (startcheerPlayed)
+							{
+								int cheer = Random.Range(1, 5);//25% chance to play cheering sound
+								if (cheer == 1)
+								{
+									AS.Play(startCheerSFX);
+								}
+							}
+
 							if (isBoostedJump)
 								AS.Play(cheeringSFX);
 							else
@@ -858,6 +867,15 @@ namespace TRE
 							{
 								AS.Play(startCheerSFX);
 								startcheerPlayed = true;
+							}
+
+							if (startcheerPlayed)
+							{
+								int cheer = Random.Range(1, 5);//25% chance to play cheering sound
+								if (cheer == 1)
+								{
+									AS.Play(startCheerSFX);
+								}
 							}
 
 							if (isBoostedJump)
@@ -1084,6 +1102,7 @@ namespace TRE
 		{
 			//Debug.Log("particle is active: " + PS3D.GetActive(moley_dust.ID));
 			vec3 pos = this.GetComponent<Transform>().Position;
+			float currRadius = this.currentRadius;
 			vec3 particleVel;
 			if (currVelocity != vec3.Zero)
 			{
@@ -1095,8 +1114,28 @@ namespace TRE
 				particleVel = vec3.Zero;
 			}
 			//pos.y += 1f;
-			pos.x += particleVel.x * 2;
-			pos.z += particleVel.z * 2;
+			if(isScaled == false || (!mainBlueberry && !mainStrawberry))
+			{
+                pos.x += particleVel.x * 2;
+                pos.y += currOffset - 3;
+                pos.z += particleVel.z * 2;
+				PS3D.SetParticleSize(moley_dust.ID, 0.5f);
+            }
+			else if(mainBlueberry)
+			{
+                pos.x += particleVel.x * 10;
+                pos.y += currOffset - 3;
+                pos.z += particleVel.z * 10;
+				PS3D.SetParticleSize(moley_dust.ID, 1.5f);
+            }
+			else if(mainStrawberry)
+			{
+                pos.x += particleVel.x * 3;
+                pos.y += currOffset - 3;
+                pos.z += particleVel.z * 3;
+				PS3D.SetParticleSize(moley_dust.ID, 1.0f);
+            }
+			
 			moley_dust.GetComponent<Transform>().Position = pos;
 
 			PS3D.SetVelocity(moley_dust.ID, new vec3(particleVel.x, 0.10f, particleVel.z));

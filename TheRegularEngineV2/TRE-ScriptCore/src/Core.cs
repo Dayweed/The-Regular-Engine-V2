@@ -1898,7 +1898,12 @@ namespace TRE
 
 	public class ParticleSystem3D
 	{
-		public static void SetActive(EntityID ID, bool isActive)
+        public static void SetParticleSize(EntityID ID, float size)
+        {
+            Engine_SetParticleSize3D(ID, size);
+        }
+
+        public static void SetActive(EntityID ID, bool isActive)
 		{
 			Engine_SetParticleEmitterActive3D(ID, isActive);
 		}
@@ -1944,6 +1949,9 @@ namespace TRE
 		}
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+        public extern static void Engine_SetParticleSize3D(EntityID ID, float size);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
 		public extern static void Engine_SetParticleEmitterActive3D(EntityID ID, bool isVisible);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]

@@ -629,7 +629,7 @@ namespace TRE
 						// Boosted Jump
 						if (isBoostedJump)
 						{
-							maxHeight = new vec3(0, 120, 0);
+							maxHeight = new vec3(0, 140, 0);
 						}
 
 						Jump(maxHeight);
@@ -640,6 +640,15 @@ namespace TRE
 							{
 								AS.Play(startCheerSFX);
 								startcheerPlayed = true;
+							}
+
+							if(startcheerPlayed)
+							{
+								int cheer = Random.Range(1, 5);//25% chance to play cheering sound
+								if (cheer == 1)
+								{
+									AS.Play(startCheerSFX);
+								}
 							}
 
 							if (isBoostedJump)
@@ -815,6 +824,15 @@ namespace TRE
 							{
 								AS.Play(startCheerSFX);
 								startcheerPlayed = true;
+							}
+
+							if (startcheerPlayed)
+							{
+								int cheer = Random.Range(1, 5);//25% chance to play cheering sound
+								if (cheer == 1)
+								{
+									AS.Play(startCheerSFX);
+								}
 							}
 
 							if (isBoostedJump)
