@@ -808,10 +808,10 @@ namespace TRE
 								if (mTempGammaValue < 1f)
 									mTempGammaValue = 1f;
 								Game.SetGammaValue(mTempGammaValue);
-								TS.SetTextMessage(mGammaValue.ID, mTempGammaValue.ToString());
+								TS.SetTextMessage(mGammaValue.ID, mTempGammaValue.ToString("F1"));
 
 								// Set persistent system
-								string gammaValueString = mTempGammaValue.ToString();
+								string gammaValueString = mTempGammaValue.ToString("F1");
 								PRS.SetValue("gammaValue", gammaValueString);
 
 							}
@@ -819,10 +819,10 @@ namespace TRE
 							{
 								mTempGammaValue += 0.1f;
 								Game.SetGammaValue(mTempGammaValue);
-								TS.SetTextMessage(mGammaValue.ID, mTempGammaValue.ToString());
+								TS.SetTextMessage(mGammaValue.ID, mTempGammaValue.ToString("F1"));
 
 								// Set persistent system
-								string gammaValueString = mTempGammaValue.ToString();
+								string gammaValueString = mTempGammaValue.ToString("F1");
 								PRS.SetValue("gammaValue", gammaValueString);
 							}
 
