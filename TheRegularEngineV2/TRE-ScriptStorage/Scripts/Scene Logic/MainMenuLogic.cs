@@ -1,5 +1,4 @@
 using System;
-using System.Text;
 using GlmSharp;
 
 namespace TRE
@@ -49,7 +48,7 @@ namespace TRE
 		bool lastController2 = false;
 		bool changeUI = false;
 
-        private Entity pauseButtonUI;
+		private Entity pauseButtonUI;
 		private PauseMenu pauseMenu;
 		bool isInOptions = false;
 		float optionsTimer = 0;
@@ -210,13 +209,13 @@ namespace TRE
 			else if (controller1 && controller2 && changeUI)
 			{
 				UIControls.GetComponent<SpriteRenderer>().Texture = "ui-mm-controls-controller2.png";
-                pauseButtonUI.GetComponent<SpriteRenderer>().Texture = "ui-pause-button-controller.png";
+				pauseButtonUI.GetComponent<SpriteRenderer>().Texture = "ui-pause-button-controller.png";
 				controller1 = false;
 			}
 			else if (!controller1 && !controller2 && changeUI)
 			{
 				UIControls.GetComponent<SpriteRenderer>().Texture = "ui-mm-controls.png";
-                pauseButtonUI.GetComponent<SpriteRenderer>().Texture = "ui-pause-button.png";
+				pauseButtonUI.GetComponent<SpriteRenderer>().Texture = "ui-pause-button.png";
 				changeUI = false;
 			}
 
