@@ -42,6 +42,8 @@ namespace TRE
 		private Entity pinataEffect;
 
 		private ulong explodeSFX;
+		private ulong moleyHurtSFX;
+		private ulong holeyHurtSFX;
 
 		public void Start()
 		{
@@ -55,6 +57,8 @@ namespace TRE
 			mDetectorRange = parenting.GetChildFromName("DetectorRange");
 			mAttackRange = parenting.GetChildFromName("AttackRange");
 			explodeSFX = ECSManager.FindIDFromName("SFX_Explosion");
+			moleyHurtSFX = ECSManager.FindIDFromName("SFX_MoleyHurt");
+			holeyHurtSFX = ECSManager.FindIDFromName("SFX_HoleyHurt");
 		}
 
 		public void Update()
@@ -233,10 +237,20 @@ namespace TRE
 			if (PS.IsTriggerStay(mAttackRange.ID, mMoley.ID))
 			{
 				mMoley.GetComponent<MoleyController>().TakeDamage();
+
+				if (ECSManager.IsValidEntity(moleyHurtSFX))
+				{
+					AS.Play(moleyHurtSFX);
+				}
 			}
 			if (PS.IsTriggerStay(mAttackRange.ID, mHoley.ID))
 			{
 				mHoley.GetComponent<HoleyController>().TakeDamage();
+
+				if (ECSManager.IsValidEntity(holeyHurtSFX))
+				{
+					AS.Play(holeyHurtSFX);
+				}
 			}
 
 			// Force it to go far away if it dies

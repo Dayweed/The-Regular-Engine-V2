@@ -410,7 +410,11 @@ namespace TRE
 				TakeDamage();
 				SetImpactedVFX();
 
-                if (other.name == "FallingRock" && ECSManager.IsValidEntity(hurtSFX))
+				if (other.name == "FallingRock" && ECSManager.IsValidEntity(hurtSFX))
+				{
+					AS.Play(hurtSFX);
+				}
+				else if (other.name == "RollingObstacle" && ECSManager.IsValidEntity(hurtSFX))
 				{
 					AS.Play(hurtSFX);
 				}
