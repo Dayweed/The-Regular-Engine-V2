@@ -37,7 +37,7 @@ namespace TRE
 
 		public CameraTransitions preTransitions;
 
-		private ulong fallingmaracasSFX;
+		private ulong stonelandedSFX;
 
 		public void Start()
 		{
@@ -71,7 +71,7 @@ namespace TRE
 			cameraController = ECSManager.FindEntityByName("Main Camera").GetComponent<CameraController>();
 
 			//Audio
-			fallingmaracasSFX = ECSManager.FindIDFromName("SFX_FallingMaraca");
+			stonelandedSFX = ECSManager.FindIDFromName("FallingRock");
 
 			//expectedDistance = 35;
 			//expectedPosition = new vec3(0, 10, 20);
@@ -98,11 +98,6 @@ namespace TRE
 			else
 			{
 				cameraController.freeCamera = true;
-
-				if (ECSManager.IsValidEntity(fallingmaracasSFX))
-				{
-					AudioSystem.Play(fallingmaracasSFX);
-				}
 
 				regionA = IsInsideTrigger(Trigger_A);
 				regionB = IsInsideTrigger(Trigger_B);
@@ -168,6 +163,11 @@ namespace TRE
 					cameraController.offsetZ = 0f;
 					expectedDuration = 0.8f;
 					CheckTransition(Trigger_D);
+
+					if (ECSManager.IsValidEntity(stonelandedSFX))
+					{
+						AudioSystem.SetPause(stonelandedSFX, false);
+					}
 				}
 
 				if (regionE)
@@ -184,6 +184,11 @@ namespace TRE
 					cameraController.offsetZ = -10f;
 					expectedDuration = 0.8f;
 					CheckTransition(Trigger_E);
+
+					if (ECSManager.IsValidEntity(stonelandedSFX))
+					{
+						AudioSystem.SetPause(stonelandedSFX, true);
+					}
 				}
 
 				if (regionF)

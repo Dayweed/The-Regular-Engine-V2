@@ -69,8 +69,8 @@ namespace TRE
 				}
 
 				source.m_Channel->isPlaying(&source.m_isPlaying);
-				TogglePause(go);
 				ToggleMute(go);
+				SetPause(go, source.m_Pause);
 				source.m_Channel->setPitch(source.m_Pitch);
 				source.m_Channel->setPriority(source.m_Priority);
 
@@ -260,22 +260,6 @@ namespace TRE
 		audio.m_isPlaying = true;
 	}
 
-	void AudioSystem::TogglePause(Entity& go)
-	{
-		Audio& audio = go->GetComponent<Audio>();
-
-		if (!audio.m_Pause)
-		{
-			audio.m_Channel->setPaused(false);
-			audio.m_Pause = false;
-		}
-		else
-		{
-			audio.m_Channel->setPaused(true);
-			audio.m_Pause = true;
-		}
-	}
-
 	void AudioSystem::ToggleMute(Entity& go)
 	{
 		Audio& audio = go->GetComponent<Audio>();
@@ -431,6 +415,25 @@ namespace TRE
 		ErrorCheck(m_System->playSound(sound, m_SFXChannelGroup, false, &channel), "FMOD: playSound()");
 
 	}
+
+	void AudioSystem::SetPause(Entity& go, const bool pause)
+	{
+		Audio& audio = go->GetComponent<Audio>();
+
+		audio.m_Pause = pause;
+
+		if (!audio.m_Pause)
+		{
+			audio.m_Channel->setPaused(false);
+			audio.m_Pause = false;
+		}
+		else
+		{
+			audio.m_Channel->setPaused(true);
+			audio.m_Pause = true;
+		}
+	}
+
 
 	void AudioSystem::SetFileName(Entity& go, const std::string filename)
 	{
@@ -630,4 +633,13 @@ namespace TRE
 	{
 		return m_SFXVolume;
 	}
+
+
+	bool AudioSystem::GetPause(Entity& go) const
+	{
+		Audio& audio = go->GetComponent<Audio>();
+
+		return audio.m_Pause;
+	}
+	
 }

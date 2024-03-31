@@ -485,9 +485,16 @@ namespace TRE
 		{
 			AudioSystem.Play(entity.ID);
 		}
-		public void Pause()
+		public bool Pause
 		{
-			AudioSystem.Engine_TogglePause(entity.ID);
+			get
+			{
+				return AudioSystem.Engine_GetPause(entity.ID);
+			}
+			set
+			{
+				AudioSystem.Engine_SetPause(entity.ID, value);
+			}
 		}
 		public void Stop()
 		{

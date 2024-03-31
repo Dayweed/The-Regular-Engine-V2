@@ -1465,9 +1465,14 @@ namespace TRE
 			Engine_PlayOnce(entityid);
 		}
 
-		public static void TogglePause(EntityID entityid)
+		public static void SetPause(EntityID entityid, bool paused)
 		{
-			Engine_TogglePause(entityid);
+			Engine_SetPause(entityid, paused);
+		}
+
+		public static bool GetPause(EntityID entityid)
+		{
+			return Engine_GetPause(entityid);
 		}
 
 		public static void Stop(EntityID entityid)
@@ -1533,7 +1538,10 @@ namespace TRE
 		public extern static void Engine_PlayOnce(EntityID entityid);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		public extern static void Engine_TogglePause(EntityID entityid);
+		public extern static void Engine_SetPause(EntityID entityid, bool paused);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		public extern static bool Engine_GetPause(EntityID entityid);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		public extern static void Engine_Stop(EntityID entityid);

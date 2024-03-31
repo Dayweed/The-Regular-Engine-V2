@@ -1914,9 +1914,22 @@ namespace TRE
 		entity->GetComponent<Audio>().m_Play = true;
 	}
 
-	static void BindTogglePauseSound(CSEntityID ID, bool paused)
+	static bool BindGetPauseSound(CSEntityID ID)
 	{
-		(void)paused;
+		Entity entity = VALIDATEENTITY(ID);
+		if (!entity) return false;
+
+		if (!entity->HasComponent<Audio>())
+		{
+			PUBLISHERROR("Entity " + entity->GetName() + " has no Audio Component!");
+			return false;
+		}
+
+		return ECSSystemManager::Instance().GetSystem<AudioSystem>()->GetPause(entity);
+	}
+
+	static void BindSetPauseSound(CSEntityID ID, bool paused)
+	{
 		Entity entity = VALIDATEENTITY(ID);
 		if (!entity) return;
 
@@ -1926,7 +1939,21 @@ namespace TRE
 			return;
 		}
 
-		ECSSystemManager::Instance().GetSystem<AudioSystem>()->TogglePause(entity);
+		ECSSystemManager::Instance().GetSystem<AudioSystem>()->SetPause(entity, paused);
+	}
+
+	static bool Engine_GetPause(CSEntityID id)
+	{
+		Entity entity = VALIDATEENTITY(id);
+		if (!entity) return false;
+
+		if (!entity->HasComponent<Audio>())
+		{
+			PUBLISHERROR("There is no UIComponent in " + entity->GetName() + "!");
+			return false;
+		}
+
+		return entity->GetComponent<Audio>().m_Pause;
 	}
 
 	static void BindSetStop(CSEntityID ID)
@@ -2328,7 +2355,6 @@ namespace TRE
 		}
 
 		return entity->GetComponent<UIComponent>().m_IsVisible;
-
 	}
 #pragma endregion
 
@@ -3009,7 +3035,8 @@ namespace TRE
 		{
 			mono_add_internal_call("TRE.AudioSystem::Engine_Play", BindSetPlaySound);
 			mono_add_internal_call("TRE.AudioSystem::Engine_PlayOnce", BindSetPlaySound);
-			mono_add_internal_call("TRE.AudioSystem::Engine_TogglePause", BindTogglePauseSound);
+			mono_add_internal_call("TRE.AudioSystem::Engine_SetPause", BindSetPauseSound);
+			mono_add_internal_call("TRE.AudioSystem::Engine_GetPause", BindGetPauseSound);
 			mono_add_internal_call("TRE.AudioSystem::Engine_Stop", BindSetStop);
 			mono_add_internal_call("TRE.AudioSystem::Engine_SetFileName", BindSetFileName);
 			mono_add_internal_call("TRE.AudioSystem::Engine_GetFileName", BindGetFileName);
