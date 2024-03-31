@@ -133,6 +133,8 @@ namespace TRE
         private Entity moley;
         private Entity holey;
 
+		private bool externalPauseCommand = false;
+
 		public void Start()
 		{
 			moley = ECSManager.FindEntityByName("Moley");
@@ -390,7 +392,7 @@ namespace TRE
 			// but allow it to show up it the MainMenu scene even if its camera is not free
 			bool canShowPauseMenu = CurrentScene == "MainMenu" || mainCamera.freeCamera;
 
-			if (playerPressedPause && canShowPauseMenu)
+			if ((playerPressedPause || ReadExternalPauseCommand()) && canShowPauseMenu)
 			{
 				if (menustate == -1)
 				{
@@ -1501,6 +1503,19 @@ namespace TRE
 					P2_controller_preset2.GetComponent<SpriteRenderer>().isVisible = showControlsPanel;
 				}
 			}
+		}
+
+		/// <summary>Allows other classes and functions to trigger the pause menu.</summary>
+		public void SendExternalPauseCommand() => externalPauseCommand = true;
+
+		/// <summary>Returns whether an external pause command was sent to this class and
+		/// immediately resets the flag's value(like a postfix operator).</summary>
+		/// <returns>Whether an external pause command was sent to this class.</returns>
+		private bool ReadExternalPauseCommand()
+		{
+			bool oldValue = externalPauseCommand;
+			externalPauseCommand = false;
+			return oldValue;
 		}
 	}
 }

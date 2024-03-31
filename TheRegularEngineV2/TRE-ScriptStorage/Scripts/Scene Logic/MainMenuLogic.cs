@@ -50,7 +50,9 @@ namespace TRE
 		bool changeUI = false;
 
         private Entity pauseButtonUI;
-		
+		private PauseMenu pauseMenu;
+		bool isInOptions = false;
+		float optionsTimer = 0;
 
 		const float sceneTransitionDelay = 2.5f;
 
@@ -75,6 +77,7 @@ namespace TRE
 		{
 			UIControls = ECSManager.FindEntityByName("Controls_UI");
 			pauseButtonUI = ECSManager.FindEntityByName("PauseHUD");
+			pauseMenu = ECSManager.FindEntityByName("PauseMenu").GetComponent<PauseMenu>();
 			Moley = ECSManager.FindEntityByName("Moley");
 			Holey = ECSManager.FindEntityByName("Holey");
 
@@ -317,11 +320,9 @@ namespace TRE
 			{
 				if (ToOptionSelect.GetComponent<TunnelLogic>().MolesApproved() && !selectedOption)
 				{
-					//selectedOption = true;
-					//JumpIntoHole();
-					//ToOptionSelect.GetComponent<TunnelLogic>().ResetMoles();
-
-					// SHOW OPTIONS
+					selectedOption = true;
+					JumpIntoHole();
+					ToOptionSelect.GetComponent<TunnelLogic>().ResetMoles();
 				}
 				else if (ToLevelSelect.GetComponent<TunnelLogic>().MolesApproved() && !selectedLevel)
 				{
@@ -387,6 +388,10 @@ namespace TRE
 				if (selectedOption)
 				{
 					selectedOption = false;
+					// show settings menu
+					pauseMenu.SendExternalPauseCommand();
+					isInOptions = true;
+					optionsTimer = 0;
 				}
 				else if (selectedLevel)
 				{
@@ -477,6 +482,22 @@ namespace TRE
 				if (CurrentButtonSelected && IS.GetKeyPress(InputKeys.Enter))
 				{
 					Game.CloseGame();
+				}
+			}
+
+			if (isInOptions)
+			{
+				// delay this logic just a little bit, as the pause menu script 
+				// may not have had its chance to actually do its things yet
+				optionsTimer += Time.deltaTime;
+				if (!pauseMenu.IsPaused() && optionsTimer > 0.5f)
+				{
+					isInOptions = false;
+					optionsTimer = 0;
+					vec3 teleportPos = ToOptionSelect.GetComponent<Transform>().Position;
+					Moley.GetComponent<Transform>().Position = new vec3(teleportPos.x - 5, teleportPos.y + 15, teleportPos.z);
+					Holey.GetComponent<Transform>().Position = new vec3(teleportPos.x + 5, teleportPos.y + 15, teleportPos.z);
+					JumpOutHole();
 				}
 			}
 
