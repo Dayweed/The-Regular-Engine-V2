@@ -25,7 +25,11 @@ namespace TRE
 		private Entity playerObj;                       // private Transform playerObj;
 														// private Entity playerModel;                  // private Transform playerModel;
 
-		private PowerUpManager playerPowerUpManager;
+		private Entity particleHoley = null;
+		private Entity particleMoley = null;
+
+
+        private PowerUpManager playerPowerUpManager;
 
 		private const float groundOffset = 2;
 		private const float rotationSpeed = 20;
@@ -37,8 +41,10 @@ namespace TRE
 		{
 			collectedSFX = ECSManager.FindIDFromName("SFX_PowerUpsCollected");
 			originalScale = GetComponent<Transform>().Scale;
-			//Debug.Log("MY NAME IS " + name);
-		}
+            particleHoley = ECSManager.FindEntityByName("VFX_ParticleHoley");
+            particleMoley = ECSManager.FindEntityByName("VFX_ParticleMoley");
+            //Debug.Log("MY NAME IS " + name);
+        }
 
 		public void OnTriggerStay(/*Collider*/System.UInt64 otherID)
 		{
@@ -107,7 +113,21 @@ namespace TRE
 				GetComponent<Rigidbody>().useGravity = false;
 				PhysicsSystem.SetLinearVelocity(ID, vec3.Zero);
 
-				vfxCollectComplete = false;
+				// Determine which vfx to display
+				if (other.CompareTag(mole1tag) && ECSManager.IsValidEntity(particleMoley.ID))
+				{
+                    // Spawn particle vfx
+                    particleMoley.transform.Position = transform.Position;
+                    particleMoley.GetComponent<VFX_ParticleDisplay>().Display();
+                }
+				else if (other.CompareTag(mole2tag) && ECSManager.IsValidEntity(particleHoley.ID))
+				{
+                    // Spawn particle vfx
+                    particleHoley.transform.Position = transform.Position;
+                    particleHoley.GetComponent<VFX_ParticleDisplay>().Display();
+                }
+
+                vfxCollectComplete = false;
 				RunCollectingVFX();
 			}
 		}
