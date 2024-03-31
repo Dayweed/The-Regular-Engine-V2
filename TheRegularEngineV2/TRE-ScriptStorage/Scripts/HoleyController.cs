@@ -121,10 +121,12 @@ namespace TRE
 		private ulong cheeringSFX;
 		// private ulong hurtSFX;
 		private ulong landingSFX;
+		private ulong startCheerSFX;
 
 		private bool walkingSFXPlayed = false;
 		private bool fallingSFXPlayed = false;
 		private bool landingSFXPlayed = false;
+		private bool startcheerPlayed = false;
 
 		private float walkingSFXVolume;
 		#endregion
@@ -213,6 +215,7 @@ namespace TRE
 			// hurtSFX = ECSManager.FindIDFromName("SFX_HoleyHurt1");
 			landingSFX = ECSManager.FindIDFromName("SFX_HoleyLand");
 			walkingSFXVolume = AS.GetVolume(walkingSFX);
+			startCheerSFX = ECSManager.FindIDFromName("SFX_Holey_Cheer1");
 			#endregion
 
 			moley_ref = ECSManager.FindEntityByName("Moley");
@@ -587,6 +590,12 @@ namespace TRE
 
 						if (ECSManager.IsValidEntity(jumpSFX) && ECSManager.IsValidEntity(cheeringSFX))
 						{
+							if (!startcheerPlayed && ECSManager.IsValidEntity(startCheerSFX))
+							{
+								AS.Play(startCheerSFX);
+								startcheerPlayed = true;
+							}
+
 							if (isBoostedJump)
 								AS.Play(cheeringSFX);
 							else
@@ -695,6 +704,12 @@ namespace TRE
 
 						if (ECSManager.IsValidEntity(jumpSFX) && ECSManager.IsValidEntity(cheeringSFX))
 						{
+							if (!startcheerPlayed && ECSManager.IsValidEntity(startCheerSFX))
+							{
+								AS.Play(startCheerSFX);
+								startcheerPlayed = true;
+							}
+
 							if (isBoostedJump)
 								AS.Play(cheeringSFX);
 							else

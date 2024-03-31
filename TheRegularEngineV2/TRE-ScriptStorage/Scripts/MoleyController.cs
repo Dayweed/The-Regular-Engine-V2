@@ -118,10 +118,12 @@ namespace TRE
 		private ulong cheeringSFX;
 		// private ulong hurtSFX;
 		private ulong landingSFX;
+		private ulong startCheerSFX;
 
 		private bool walkingSFXPlayed = false;
 		private bool fallingSFXPlayed = false;
 		private bool landingSFXPlayed = false;
+		private bool startcheerPlayed = false;
 
 		private float walkingSFXVolume;
 		#endregion
@@ -214,12 +216,6 @@ namespace TRE
 
 			#region Sound Variables
 			walkingSFX = ECSManager.FindIDFromName("SFX_MoleyFootsteps");
-			//walkingSFX1 = ECSManager.FindIDFromName("SFX_Footsteps1");
-			//walkingSFX2 = ECSManager.FindIDFromName("SFX_Footsteps2");
-			//walkingSFX3 = ECSManager.FindIDFromName("SFX_Footsteps3");
-			//walkingSFX4 = ECSManager.FindIDFromName("SFX_Footsteps4");
-			//walkingSFX5 = ECSManager.FindIDFromName("SFX_Footsteps5");
-			//walkingSFX6 = ECSManager.FindIDFromName("SFX_Footsteps6");
 			jumpSFX = ECSManager.FindIDFromName("SFX_MoleyJump");
 			changesizeSFX = ECSManager.FindIDFromName("SFX_Fat");
 			normalsizeSFX = ECSManager.FindIDFromName("SFX_NormalSize");
@@ -230,6 +226,7 @@ namespace TRE
 			// hurtSFX = ECSManager.FindIDFromName("SFX_MoleyHurt1");
 			landingSFX = ECSManager.FindIDFromName("SFX_MoleyLand");
 			walkingSFXVolume = AS.GetVolume(walkingSFX);
+			startCheerSFX = ECSManager.FindIDFromName("SFX_Moley_Cheer1");
 			#endregion
 
 			holey_ref = ECSManager.FindEntityByName("Holey");
@@ -635,6 +632,12 @@ namespace TRE
 
 						if (ECSManager.IsValidEntity(jumpSFX) && ECSManager.IsValidEntity(cheeringSFX))
 						{
+							if (!startcheerPlayed && ECSManager.IsValidEntity(startCheerSFX))
+							{
+								AS.Play(startCheerSFX);
+								startcheerPlayed = true;
+							}
+
 							if (isBoostedJump)
 								AS.Play(cheeringSFX);
 							else
@@ -743,6 +746,12 @@ namespace TRE
 
 						if (ECSManager.IsValidEntity(jumpSFX) && ECSManager.IsValidEntity(cheeringSFX))
 						{
+							if (!startcheerPlayed && ECSManager.IsValidEntity(startCheerSFX))
+							{
+								AS.Play(startCheerSFX);
+								startcheerPlayed = true;
+							}
+
 							if (isBoostedJump)
 								AS.Play(cheeringSFX);
 							else
