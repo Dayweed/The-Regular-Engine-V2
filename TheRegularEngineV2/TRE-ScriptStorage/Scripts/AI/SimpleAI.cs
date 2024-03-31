@@ -224,6 +224,9 @@ namespace TRE
 				mHoley.GetComponent<HoleyController>().TakeDamage();
 			}
 
+			// Force it to go far away if it dies
+			transform.Position = new vec3(-2000, -2000, -2000);
+
 			// Destroy self
 			DestroySelf();
 		}

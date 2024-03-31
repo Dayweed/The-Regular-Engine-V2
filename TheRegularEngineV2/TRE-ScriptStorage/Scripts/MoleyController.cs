@@ -1218,16 +1218,20 @@ namespace TRE
 				confirmationPopUp = true;
 			}
 
-			// Camera panning at the start
-			bool cameraTransiting = false;
-			if (Scene.GetSceneName() == "Tutorial" && ECSManager.FindEntityByName("CameraManager") != null && !ECSManager.FindEntityByName("CameraManager").GetComponent<TutorialCameraManager>().preTransitions.preTransitioned)
-			{
-				cameraTransiting = true;
-			}
+            // Camera panning at the start
+            bool cameraTransiting = false;
+            if (ECSManager.FindEntityByName("CameraManager") != null &&
+                (
+                (Scene.GetSceneName() == "Tutorial" && !ECSManager.FindEntityByName("CameraManager").GetComponent<TutorialCameraManager>().preTransitions.preTransitioned) ||
+                (Scene.GetSceneName() == "Level_1" && !ECSManager.FindEntityByName("CameraManager").GetComponent<Level_1CameraManager>().preTransitions.preTransitioned) ||
+                (Scene.GetSceneName() == "Level_2" && !ECSManager.FindEntityByName("CameraManager").GetComponent<Level_2CameraManager>().preTransitions.preTransitioned))
+                )
+            {
+                cameraTransiting = true;
+            }
 
-
-			// Logic to handle isControllable
-			if (Scene.IsTransiting() || cameraTransiting || confirmationPopUp)
+            // Logic to handle isControllable
+            if (Scene.IsTransiting() || cameraTransiting || confirmationPopUp)
 			{
 				isControllable = false;
 			}
