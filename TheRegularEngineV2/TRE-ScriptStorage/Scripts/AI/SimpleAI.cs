@@ -116,7 +116,7 @@ namespace TRE
 			if (mFoundTarget && mGround.ID != 0)
 			{
 				// Check if afraid move the other direction based on the following condition
-				isAfraid = (mTarget.CompareTag("Blue") && mTarget.GetComponent<HoleyController>().mainStrawberry && mTarget.GetComponent<HoleyController>().isScaled);
+				isAfraid = mTarget.CompareTag("Cactus") || (mTarget.CompareTag("Blue") && mTarget.GetComponent<HoleyController>().mainStrawberry && mTarget.GetComponent<HoleyController>().isScaled);
 
 				// Set moveVector based on angle
 				moveVector = mTarget.transform.Position - transform.Position;
