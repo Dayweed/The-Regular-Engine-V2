@@ -269,14 +269,14 @@ namespace TRE
 					MoleyController moley = ECSManager.FindEntityByName("Moley").GetComponent<MoleyController>();
 					//moley.GetComponent<Transform>().Position = new GlmSharp.vec3(64, 30, -174);
 					//moley.GetComponent<Transform>().Position = new GlmSharp.vec3(293, 30, -138);
-					//moley.GetComponent<Transform>().Position = new GlmSharp.vec3(406, 19, -430);
-					moley.GetComponent<Transform>().Position = new vec3(610, 19, -430);
+					moley.GetComponent<Transform>().Position = new GlmSharp.vec3(406, 19, -430);
+					//moley.GetComponent<Transform>().Position = new vec3(610, 19, -430);
 
 					HoleyController holey = ECSManager.FindEntityByName("Holey").GetComponent<HoleyController>();
 					//holey.GetComponent<Transform>().Position = new GlmSharp.vec3(77, 30, -174);
 					//holey.GetComponent<Transform>().Position = new GlmSharp.vec3(293, 30, -120);
-					//holey.GetComponent<Transform>().Position = new GlmSharp.vec3(408, 19, -417);
-					holey.GetComponent<Transform>().Position = new vec3(610, 19, -417);
+					holey.GetComponent<Transform>().Position = new GlmSharp.vec3(408, 19, -417);
+					//holey.GetComponent<Transform>().Position = new vec3(610, 19, -417);
 				}
 			}
 

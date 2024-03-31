@@ -27,8 +27,8 @@
       0,
       {
          "m_Active": true,
-         "m_GUID": "6267215067885543026",
-         "m_Index": 210,
+         "m_GUID": "8029775947322952776",
+         "m_Index": 1,
          "m_Name": "PinataEffect",
          "m_Tag": ""
       }
@@ -125,7 +125,7 @@
          ],
          "LifeTime": 1.0,
          "Loop": false,
-         "MaterialInstance": "79b97f19e736757d",
+         "MaterialInstance": "59baabc353937cff",
          "ParticleCount": 10,
          "PlayOnStart": true,
          "RenderObject": "4d974e3a749e338a",
