@@ -46,7 +46,7 @@ namespace TRE
 
 		/// <summary>The amount in units to tremble by.</summary>
 		const float trembleAmplitude = 0.3f;
-		
+
 		/// <summary>The speed of the trembling.</summary>
 		const float trembleFrequency = 60.0f;
 		#endregion
@@ -85,9 +85,23 @@ namespace TRE
 
 		public void Start()
 		{
-			// get the actual platform(the child)'s scale to determine what type of platform it is
-			vec3 platformScale = parenting.GetChild(0).transform.Scale;
-			isOppositePlatformType = platformScale.x > platformScale.z;
+			// ensure that you get the PLATFORM and check its scale to determine opposite-ness
+			int childrenSize = parenting.GetTotalChildren();
+			for (int i = 0; i < childrenSize; ++i)
+			{
+				Entity child = parenting.GetChild(i);
+
+				if (child.HasComponent<Button>())
+					continue;
+
+				// there's not really a component that is unique to the actual platform
+				// so we're using the absence of a Button script component instead
+
+				// get the actual platform's scale to determine what type of platform it is
+				vec3 platformScale = child.transform.Scale;
+				isOppositePlatformType = platformScale.x > platformScale.z;
+				break;
+			}
 
 			// I can't do just the line below... :(
 			// int[] directions = { 45, 90, 135, 180, 225, 270, 315 };
@@ -228,6 +242,7 @@ namespace TRE
 				else
 					rot.z += goDownRotationSpeed * Time.deltaTime * rotationDirection;
 
+				// PrintError(name + ": Z rot -> " + rot);
 				TS.SetRotation(this.ID, rot);
 			}
 			else // if (amountComplete >= 1)
@@ -238,6 +253,7 @@ namespace TRE
 				// to counteract lag spikes, if any
 				rot.z = rotateEndAngle;
 				TS.SetRotation(this.ID, rot);
+				// PrintError(name + ": Z rot DONE -> " + rot);
 			}
 		}
 
@@ -253,6 +269,7 @@ namespace TRE
 				else
 					rot.x += goDownRotationSpeed * Time.deltaTime * rotationDirection;
 
+				// PrintError(name + ": X rot -> " + rot);
 				TS.SetRotation(this.ID, rot);
 			}
 			else // if (amountComplete >= 1)
@@ -263,6 +280,7 @@ namespace TRE
 				// to counteract lag spikes, if any
 				rot.x = rotateEndAngle;
 				TS.SetRotation(this.ID, rot);
+				// PrintError(name + ": X rot DONE -> " + rot);
 			}
 		}
 
@@ -366,6 +384,12 @@ namespace TRE
 			bool isDiffZeroZ = -EPSILON <= diffZ && diffZ <= EPSILON;
 
 			return isDiffZeroX && isDiffZeroY && isDiffZeroZ;
+		}
+
+		void PrintError(string msg)
+		{
+			Console.WriteLine(msg);
+			Debug.LogError(msg);
 		}
 		#endregion
 	}
