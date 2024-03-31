@@ -301,10 +301,10 @@ namespace TRE
 				expectedDistance = 50;
 				cameraController.lookOnlyBool = false;
 				cameraController.expectedYPos = 10f;
-				cameraController.forcedX = 764.502f;
+				cameraController.forcedX = 776.940f;
 				cameraController.forceXaxis = true;
 				cameraController.offsetX = 0f;
-				cameraController.offsetZ = 0f;
+				cameraController.offsetZ = 20f;
 				expectedDuration = 0.8f;
 				CheckTransition(Trigger_N);
 			}
@@ -334,7 +334,7 @@ namespace TRE
 				cameraController.expectedYPos = 6f;
 				cameraController.offsetX = 0f;
 				cameraController.offsetZ = 0f;
-				expectedDuration = 0.8f;
+				expectedDuration = 1.2f;
 				CheckTransition(Trigger_P);
 			}
 
