@@ -17,8 +17,8 @@ namespace TRE
 		private bool isSmall = true;
 		private bool isLeft;
 		// private bool isRight;
-		private const float left = 10f;
-		private const float right = -10f;
+		private const float left = 30f;
+		private const float right = -30f;
 
 		public void Start()
 		{
