@@ -4,6 +4,8 @@ using GlmSharp;
 namespace TRE
 {
 	using PS = PhysicsSystem;
+	using AS = AudioSystem;
+
 	// Controls a pawn, if any target is within range, assign target and tell pawn to chase it if it can
 	public class SimpleAI : Entity
 	{
@@ -39,6 +41,10 @@ namespace TRE
 
 		private Entity pinataEffect;
 
+		private ulong explodeSFX;
+		private ulong moleyHurtSFX;
+		private ulong holeyHurtSFX;
+
 		public void Start()
 		{
 			originalSpawnPoint = transform.Position;
@@ -50,6 +56,9 @@ namespace TRE
 			mGround = new Entity(); // Invalid ID
 			mDetectorRange = parenting.GetChildFromName("DetectorRange");
 			mAttackRange = parenting.GetChildFromName("AttackRange");
+			explodeSFX = ECSManager.FindIDFromName("SFX_Explosion");
+			moleyHurtSFX = ECSManager.FindIDFromName("SFX_MoleyHurt");
+			holeyHurtSFX = ECSManager.FindIDFromName("SFX_HoleyHurt");
 		}
 
 		public void Update()
@@ -228,14 +237,29 @@ namespace TRE
 			if (PS.IsTriggerStay(mAttackRange.ID, mMoley.ID))
 			{
 				mMoley.GetComponent<MoleyController>().TakeDamage();
+
+				if (ECSManager.IsValidEntity(moleyHurtSFX))
+				{
+					AS.Play(moleyHurtSFX);
+				}
 			}
 			if (PS.IsTriggerStay(mAttackRange.ID, mHoley.ID))
 			{
 				mHoley.GetComponent<HoleyController>().TakeDamage();
+
+				if (ECSManager.IsValidEntity(holeyHurtSFX))
+				{
+					AS.Play(holeyHurtSFX);
+				}
 			}
 
 			// Force it to go far away if it dies
 			transform.Position = new vec3(-2000, -2000, -2000);
+
+			if (ECSManager.IsValidEntity(explodeSFX))
+			{
+				AS.Play(explodeSFX);
+			}
 
 			// Destroy self
 			DestroySelf();

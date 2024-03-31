@@ -131,22 +131,20 @@ namespace TRE
 				// triggerComplete.Add(ECSManager.FindEntityByName("TriggerDisplay_4").GetComponent<HoleCheckDisplay>());
 
 				// Add for optional stars triggers
-				List<HoleCheckDisplay> holeCheckDisplay1 = new List<HoleCheckDisplay>
-				{
-					ECSManager.FindEntityByName("TriggerDisplay_1").GetComponent<HoleCheckDisplay>(),
-					ECSManager.FindEntityByName("TriggerDisplay_2").GetComponent<HoleCheckDisplay>()
-				};
-				/*List<HoleCheckDisplay> holeCheckDisplay2 = new List<HoleCheckDisplay>();
-				List<HoleCheckDisplay> holeCheckDisplay3 = new List<HoleCheckDisplay>();*/
-				/*holeCheckDisplay2.Add(ECSManager.FindEntityByName("TriggerDisplay_3").GetComponent<HoleCheckDisplay>());
+				List<HoleCheckDisplay> holeCheckDisplay1 = new List<HoleCheckDisplay>();
+				List<HoleCheckDisplay> holeCheckDisplay2 = new List<HoleCheckDisplay>();
+				List<HoleCheckDisplay> holeCheckDisplay3 = new List<HoleCheckDisplay>();
+				holeCheckDisplay1.Add(ECSManager.FindEntityByName("TriggerDisplay_1").GetComponent<HoleCheckDisplay>());
+				holeCheckDisplay1.Add(ECSManager.FindEntityByName("TriggerDisplay_2").GetComponent<HoleCheckDisplay>());
+				holeCheckDisplay2.Add(ECSManager.FindEntityByName("TriggerDisplay_3").GetComponent<HoleCheckDisplay>());
 				holeCheckDisplay2.Add(ECSManager.FindEntityByName("TriggerDisplay_4").GetComponent<HoleCheckDisplay>());
 				holeCheckDisplay3.Add(ECSManager.FindEntityByName("TriggerDisplay_5").GetComponent<HoleCheckDisplay>());
-				holeCheckDisplay3.Add(ECSManager.FindEntityByName("TriggerDisplay_6").GetComponent<HoleCheckDisplay>());*/
+				holeCheckDisplay3.Add(ECSManager.FindEntityByName("TriggerDisplay_6").GetComponent<HoleCheckDisplay>());
 				triggerStars.Add(holeCheckDisplay1);
-				/*triggerStars.Add(holeCheckDisplay2);
-				triggerStars.Add(holeCheckDisplay3);*/
+				triggerStars.Add(holeCheckDisplay2);
+				triggerStars.Add(holeCheckDisplay3);
 
-				PersistentSystem.SetValue(currentSceneName + "MaxStarsObtained", "1");
+				PersistentSystem.SetValue(currentSceneName + "MaxStarsObtained", "3");
 
 				nextSceneName = "ResultScreen";
 			}
