@@ -6,11 +6,15 @@
 
 		private LevelOneObject LevelOneObj;
 
+		private ulong sfx;
+
 		public void OnCreate()
 		{
 			LevelOneObj = ECSManager.FindEntityByName("LevelObject_PickMe").GetComponent<LevelOneObject>();
 			LevelObject = ECSManager.FindEntityByName("LevelObject_Picked");
 			LevelObject.GetComponent<MeshRenderer>().Visible = false;
+
+			//sfx = ECSManager.FindIDFromName("")
 		}
 
 		public void OnTriggerEnter(System.UInt64 otherID)
