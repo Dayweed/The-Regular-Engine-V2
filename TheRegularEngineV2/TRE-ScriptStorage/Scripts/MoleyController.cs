@@ -673,7 +673,7 @@ namespace TRE
 						// Boosted Jump
 						if (isBoostedJump)
 						{
-							maxHeight = new vec3(0, 120, 0);
+							maxHeight = new vec3(0, 140, 0);
 						}
 
 						Jump(maxHeight);
