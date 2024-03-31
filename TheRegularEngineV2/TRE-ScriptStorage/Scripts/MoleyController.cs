@@ -127,7 +127,7 @@ namespace TRE
 		// private ulong fallingHatSFX;
 		private ulong fallSFX;
 		private ulong cheeringSFX;
-		// private ulong hurtSFX;
+		private ulong hurtSFX;
 		private ulong landingSFX;
 		private ulong startCheerSFX;
 
@@ -234,7 +234,7 @@ namespace TRE
 			// fallingHatSFX = ECSManager.FindIDFromName("SFX_FallingHat");
 			fallSFX = ECSManager.FindIDFromName("SFX_MoleyFall");
 			cheeringSFX = ECSManager.FindIDFromName("SFX_Moley_BoostedJump");
-			// hurtSFX = ECSManager.FindIDFromName("SFX_MoleyHurt1");
+			hurtSFX = ECSManager.FindIDFromName("SFX_MoleyHurt1");
 			landingSFX = ECSManager.FindIDFromName("SFX_MoleyLand");
 			walkingSFXVolume = AS.GetVolume(walkingSFX);
 			startCheerSFX = ECSManager.FindIDFromName("SFX_Moley_Cheer1");
@@ -414,25 +414,11 @@ namespace TRE
                 // Make it loose one of it's powerups
                 TakeDamage();
 
-				if (other.name == "FallingMaracca" && ECSManager.IsValidEntity(fallingMaracaSFX))
+				if (other.name == "FallingRocks" && ECSManager.IsValidEntity(hurtSFX))
 				{
-					if (ECSManager.IsValidEntity(fallingMaracaSFX))
-						AS.Play(fallingMaracaSFX);
+					if (ECSManager.IsValidEntity(hurtSFX))
+						AS.Play(hurtSFX);
 				}
-				//else if (other.ID == ECSManager.FindIDFromName("FallingHat"))
-				//{
-				//	if (ECSManager.IsValidEntity(fallingHatSFX))
-				//		AS.Play(fallingHatSFX);
-				//}
-				else
-				{
-
-				}
-				//else if (other.ID == ECSManager.FindIDFromName("RollingObjectRender"))
-				//{
-				//	if (ECSManager.IsValidEntity(hurtSFX))
-				//		AudioSystem.Play(hurtSFX);
-				//}
 			}
 			// Check is activated jumppad
 			if (other.CompareTag("JumpPad"))
