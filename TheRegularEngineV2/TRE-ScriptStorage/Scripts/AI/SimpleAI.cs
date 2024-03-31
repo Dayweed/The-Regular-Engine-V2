@@ -12,12 +12,15 @@ namespace TRE
 		public Entity mAttackRange;
 		public Entity mGround;
 
+		public Entity mTutorialCactus;
+
 		// Target Variables
 		public Entity mHoley;
 		public Entity mMoley;
 		public Entity mTarget;
 		public bool mFoundTarget = false;
 		public bool mCanChaseTarget = false;
+		public bool mSawCactus = false;
 		private const float maxDistFromSpawn = 50f;
 
 		public vec3 originalSpawnPoint = new vec3();
@@ -41,6 +44,7 @@ namespace TRE
 			originalSpawnPoint = transform.Position;
 			mHoley = new Entity(ECSManager.FindIDFromName("Holey"));
 			mMoley = new Entity(ECSManager.FindIDFromName("Moley"));
+            mTutorialCactus = new Entity(ECSManager.FindIDFromName("Tutorial_Cactus"));
 			pinataEffect = parenting.GetChildFromName("PinataEffect");
 			mTarget = new Entity(); // Invalid ID
 			mGround = new Entity(); // Invalid ID
@@ -77,7 +81,7 @@ namespace TRE
 				float distanceFromHoley = (transform.Position - mHoley.transform.Position).Length;
 				float distanceFromMoley = (transform.Position - mMoley.transform.Position).Length;
 				// Check if collide with moley or holey
-				if (PS.IsTriggerStay(mDetectorRange.ID, mHoley.ID))
+                if (PS.IsTriggerStay(mDetectorRange.ID, mHoley.ID))
 				{
 					mTarget = mHoley;
 					mFoundTarget = true;
@@ -114,9 +118,10 @@ namespace TRE
 
 			// Check if player is within detect sphere
 			if (mFoundTarget && mGround.ID != 0)
-			{
-				// Check if afraid move the other direction based on the following condition
-				isAfraid = mTarget.CompareTag("Cactus") || (mTarget.CompareTag("Blue") && mTarget.GetComponent<HoleyController>().mainStrawberry && mTarget.GetComponent<HoleyController>().isScaled);
+            {
+                mSawCactus = PS.IsTriggerStay(mAttackRange.ID, mTutorialCactus.ID);
+                // Check if afraid move the other direction based on the following condition
+                isAfraid = mSawCactus || (mTarget.CompareTag("Blue") && mTarget.GetComponent<HoleyController>().mainStrawberry && mTarget.GetComponent<HoleyController>().isScaled);
 
 				// Set moveVector based on angle
 				moveVector = mTarget.transform.Position - transform.Position;
@@ -132,6 +137,11 @@ namespace TRE
 
 				// Rotate Character to look at target
 				vec2 rotAxis = MathF.GetLookAtAxis(transform.Position, mTarget.transform.Position);
+				// Rotate to Cactus instead if afraid
+				if (mSawCactus) rotAxis = MathF.GetLookAtAxis(transform.Position, mTutorialCactus.transform.Position);
+                // Set max look up for pinata
+                rotAxis.x = (rotAxis.x > 20f) ? 20f : rotAxis.x;
+				rotAxis.x = (rotAxis.x < -20f) ? -20f : rotAxis.x;
 				transform.Rotation = new vec3(rotAxis.x, rotAxis.y, 0);
 
 				// Determine if it can chase the target if it move that direction
