@@ -1640,7 +1640,18 @@ namespace TRE
 
 	public class SpriteSystem
 	{
-		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		//Sprite 3D
+		public static void SetSprite3DVisibility(EntityID ID, bool isvisible)
+		{
+            Engine_SetSprite3DVisible(ID, isvisible);
+        }
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        public extern static void Engine_SetSprite3DVisible(EntityID ID, bool isVisible);
+		
+		//Sprite 2D
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
 		public extern static void Engine_SetVisible(EntityID ID, bool isVisible);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]

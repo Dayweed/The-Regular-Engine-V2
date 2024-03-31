@@ -2729,30 +2729,6 @@ namespace TRE
 		entity->GetComponent<Particle3DComponent>().m_LifeTime = Lifetime;
 	}
 
-	//static float Engine_GetParticleSize3D(CSEntityID id)
-	//{
-	//	Entity entity = VALIDATEENTITY(id);
-	//	if (!entity) return 0.f;
-	//	if (!entity->HasComponent<Particle3DComponent>())
-	//	{
-	//		PUBLISHERROR("There is no Particle3D Component in " + entity->GetName() + "!");
-	//		return 0.f;
-	//	}
-	//	return entity->GetComponent<Particle3DComponent>().m_Size;
-	//}
-
-	//static void Engine_SetParticleSize3D(CSEntityID id, float Size)
-	//{
-	//	Entity entity = VALIDATEENTITY(id);
-	//	if (!entity) return;
-	//	if (!entity->HasComponent<Particle3DComponent>())
-	//	{
-	//		PUBLISHERROR("There is no Particle3D Component in " + entity->GetName() + "!");
-	//		return;
-	//	}
-	//	entity->GetComponent<Particle3DComponent>().m_Size = Size;
-	//}
-
 	static int Engine_GetParticleCount3D(CSEntityID id)
 	{
 		Entity entity = VALIDATEENTITY(id);
@@ -2807,6 +2783,21 @@ namespace TRE
 		}
 
 		entity->GetComponent<Particle3DComponent>().m_Velocity = velocity;
+	}
+#pragma endregion
+
+#pragma region SpriteRenderer3D
+	static void Engine_SetSprite3DVisible(CSEntityID id, bool isvisible)
+	{
+		Entity entity = VALIDATEENTITY(id);
+		if (!entity) return;
+		if (!entity->HasComponent<Sprite3DComponent>())
+		{
+			PUBLISHERROR("There is no Sprite3D Component in " + entity->GetName() + "!");
+			return;
+		}
+		
+		entity->GetComponent<Sprite3DComponent>().m_IsVisible = isvisible;
 	}
 #pragma endregion
 
@@ -3159,6 +3150,11 @@ namespace TRE
 			mono_add_internal_call("TRE.ParticleSystem3D::Engine_GetParticleCount3D", Engine_GetParticleCount3D);
 			mono_add_internal_call("TRE.ParticleSystem3D::Engine_SetVelocity3D", Engine_SetVelocity3D);
 			mono_add_internal_call("TRE.ParticleSystem3D::Engine_GetVelocity3D", Engine_GetVelocity3D);
+		}
+
+		//Sprite renderer3D
+		{
+			mono_add_internal_call("TRE.SpriteSystem::Engine_SetSprite3DVisible", Engine_SetSprite3DVisible);
 		}
 	}
 }
