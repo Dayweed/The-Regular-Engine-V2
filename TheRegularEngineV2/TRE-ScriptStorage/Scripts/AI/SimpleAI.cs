@@ -4,6 +4,8 @@ using GlmSharp;
 namespace TRE
 {
 	using PS = PhysicsSystem;
+	using AS = AudioSystem;
+
 	// Controls a pawn, if any target is within range, assign target and tell pawn to chase it if it can
 	public class SimpleAI : Entity
 	{
@@ -12,12 +14,15 @@ namespace TRE
 		public Entity mAttackRange;
 		public Entity mGround;
 
+		public Entity mTutorialCactus;
+
 		// Target Variables
 		public Entity mHoley;
 		public Entity mMoley;
 		public Entity mTarget;
 		public bool mFoundTarget = false;
 		public bool mCanChaseTarget = false;
+		public bool mSawCactus = false;
 		private const float maxDistFromSpawn = 50f;
 
 		public vec3 originalSpawnPoint = new vec3();
@@ -36,16 +41,24 @@ namespace TRE
 
 		private Entity pinataEffect;
 
+		private ulong explodeSFX;
+		private ulong moleyHurtSFX;
+		private ulong holeyHurtSFX;
+
 		public void Start()
 		{
 			originalSpawnPoint = transform.Position;
 			mHoley = new Entity(ECSManager.FindIDFromName("Holey"));
 			mMoley = new Entity(ECSManager.FindIDFromName("Moley"));
+            mTutorialCactus = new Entity(ECSManager.FindIDFromName("Tutorial_Cactus"));
 			pinataEffect = parenting.GetChildFromName("PinataEffect");
 			mTarget = new Entity(); // Invalid ID
 			mGround = new Entity(); // Invalid ID
 			mDetectorRange = parenting.GetChildFromName("DetectorRange");
 			mAttackRange = parenting.GetChildFromName("AttackRange");
+			explodeSFX = ECSManager.FindIDFromName("SFX_Explosion");
+			moleyHurtSFX = ECSManager.FindIDFromName("SFX_MoleyHurt");
+			holeyHurtSFX = ECSManager.FindIDFromName("SFX_HoleyHurt");
 		}
 
 		public void Update()
@@ -77,16 +90,16 @@ namespace TRE
 				float distanceFromHoley = (transform.Position - mHoley.transform.Position).Length;
 				float distanceFromMoley = (transform.Position - mMoley.transform.Position).Length;
 				// Check if collide with moley or holey
-				if (PS.IsTriggerStay(mDetectorRange.ID, mHoley.ID))
+                if (PS.IsTriggerStay(mDetectorRange.ID, mHoley.ID))
 				{
 					mTarget = mHoley;
 					mFoundTarget = true;
-				}
+                }
 				if (PS.IsTriggerStay(mDetectorRange.ID, mMoley.ID) && distanceFromHoley > distanceFromMoley)
 				{
 					mTarget = mMoley;
 					mFoundTarget = true;
-				}
+                }
 			}
 			// Check if target is out of detect range
 			else
@@ -114,9 +127,10 @@ namespace TRE
 
 			// Check if player is within detect sphere
 			if (mFoundTarget && mGround.ID != 0)
-			{
-				// Check if afraid move the other direction based on the following condition
-				isAfraid = mTarget.CompareTag("Cactus") || (mTarget.CompareTag("Blue") && mTarget.GetComponent<HoleyController>().mainStrawberry && mTarget.GetComponent<HoleyController>().isScaled);
+            {
+                mSawCactus = PS.IsTriggerStay(mAttackRange.ID, mTutorialCactus.ID) || (mAttackRange.HasComponent<AIAttackRange>() && ECSManager.IsValidEntity(mAttackRange.GetComponent<AIAttackRange>().mTarget.ID) && mAttackRange.GetComponent<AIAttackRange>().mTarget.CompareTag("Cactus"));
+                // Check if afraid move the other direction based on the following condition
+                isAfraid = mSawCactus || (mTarget.CompareTag("Blue") && mTarget.GetComponent<HoleyController>().mainStrawberry && mTarget.GetComponent<HoleyController>().isScaled);
 
 				// Set moveVector based on angle
 				moveVector = mTarget.transform.Position - transform.Position;
@@ -132,6 +146,11 @@ namespace TRE
 
 				// Rotate Character to look at target
 				vec2 rotAxis = MathF.GetLookAtAxis(transform.Position, mTarget.transform.Position);
+				// Rotate to Cactus instead if afraid
+				if (mSawCactus) rotAxis = MathF.GetLookAtAxis(transform.Position, mTutorialCactus.transform.Position);
+                // Set max look up for pinata
+                rotAxis.x = (rotAxis.x > 20f) ? 20f : rotAxis.x;
+				rotAxis.x = (rotAxis.x < -20f) ? -20f : rotAxis.x;
 				transform.Rotation = new vec3(rotAxis.x, rotAxis.y, 0);
 
 				// Determine if it can chase the target if it move that direction
@@ -218,14 +237,29 @@ namespace TRE
 			if (PS.IsTriggerStay(mAttackRange.ID, mMoley.ID))
 			{
 				mMoley.GetComponent<MoleyController>().TakeDamage();
+
+				if (ECSManager.IsValidEntity(moleyHurtSFX))
+				{
+					AS.Play(moleyHurtSFX);
+				}
 			}
 			if (PS.IsTriggerStay(mAttackRange.ID, mHoley.ID))
 			{
 				mHoley.GetComponent<HoleyController>().TakeDamage();
+
+				if (ECSManager.IsValidEntity(holeyHurtSFX))
+				{
+					AS.Play(holeyHurtSFX);
+				}
 			}
 
 			// Force it to go far away if it dies
 			transform.Position = new vec3(-2000, -2000, -2000);
+
+			if (ECSManager.IsValidEntity(explodeSFX))
+			{
+				AS.Play(explodeSFX);
+			}
 
 			// Destroy self
 			DestroySelf();

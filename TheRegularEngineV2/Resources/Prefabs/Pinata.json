@@ -37,20 +37,20 @@
       0,
       {
          "m_Children": [
-            "4196631723238855595",
-            "4412113945549239157"
+            "2564830985918968053",
+            "4877302514942076870"
          ],
          "m_Parent": ""
       },
       1,
       {
          "m_Children": [],
-         "m_Parent": "8046837068674164591"
+         "m_Parent": "13737441589394812524"
       },
       2,
       {
          "m_Children": [],
-         "m_Parent": "8046837068674164591"
+         "m_Parent": "13737441589394812524"
       }
    ],
    [
@@ -58,7 +58,7 @@
       0,
       {
          "m_Active": true,
-         "m_GUID": "8046837068674164591",
+         "m_GUID": "13737441589394812524",
          "m_Index": 1,
          "m_Name": "Pinata",
          "m_Tag": ""
@@ -66,7 +66,7 @@
       1,
       {
          "m_Active": true,
-         "m_GUID": "4196631723238855595",
+         "m_GUID": "2564830985918968053",
          "m_Index": 2,
          "m_Name": "DetectorRange",
          "m_Tag": ""
@@ -74,7 +74,7 @@
       2,
       {
          "m_Active": true,
-         "m_GUID": "4412113945549239157",
+         "m_GUID": "4877302514942076870",
          "m_Index": 3,
          "m_Name": "AttackRange",
          "m_Tag": ""
@@ -228,13 +228,20 @@
       0
    ],
    [
-      1,
+      2,
       0,
       {
          "m_RegisteredScripts": [
             "TRE.SimpleAI"
          ],
          "m_StoredClass": "TRE.SimpleAI"
+      },
+      2,
+      {
+         "m_RegisteredScripts": [
+            "TRE.AIAttackRange"
+         ],
+         "m_StoredClass": "TRE.AIAttackRange"
       }
    ],
    [
