@@ -13,7 +13,7 @@
 			// Debug.Log("Level Name is " + levelName);
 
 			Entity tempPause = ECSManager.FindEntityByName("PauseMenu");
-			if (tempPause != null)
+			if (ECSManager.IsValidEntity(tempPause.ID))
 			{
 				pauseMenu = tempPause.GetComponent<PauseMenu>();
 			}

@@ -222,14 +222,16 @@ namespace TRE
 				if ((InputSystem.GetKeyHold(InputKeys.LeftControl) || InputSystem.GetKeyHold(InputKeys.RightControl)) && InputSystem.GetKeyPress(InputKeys.D1))
 				{
 					forceGoToNextScene = true;
-				}
+                    confettiTime = true;
+                }
 			}
 			else if (currentSceneName == "Level_1")
 			{
 				if ((InputSystem.GetKeyHold(InputKeys.LeftControl) || InputSystem.GetKeyHold(InputKeys.RightControl)) && InputSystem.GetKeyPress(InputKeys.D1))
 				{
 					forceGoToNextScene = true;
-				}
+                    confettiTime = true;
+                }
 
 				if ((InputSystem.GetKeyHold(InputKeys.LeftControl) || InputSystem.GetKeyHold(InputKeys.RightControl)) && InputSystem.GetKeyPress(InputKeys.D2))
 				{
@@ -259,7 +261,8 @@ namespace TRE
 				if ((InputSystem.GetKeyHold(InputKeys.LeftControl) || InputSystem.GetKeyHold(InputKeys.RightControl)) && InputSystem.GetKeyPress(InputKeys.D1))
 				{
 					forceGoToNextScene = true;
-				}
+                    confettiTime = true;
+                }
 
 				if ((InputSystem.GetKeyHold(InputKeys.LeftControl) || InputSystem.GetKeyHold(InputKeys.RightControl)) && InputSystem.GetKeyPress(InputKeys.D2))
 				{

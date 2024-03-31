@@ -224,13 +224,6 @@ namespace TRE
                         TextSystem.StartDialogue(InvitationDialogue5.ID);
                 }
 
-                // Close Game
-                if (InputSystem.GetKeyHold(InputKeys.Escape) && !skipCutscene)
-                {
-                    Debug.Log("Close Game");
-                    Game.CloseGame();
-                }
-
                 // Ignore if last frame alr
                 if (currentFrame >= frames.Count) return;
 
