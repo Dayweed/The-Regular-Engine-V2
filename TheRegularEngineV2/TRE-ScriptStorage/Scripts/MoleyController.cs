@@ -192,7 +192,12 @@ namespace TRE
 		private const string strawberryMaterial = "Moley_Strawberry.material";
 		private const string strawberryMesh = "Moley_Strawberry.fbx";
 
-		public void Start()
+        //VFX
+        private Entity mImpactedVFX;
+        private float mImpactedVFXTimer = 1f;
+        private bool mIsImpacted = false;
+
+        public void Start()
 		{
 			#region UI Variables
 			MyPauseMenu = ECSManager.FindEntityByName("PauseMenu").GetComponent<PauseMenu>();
@@ -277,7 +282,9 @@ namespace TRE
 				//write the default value to the file
 				PRS.SetValue("MoleyController", "0");
             }
-		}
+
+            mImpactedVFX = ECSManager.FindEntityByName("ImpactedVFXMoley");
+        }
 
 		public void Update()
 		{
@@ -376,8 +383,19 @@ namespace TRE
 				}
 			}
 
-			#region UI Popup Region
-			if (!HasBeenTriggeredBefore)
+            if (mIsImpacted)
+            {
+                mImpactedVFXTimer -= Time.GetDeltaTime();
+                if (mImpactedVFXTimer < 0)
+                {
+                    mIsImpacted = false;
+                    mImpactedVFXTimer = 1f;
+                    SpriteSystem.SetSprite3DVisibility(mImpactedVFX.ID, false);
+                }
+            }
+
+            #region UI Popup Region
+            if (!HasBeenTriggeredBefore)
 			{
 				if (IsActivated)
 				{
@@ -398,7 +416,16 @@ namespace TRE
 			PS.AddForce(this.ID, JumpHeight, ForceMode.VelocityChange);
 		}
 
-		public void OnCollisionStay(System.UInt64 otherID)
+        private void SetImpactedVFX()
+        {
+            vec3 HoleyPos = new vec3(this.GetComponent<Transform>().Position);
+            HoleyPos += new vec3(0, 4, 0);
+            mImpactedVFX.GetComponent<Transform>().Position = HoleyPos;
+            SpriteSystem.SetSprite3DVisibility(mImpactedVFX.ID, true);
+            mIsImpacted = true;
+        }
+
+        public void OnCollisionStay(System.UInt64 otherID)
 		{
 			//isGrounded = false;
 
@@ -413,6 +440,7 @@ namespace TRE
             {
                 // Make it loose one of it's powerups
                 TakeDamage();
+				SetImpactedVFX();
 
 				if (other.name == "FallingRock" && ECSManager.IsValidEntity(hurtSFX))
 				{

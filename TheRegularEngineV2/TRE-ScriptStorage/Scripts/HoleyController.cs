@@ -259,7 +259,7 @@ namespace TRE
                 PRS.SetValue("HoleyController", "0");
             }
             
-			mImpactedVFX = ECSManager.FindEntityByName("ImpactedVFX");
+			mImpactedVFX = ECSManager.FindEntityByName("ImpactedVFXHoley");
         }
 
 		public void Update()
