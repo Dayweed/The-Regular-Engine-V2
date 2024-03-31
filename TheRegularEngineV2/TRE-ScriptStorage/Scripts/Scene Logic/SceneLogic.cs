@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using GlmSharp;
 
 namespace TRE
@@ -20,6 +21,11 @@ namespace TRE
 		public float waitingTime = 0.90f;
 
 		private bool forceGoToNextScene = false;
+
+		// cheats flag
+		public bool keepinvCheat = false;
+		public bool creativeCheat = false;
+		public bool triggerCheats = false;
 
 		VFX_Emerge StarEmerge;
 
@@ -177,6 +183,35 @@ namespace TRE
 			confettiTime = false;
             mConfettispawned = false;
             mConfettiTimeDurian = 3f;
+
+			// Load Cheats
+            if (bool.TryParse(PersistentSystem.GetValue("powerUps"), out bool powerResult))
+            {
+                keepinvCheat = powerResult;
+            }
+            else
+            { 
+                keepinvCheat = false;
+				string powerUpsString = keepinvCheat.ToString();
+                PersistentSystem.SetValue("powerUps", powerUpsString);
+            }
+
+            if (bool.TryParse(PersistentSystem.GetValue("invulnerability"), out bool invResult))
+            {
+                creativeCheat = invResult;
+            }
+            else
+            {
+                creativeCheat = false;
+				string invulnerabilityString = creativeCheat.ToString();
+				PersistentSystem.SetValue("invulnerability", invulnerabilityString);
+            }
+
+            if (keepinvCheat || creativeCheat)
+            {
+				triggerCheats = true;
+            }
+            
         }
 
 		public void Update()
@@ -244,35 +279,24 @@ namespace TRE
 
 			if ((InputSystem.GetKeyHold(InputKeys.LeftControl) || InputSystem.GetKeyHold(InputKeys.RightControl)) && InputSystem.GetKeyRelease(InputKeys.D3))
 			{
-				Entity moley = ECSManager.FindEntityByName("Moley");
-				Entity holey = ECSManager.FindEntityByName("Holey");
-
-				if (ECSManager.IsValidEntity(moley.ID))
-				{
-					moley.GetComponent<MoleyController>().keepInventory = !moley.GetComponent<MoleyController>().keepInventory;
-				}
-				if (ECSManager.IsValidEntity(holey.ID))
-				{
-					holey.GetComponent<HoleyController>().keepInventory = !holey.GetComponent<HoleyController>().keepInventory;
-					Debug.Log("KEEPINVENTORY MODE: " + holey.GetComponent<HoleyController>().keepInventory);
-				}
+				keepinvCheat = !keepinvCheat;
+				triggerCheats = true;
 			}
 
 			if ((InputSystem.GetKeyHold(InputKeys.LeftControl) || InputSystem.GetKeyHold(InputKeys.RightControl)) && InputSystem.GetKeyRelease(InputKeys.D4))
 			{
-				Entity moley = ECSManager.FindEntityByName("Moley");
-				Entity holey = ECSManager.FindEntityByName("Holey");
-
-				if (ECSManager.IsValidEntity(moley.ID))
-				{
-					moley.GetComponent<MoleyController>().creativeMode = !moley.GetComponent<MoleyController>().creativeMode;
-				}
-				if (ECSManager.IsValidEntity(holey.ID))
-				{
-					holey.GetComponent<HoleyController>().creativeMode = !holey.GetComponent<HoleyController>().creativeMode;
-					Debug.Log("CREATIVE MODE: " + holey.GetComponent<HoleyController>().creativeMode);
-				}
+				creativeCheat = !creativeCheat;
+                triggerCheats = true;
 			}
+
+            if (triggerCheats)
+            {
+                KeepInv(keepinvCheat);
+                CreativeMode(creativeCheat);
+                triggerCheats = false;
+            }
+
+
 
 			if ((InputSystem.GetKeyHold(InputKeys.LeftControl) || InputSystem.GetKeyHold(InputKeys.RightControl)) && InputSystem.GetKeyRelease(InputKeys.D5))
 			{
@@ -492,5 +516,38 @@ namespace TRE
 			if (mapStars >= 1)
 				Stars1.SetActive(true);
 		}
+
+
+        public void KeepInv(bool trigger)
+        {
+            Entity moley = ECSManager.FindEntityByName("Moley");
+            Entity holey = ECSManager.FindEntityByName("Holey");
+
+            if (ECSManager.IsValidEntity(moley.ID))
+            {
+                moley.GetComponent<MoleyController>().keepInventory = trigger;
+            }
+            if (ECSManager.IsValidEntity(holey.ID))
+            {
+                holey.GetComponent<HoleyController>().keepInventory = trigger;
+                Debug.Log("KEEPINVENTORY MODE: " + holey.GetComponent<HoleyController>().keepInventory);
+            }
+        }
+
+        public void CreativeMode(bool trigger)
+        {
+            Entity moley = ECSManager.FindEntityByName("Moley");
+            Entity holey = ECSManager.FindEntityByName("Holey");
+
+            if (ECSManager.IsValidEntity(moley.ID))
+            {
+                moley.GetComponent<MoleyController>().creativeMode = trigger;
+            }
+            if (ECSManager.IsValidEntity(holey.ID))
+            {
+                holey.GetComponent<HoleyController>().creativeMode = trigger;
+                Debug.Log("CREATIVE MODE: " + holey.GetComponent<HoleyController>().creativeMode);
+            }
+        }
 	}
 }

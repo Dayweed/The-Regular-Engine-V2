@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Reflection.Emit;
+using System.Security;
 
 namespace TRE
 {
@@ -6,6 +8,7 @@ namespace TRE
 	using IS = InputSystem;
 	using TS = TextSystem;
 	using UIS = UISystem;
+	using PRS = PersistentSystem;
 
 	public enum MenuNavigation
 	{
@@ -14,7 +17,8 @@ namespace TRE
 		LEFT,
 		RIGHT,
 		CONFIRM,
-		BACK
+		BACK,
+		START
 	}
 
 	public class PauseMenu : Entity
@@ -75,6 +79,7 @@ namespace TRE
 		private Entity on_button_backing_inv;
 		private Entity off_button_inv;
 		private Entity off_button_backing_inv;
+		// Set In persistent system
 		bool IsPowerUpOn = false;
 		bool IsInvulnerabilityOn = false;
 
@@ -82,15 +87,17 @@ namespace TRE
 		private Entity masterVolumeEnt;
 		private Entity musicVolumeEnt;
 		private Entity sfxVolumeEnt;
+		// Need to store these values into the persistent system
 		private int masterVolume = 100;
-		private int musicVolume = 100;
-		private int sfxVolume = 100;
+		private int musicVolume= 100;
+		private int sfxVolume= 100;
 
 		//Graphics panel entities
 		private int mCurrentEditMember = -1;
 		private Entity mGammaPanel;
 		private Entity mGammaValue;
-		private float mTempGammaValue = 2.2f;
+		// store to persistentsystem
+		private float mTempGammaValue = 2.2f ; //  Start at 2.2
 
 		//Controls panel entities
 		private Entity P1_panel;
@@ -123,8 +130,11 @@ namespace TRE
 		private bool controllerConnectedLast = false;
 		private bool changeUI = false;
 
+        private Entity moley;
+
 		public void Start()
 		{
+			moley = ECSManager.FindEntityByName("Moley");
 			options = new List<Entity>
 			{
 				ECSManager.FindEntityByName("main_continue"),
@@ -220,7 +230,6 @@ namespace TRE
 				P2_controller_preset1 = ECSManager.FindEntityByName("P2_controller_preset1");
 				P2_controller_preset2 = ECSManager.FindEntityByName("P2_controller_preset2");
 			}
-
 			pointer = ECSManager.FindEntityByName("main_pointer");
 			pointerTransform = pointer.GetComponent<Transform>();
 
@@ -245,6 +254,7 @@ namespace TRE
 				options[2].GetComponent<SpriteRenderer>().Texture = "ui-button-quit.png";
 			}
 
+            
 			Entity mainCam = ECSManager.FindEntityByName("Main Camera");
 			if (mainCam != null)
 			{
@@ -254,6 +264,91 @@ namespace TRE
 			{
 				mainCamera = new CameraController { freeCamera = true };
 			}
+
+            #region Load Settings
+			// Get the current settings
+			// Master Volume
+            if (int.TryParse(PRS.GetValue("masterVolume"), out int result))
+            {
+				masterVolume = result;
+				AS.SetMasterVolume(masterVolume / 100f);
+                TextSystem.SetTextMessage(masterVolumeEnt.ID, masterVolume.ToString());
+            }
+            else
+            {
+                masterVolume = 100;
+				string masterVolumeString = masterVolume.ToString();
+				PRS.SetValue("masterVolume",masterVolumeString);
+            }
+
+			// Music Volume
+            if (int.TryParse(PRS.GetValue("musicVolume"), out result))
+            {
+                musicVolume = result;
+				AS.SetBGMVolume(musicVolume / 100f);
+				TextSystem.SetTextMessage(musicVolumeEnt.ID, musicVolume.ToString());
+            }
+            else
+            {
+                musicVolume = 100;
+                string musicVolumeString = musicVolume.ToString();
+                PRS.SetValue("musicVolume",musicVolumeString);
+            }
+
+			// SFX Volume
+            if (int.TryParse(PRS.GetValue("sfxVolume"), out result))
+            {
+                sfxVolume = result;
+				AS.SetSFXVolume(sfxVolume / 100f);
+				TextSystem.SetTextMessage(sfxVolumeEnt.ID, sfxVolume.ToString());
+            }
+            else
+            {
+                sfxVolume = 100;
+                string sfxVolumeString = sfxVolume.ToString();
+                PRS.SetValue("sfxVolume",sfxVolumeString);
+            }
+
+			// Gamma Value
+            if (float.TryParse(PRS.GetValue("gammaValue"), out float gammaResult))
+            {
+                mTempGammaValue = gammaResult;
+                Game.SetGammaValue(mTempGammaValue);
+                TextSystem.SetTextMessage(mGammaValue.ID, mTempGammaValue.ToString());
+            }
+            else
+            {
+                mTempGammaValue = 2.2f;
+                string gammaValueString = mTempGammaValue.ToString();
+                PRS.SetValue("gammaValue",gammaValueString);
+            }
+
+			// Cheats
+			// Power Ups
+            if (bool.TryParse(PRS.GetValue("powerUps"), out bool powerUpsResult))
+            {
+				IsPowerUpOn = powerUpsResult;
+            }
+            else
+            {
+                IsPowerUpOn = false;
+                string powerUpsString = IsPowerUpOn.ToString();
+                PRS.SetValue("powerUps",powerUpsString);	
+            }
+
+			// Invulnerability
+            if (bool.TryParse(PRS.GetValue("invulnerability"), out bool invulnerabilityResult))
+            {
+                IsInvulnerabilityOn = invulnerabilityResult;
+            }
+            else
+            {
+                IsInvulnerabilityOn = false;
+                string invulnerabilityString = IsInvulnerabilityOn.ToString();
+                PRS.SetValue("invulnerability",invulnerabilityString);
+            }
+            
+            #endregion
 		}
 
 		public void Update()
@@ -401,7 +496,7 @@ namespace TRE
 				{
 					//settings pop up will appear
 					//user can press A or D to move left or right for "Gameplay", "Graphics", "Audio", "Controls"
-					if (IS.GetKeyPress(InputKeys.A))
+					if (IS.GetKeyPress(InputKeys.A) || ControllerInput(MenuNavigation.LEFT))
 					{
 						Debug.Log("press left");
 						Debug.Log("mCurrentEditMember: " + mCurrentEditMember);
@@ -416,7 +511,7 @@ namespace TRE
 							AS.Play(sfx);
 					}
 
-					if (IS.GetKeyPress(InputKeys.D))
+					if (IS.GetKeyPress(InputKeys.D)|| ControllerInput(MenuNavigation.RIGHT))
 					{
 						Debug.Log("press right");
 						Debug.Log("mCurrentEditMember: " + mCurrentEditMember);
@@ -540,7 +635,7 @@ namespace TRE
 					showControlPanel();
 
 					//Not editing settings -> editing settings
-					if (!mIsEditingSettings && IS.GetKeyPress(InputKeys.S))
+					if (!mIsEditingSettings && (IS.GetKeyPress(InputKeys.S) || ControllerInput(MenuNavigation.DOWN) ))
 					{
 						mIsEditingSettings = true;
 						mCurrentEditMember = 0; //Set it to be 0th member always at the start
@@ -554,7 +649,7 @@ namespace TRE
 					if (showAudioPanel)
 					{
 						settingsPointer.GetComponent<SpriteRenderer>().isVisible = true;
-						if (IS.GetKeyPress(InputKeys.W))
+						if (IS.GetKeyPress(InputKeys.W) || ControllerInput(MenuNavigation.UP))
 						{
 							Debug.Log("press up");
 							if (mCurrentEditMember <= 0)
@@ -570,7 +665,7 @@ namespace TRE
 							Debug.Log("mCurrentEditMember: " + mCurrentEditMember);
 						}
 
-						if (IS.GetKeyPress(InputKeys.S))
+						if (IS.GetKeyPress(InputKeys.S)|| ControllerInput(MenuNavigation.DOWN))
 						{
 							Debug.Log("press down");
 							if (mCurrentEditMember < 0)
@@ -587,55 +682,80 @@ namespace TRE
 						switch (mCurrentEditMember)
 						{
 							case 0:
-								if (IS.GetKeyPress(InputKeys.A) || IS.GetKeyPress(InputKeys.Left))
+								if (IS.GetKeyPress(InputKeys.A) || IS.GetKeyPress(InputKeys.Left) || ControllerInput(MenuNavigation.LEFT))
 								{
 									masterVolume -= 10;
 
 									if (masterVolume < 0)
 										masterVolume = 0;
+
+									// Set persistent system
+									string masterVolumeString = masterVolume.ToString();
+									PRS.SetValue("masterVolume",masterVolumeString);
 								}
-								else if (IS.GetKeyPress(InputKeys.D) || IS.GetKeyPress(InputKeys.Right))
+								else if (IS.GetKeyPress(InputKeys.D) || IS.GetKeyPress(InputKeys.Right)|| ControllerInput(MenuNavigation.RIGHT))
 								{
 									masterVolume += 10;
 
 									if (masterVolume > 100)
 										masterVolume = 100;
+
+									// Set persistent system
+									string masterVolumeString = masterVolume.ToString();
+									PRS.SetValue("masterVolume",masterVolumeString);
 								}
 								AS.SetMasterVolume(masterVolume / 100f);
 								TS.SetTextMessage(masterVolumeEnt.ID, masterVolume.ToString());
 								break;
 							case 1:
-								if (IS.GetKeyPress(InputKeys.A) || IS.GetKeyPress(InputKeys.Left))
+								if (IS.GetKeyPress(InputKeys.A) || IS.GetKeyPress(InputKeys.Left) || ControllerInput(MenuNavigation.LEFT))
 								{
 									musicVolume -= 10;
 
 									if (musicVolume < 0)
 										musicVolume = 0;
+
+									// Set persistent system
+									string musicVolumeString = musicVolume.ToString();
+									PRS.SetValue("musicVolume",musicVolumeString);
+
 								}
-								else if (IS.GetKeyPress(InputKeys.D) || IS.GetKeyPress(InputKeys.Right))
+								else if (IS.GetKeyPress(InputKeys.D) || IS.GetKeyPress(InputKeys.Right)|| ControllerInput(MenuNavigation.RIGHT))
 								{
 									musicVolume += 10;
 
 									if (musicVolume > 100)
 										musicVolume = 100;
+
+									// Set persistent system
+									string musicVolumeString = musicVolume.ToString();
+									PRS.SetValue("musicVolume",musicVolumeString);
 								}
 								AS.SetBGMVolume(musicVolume / 100f);
 								TS.SetTextMessage(musicVolumeEnt.ID, musicVolume.ToString());
 								break;
 							case 2:
-								if (IS.GetKeyPress(InputKeys.A) || IS.GetKeyPress(InputKeys.Left))
+								if (IS.GetKeyPress(InputKeys.A) || IS.GetKeyPress(InputKeys.Left) || ControllerInput(MenuNavigation.LEFT))
 								{
 									sfxVolume -= 10;
 
 									if (sfxVolume < 0)
 										sfxVolume = 0;
+
+									// Set persistent system
+									string sfxVolumeString = sfxVolume.ToString();
+									PRS.SetValue("sfxVolume",sfxVolumeString);
 								}
-								else if (IS.GetKeyPress(InputKeys.D) || IS.GetKeyPress(InputKeys.Right))
+								else if (IS.GetKeyPress(InputKeys.D) || IS.GetKeyPress(InputKeys.Right) || ControllerInput(MenuNavigation.RIGHT))
 								{
 									sfxVolume += 10;
 
 									if (sfxVolume > 100)
 										sfxVolume = 100;
+									
+									//
+									string sfxVolumeString = sfxVolume.ToString();
+									PRS.SetValue("sfxVolume",sfxVolumeString);
 								}
 								AS.SetSFXVolume(sfxVolume / 100f);
 								TS.SetTextMessage(sfxVolumeEnt.ID, sfxVolume.ToString());
@@ -659,7 +779,7 @@ namespace TRE
 					else if (showGraphicsPanel)
 					{
 						settingsPointer.GetComponent<SpriteRenderer>().isVisible = true;
-						if (IS.GetKeyPress(InputKeys.W))
+						if (IS.GetKeyPress(InputKeys.W) || ControllerInput(MenuNavigation.UP))
 						{
 							Debug.Log("press up");
 							if (mCurrentEditMember <= 0)
@@ -684,12 +804,20 @@ namespace TRE
 								Game.SetGammaValue(mTempGammaValue);
 								TextSystem.SetTextMessage(mGammaValue.ID, mTempGammaValue.ToString());
 
+								// Set persistent system
+								string gammaValueString = mTempGammaValue.ToString();
+								PRS.SetValue("gammaValue",gammaValueString);
+
 							}
 							else if (IS.GetKeyPress(InputKeys.D) || IS.GetKeyPress(InputKeys.Right))
 							{
 								mTempGammaValue += 0.1f;
 								Game.SetGammaValue(mTempGammaValue);
 								TextSystem.SetTextMessage(mGammaValue.ID, mTempGammaValue.ToString());
+
+								// Set persistent system
+								string gammaValueString = mTempGammaValue.ToString();
+								PRS.SetValue("gammaValue",gammaValueString);
 							}
 
 						}
@@ -703,7 +831,7 @@ namespace TRE
 						//show thick boy (pointer)
 						controlsPointer.GetComponent<SpriteRenderer>().isVisible = true;
 
-						if (IS.GetKeyPress(InputKeys.W))
+						if (IS.GetKeyPress(InputKeys.W)|| ControllerInput(MenuNavigation.UP))
 						{
 							Debug.Log("press up");
 							mCurrentEditMember = -1;
@@ -727,7 +855,7 @@ namespace TRE
 							case 0: //player 1
 								if (P1_IsKeyboard)
 								{
-									if (IS.GetKeyPress(InputKeys.A))
+									if (IS.GetKeyPress(InputKeys.A) || ControllerInput(MenuNavigation.LEFT))
 									{
 										Debug.Log("in controls panel");
 										if (P1_KeyboardPreset <= 0)
@@ -738,7 +866,7 @@ namespace TRE
 										Debug.Log("P1_KeyboardPreset: " + P1_KeyboardPreset);
 									}
 
-									if (IS.GetKeyPress(InputKeys.D))
+									if (IS.GetKeyPress(InputKeys.D)|| ControllerInput(MenuNavigation.RIGHT))
 									{
 										Debug.Log("press right");
 										if (P1_KeyboardPreset >= 2)
@@ -760,7 +888,7 @@ namespace TRE
 								}
 								else
 								{
-									if (IS.GetKeyPress(InputKeys.A))
+									if (IS.GetKeyPress(InputKeys.A) || ControllerInput(MenuNavigation.LEFT))
 									{
 										Debug.Log("in controls panel");
 										P1_ControllerPreset = 0;
@@ -768,7 +896,7 @@ namespace TRE
 										Debug.Log("P1_ControllerPreset: " + P1_KeyboardPreset);
 									}
 
-									if (IS.GetKeyPress(InputKeys.D))
+									if (IS.GetKeyPress(InputKeys.D)|| ControllerInput(MenuNavigation.RIGHT))
 									{
 										Debug.Log("press right");
 										P1_ControllerPreset = 1;
@@ -780,7 +908,7 @@ namespace TRE
 							case 1: //player 2
 								if (P2_IsKeyboard)
 								{
-									if (IS.GetKeyPress(InputKeys.A) || IS.GetKeyPress(InputKeys.D))
+									if (IS.GetKeyPress(InputKeys.A) || IS.GetKeyPress(InputKeys.D) || ControllerInput(MenuNavigation.LEFT) || ControllerInput(MenuNavigation.RIGHT))
 									{
 										Debug.Log("in controls panel");
 										if (P1_KeyboardPreset == 0)
@@ -840,7 +968,7 @@ namespace TRE
 					else if (showGameplayPanel)
 					{
 						settingsPointer.GetComponent<SpriteRenderer>().isVisible = true;
-						if (IS.GetKeyPress(InputKeys.W))
+						if (IS.GetKeyPress(InputKeys.W) || ControllerInput(MenuNavigation.UP))
 						{
 							Debug.Log("press up");
 							if (mCurrentEditMember <= 0)
@@ -856,7 +984,7 @@ namespace TRE
 							Debug.Log("mCurrentEditMember: " + mCurrentEditMember);
 						}
 
-						if (IS.GetKeyPress(InputKeys.S))
+						if (IS.GetKeyPress(InputKeys.S)|| ControllerInput(MenuNavigation.DOWN) )
 						{
 							Debug.Log("press down");
 							if (mCurrentEditMember < 0)
@@ -873,7 +1001,7 @@ namespace TRE
 						switch (mCurrentEditMember)
 						{
 							case 0:
-								if (IS.GetKeyPress(InputKeys.A) || IS.GetKeyPress(InputKeys.Left))
+								if (IS.GetKeyPress(InputKeys.A) || IS.GetKeyPress(InputKeys.Left) || ControllerInput(MenuNavigation.LEFT))
 								{
 									//on
 									IsPowerUpOn = true;
@@ -882,8 +1010,13 @@ namespace TRE
 
 									off_button_pwrUp.GetComponent<SpriteRenderer>().isVisible = !IsPowerUpOn;
 									off_button_backing_pwrUp.GetComponent<SpriteRenderer>().isVisible = !IsPowerUpOn;
+
+									// Set persistent system
+									string powerUpsString = IsPowerUpOn.ToString();
+									PRS.SetValue("powerUps",powerUpsString);
+									
 								}
-								else if (IS.GetKeyPress(InputKeys.D) || IS.GetKeyPress(InputKeys.Right))
+								else if (IS.GetKeyPress(InputKeys.D) || IS.GetKeyPress(InputKeys.Right)|| ControllerInput(MenuNavigation.RIGHT))
 								{
 									//off
 									IsPowerUpOn = false;
@@ -892,10 +1025,13 @@ namespace TRE
 
 									on_button_pwrUp.GetComponent<SpriteRenderer>().isVisible = IsPowerUpOn;
 									on_button_backing_pwrUp.GetComponent<SpriteRenderer>().isVisible = IsPowerUpOn;
+									// Set persistent system
+									string powerUpsString = IsPowerUpOn.ToString();
+									PRS.SetValue("powerUps",powerUpsString);
 								}
 								break;
 							case 1:
-								if (IS.GetKeyPress(InputKeys.A) || IS.GetKeyPress(InputKeys.Left))
+								if (IS.GetKeyPress(InputKeys.A) || IS.GetKeyPress(InputKeys.Left) || ControllerInput(MenuNavigation.LEFT))
 								{
 									//on
 									IsInvulnerabilityOn = true;
@@ -904,8 +1040,12 @@ namespace TRE
 
 									off_button_inv.GetComponent<SpriteRenderer>().isVisible = !IsInvulnerabilityOn;
 									off_button_backing_inv.GetComponent<SpriteRenderer>().isVisible = !IsInvulnerabilityOn;
+
+									// Set persistent system
+									string invulnerabilityString = IsInvulnerabilityOn.ToString();
+									PRS.SetValue("invulnerability",invulnerabilityString);
 								}
-								else if (IS.GetKeyPress(InputKeys.D) || IS.GetKeyPress(InputKeys.Right))
+								else if (IS.GetKeyPress(InputKeys.D) || IS.GetKeyPress(InputKeys.Right) || ControllerInput(MenuNavigation.RIGHT))
 								{
 									//off
 									IsInvulnerabilityOn = false;
@@ -914,6 +1054,10 @@ namespace TRE
 
 									on_button_inv.GetComponent<SpriteRenderer>().isVisible = IsInvulnerabilityOn;
 									on_button_backing_inv.GetComponent<SpriteRenderer>().isVisible = IsInvulnerabilityOn;
+
+									// Set persistent system
+									string invulnerabilityString = IsInvulnerabilityOn.ToString();
+									PRS.SetValue("invulnerability",invulnerabilityString);
 								}
 								break;
 						}
@@ -930,7 +1074,7 @@ namespace TRE
 						}
 					}
 
-					if ((IS.GetKeyPress(InputKeys.W) && !settingsPointer.GetComponent<SpriteRenderer>().isVisible) || IS.GetControllerButtonTriggered(0, IS.Button.Start) || IS.GetControllerButtonTriggered(1, IS.Button.Start))
+					if ((IS.GetKeyPress(InputKeys.W) && !settingsPointer.GetComponent<SpriteRenderer>().isVisible) || ControllerInput(MenuNavigation.START))
 					{
 
 						Debug.Log("Triggered ESC to not editing settings");
@@ -1135,6 +1279,10 @@ namespace TRE
 					if (IS.GetControllerButtonTriggered(0, IS.Button.B) || IS.GetControllerButtonTriggered(1, IS.Button.B))
 						return true;
 					break;
+				case MenuNavigation.START:
+					if (IS.GetControllerButtonTriggered(0, IS.Button.Start) || IS.GetControllerButtonTriggered(1, IS.Button.Start))
+                        return true;
+                    break;
 			}
 			return false;
 		}
