@@ -414,7 +414,7 @@ namespace TRE
                 // Make it loose one of it's powerups
                 TakeDamage();
 
-				if (other.name == "FallingRocks" && ECSManager.IsValidEntity(hurtSFX))
+				if (other.name == "FallingRock" && ECSManager.IsValidEntity(hurtSFX))
 				{
 					if (ECSManager.IsValidEntity(hurtSFX))
 						AS.Play(hurtSFX);
