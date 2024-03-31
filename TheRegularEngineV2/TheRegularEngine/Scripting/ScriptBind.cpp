@@ -2660,6 +2660,19 @@ namespace TRE
 #pragma endregion
 
 #pragma region Particle3D
+	static void Engine_SetParticleSize3D(CSEntityID id, float size)
+	{
+		Entity entity = VALIDATEENTITY(id);
+		if (!entity) return;
+		if (!entity->HasComponent<Particle3DComponent>())
+		{
+			PUBLISHERROR("There is no Particle Component in " + entity->GetName() + "!");
+			return;
+		}
+		
+		entity->GetComponent<Particle3DComponent>().m_Size = size;
+	}
+
 	static void Engine_SetParticleEmitterActive3D(CSEntityID id, bool active)
 	{
 		Entity entity = VALIDATEENTITY(id);
@@ -2672,7 +2685,7 @@ namespace TRE
 		entity->GetComponent<Particle3DComponent>().ResetParticles(entity->GetComponent<Transform>().m_Position);
 		entity->GetComponent<Particle3DComponent>().m_Running = active;
 	}
-
+	
 	static bool Engine_GetParticleEmitterActive3D(CSEntityID id)
 	{
 		Entity entity = VALIDATEENTITY(id);
@@ -3163,6 +3176,7 @@ namespace TRE
 			mono_add_internal_call("TRE.ParticleSystem3D::Engine_GetParticleCount3D", Engine_GetParticleCount3D);
 			mono_add_internal_call("TRE.ParticleSystem3D::Engine_SetVelocity3D", Engine_SetVelocity3D);
 			mono_add_internal_call("TRE.ParticleSystem3D::Engine_GetVelocity3D", Engine_GetVelocity3D);
+			mono_add_internal_call("TRE.ParticleSystem3D::Engine_SetParticleSize3D", Engine_SetParticleSize3D);
 		}
 
 		//Sprite renderer3D
