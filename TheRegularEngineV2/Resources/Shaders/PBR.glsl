@@ -198,11 +198,11 @@ void main()
 	//const float specularIntensity = pow(max(dot(reflect(-In.DirectionalLightDirection, normal), eyeDirection), 0.0), shininess);
 	const vec3 ambient = In.AmbientColor.rgb * In.AmbientColor.a * texture(AOMap, In.TexCoord).rgb * texture(AOMap, In.TexCoord).a;
 	
-	//float dp = max(dot(normalize(In.VertNormal), -normalize(In.DirectionalLightDirection.xyz)), 0.0025);
-	float dp = dot(normalize(In.VertNormal), -normalize(In.DirectionalLightDirection.xyz));
+	float dp = max(dot(normalize(In.VertNormal), -normalize(In.DirectionalLightDirection.xyz)), 0.0025);
+	//float dp = dot(normalize(In.VertNormal), -normalize(In.DirectionalLightDirection.xyz));
 
 	//Diffuse color
-	if(dp <= 0.0005)
+	if(dp <= 0.05)
 	{
 		shadow = 0.0;
 	}
