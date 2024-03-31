@@ -27,7 +27,7 @@
       0,
       {
          "m_Active": true,
-         "m_GUID": "6449123445847824353",
+         "m_GUID": "15557279641365477997",
          "m_Index": 1,
          "m_Name": "FallingRock",
          "m_Tag": "FallingObstacle"
@@ -82,7 +82,7 @@
          "m_FreezeRotationY": true,
          "m_FreezeRotationZ": true,
          "m_IsKinematic": false,
-         "m_Mass": 64.0,
+         "m_Mass": 216.0,
          "m_UseGravity": true
       }
    ],
@@ -113,7 +113,28 @@
       0
    ],
    [
-      0
+      1,
+      0,
+      {
+         "footstepsSounds": [],
+         "m_FileName": "sfx_StoneLanding.wav",
+         "m_Loop": false,
+         "m_MaxDistance": 115.0,
+         "m_MinDistance": 20.0,
+         "m_Mute": false,
+         "m_Pause": false,
+         "m_Pitch": 1.0,
+         "m_Play": false,
+         "m_PlayOnStart": true,
+         "m_Priority": 40,
+         "m_Spatialize": true,
+         "m_Volume": 0.800000011920929,
+         "m_goPosition": [
+            0.0,
+            0.0,
+            0.0
+         ]
+      }
    ],
    [
       0
