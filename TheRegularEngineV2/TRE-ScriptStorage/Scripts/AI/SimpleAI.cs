@@ -85,12 +85,12 @@ namespace TRE
 				{
 					mTarget = mHoley;
 					mFoundTarget = true;
-				}
+                }
 				if (PS.IsTriggerStay(mDetectorRange.ID, mMoley.ID) && distanceFromHoley > distanceFromMoley)
 				{
 					mTarget = mMoley;
 					mFoundTarget = true;
-				}
+                }
 			}
 			// Check if target is out of detect range
 			else
@@ -119,7 +119,7 @@ namespace TRE
 			// Check if player is within detect sphere
 			if (mFoundTarget && mGround.ID != 0)
             {
-                mSawCactus = PS.IsTriggerStay(mAttackRange.ID, mTutorialCactus.ID);
+                mSawCactus = PS.IsTriggerStay(mAttackRange.ID, mTutorialCactus.ID) || (mAttackRange.HasComponent<AIAttackRange>() && ECSManager.IsValidEntity(mAttackRange.GetComponent<AIAttackRange>().mTarget.ID) && mAttackRange.GetComponent<AIAttackRange>().mTarget.CompareTag("Cactus"));
                 // Check if afraid move the other direction based on the following condition
                 isAfraid = mSawCactus || (mTarget.CompareTag("Blue") && mTarget.GetComponent<HoleyController>().mainStrawberry && mTarget.GetComponent<HoleyController>().isScaled);
 
