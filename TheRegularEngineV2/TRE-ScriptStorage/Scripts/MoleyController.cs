@@ -686,6 +686,15 @@ namespace TRE
 								startcheerPlayed = true;
 							}
 
+							if (startcheerPlayed)
+							{
+								int cheer = Random.Range(1, 5);//25% chance to play cheering sound
+								if (cheer == 1)
+								{
+									AS.Play(startCheerSFX);
+								}
+							}
+
 							if (isBoostedJump)
 								AS.Play(cheeringSFX);
 							else
@@ -858,6 +867,15 @@ namespace TRE
 							{
 								AS.Play(startCheerSFX);
 								startcheerPlayed = true;
+							}
+
+							if (startcheerPlayed)
+							{
+								int cheer = Random.Range(1, 5);//25% chance to play cheering sound
+								if (cheer == 1)
+								{
+									AS.Play(startCheerSFX);
+								}
 							}
 
 							if (isBoostedJump)
