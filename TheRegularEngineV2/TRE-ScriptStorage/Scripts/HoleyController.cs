@@ -184,6 +184,11 @@ namespace TRE
 		private const string strawberryMaterial = "Holey_Strawberry.material";
 		private const string strawberryMesh = "Holey_Strawberry.fbx";
 
+		//VFX
+		private Entity mImpactedVFX;
+		private float mImpactedVFXTimer = 1f;
+		private bool mIsImpacted = false;
+
 		public void Start()
 		{
 			#region UI Variables
@@ -254,7 +259,8 @@ namespace TRE
                 PRS.SetValue("HoleyController", "0");
             }
             
-		}
+			mImpactedVFX = ECSManager.FindEntityByName("ImpactedVFX");
+        }
 
 		public void Update()
 		{
@@ -351,12 +357,32 @@ namespace TRE
 					fallingSFXPlayed = false;
 				}
 			}
+
+			if (mIsImpacted)
+			{
+				mImpactedVFXTimer -= Time.GetDeltaTime();
+				if (mImpactedVFXTimer < 0 )
+				{
+					mIsImpacted = false;
+					mImpactedVFXTimer = 1f;
+                    SpriteSystem.SetSprite3DVisibility(mImpactedVFX.ID, false);
+                }
+			}
 		}
 
 		private void Jump(vec3 JumpHeight)
 		{
 			PS.AddForce(this.ID, JumpHeight, ForceMode.VelocityChange);
 		}
+
+		private void SetImpactedVFX()
+		{
+            vec3 HoleyPos = new vec3(this.GetComponent<Transform>().Position);
+            HoleyPos += new vec3(0, 4, 0);
+            mImpactedVFX.GetComponent<Transform>().Position = HoleyPos;
+            SpriteSystem.SetSprite3DVisibility(mImpactedVFX.ID, true);
+			mIsImpacted = true;
+        }
 
 		public void OnCollisionStay(System.UInt64 otherID)
 		{
@@ -372,6 +398,7 @@ namespace TRE
 				if (other.CompareTag("FallingObstacle") && other.GetComponent<FallingObj>().isGrounded) return;
 
 				TakeDamage();
+				SetImpactedVFX();
 
                 if (other.name == "FallingRock" && ECSManager.IsValidEntity(hurtSFX))
 				{
