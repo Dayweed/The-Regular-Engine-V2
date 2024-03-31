@@ -416,8 +416,7 @@ namespace TRE
 
 				if (other.name == "FallingRock" && ECSManager.IsValidEntity(hurtSFX))
 				{
-					if (ECSManager.IsValidEntity(hurtSFX))
-						AS.Play(hurtSFX);
+					AS.Play(hurtSFX);
 				}
 			}
 			// Check is activated jumppad
