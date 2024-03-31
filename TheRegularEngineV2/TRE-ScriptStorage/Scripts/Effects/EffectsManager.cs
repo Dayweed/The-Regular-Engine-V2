@@ -5,6 +5,7 @@
 		PauseMenu pauseMenu = null;
 		CameraController cameraController = null;
 		string levelName;
+		float depthBlurThreshold = 0.9997f; //Default value - Smaller the value the nearer the blur effect is to the camera -- try small increments
 
 		public void Start()
 		{
@@ -34,6 +35,30 @@
 					Debug.Log("Transitions is null");
 				}
 			}
+
+			//Depth Blur
+			if (levelName == "MainMenu")
+			{
+				//depthBlurThreshold = 0.0f;
+			}
+			else if (levelName == "ResultScreen")
+			{
+				//depthBlurThreshold = 0.0f;
+			}
+			else if (levelName == "Tutorial")
+			{
+				//depthBlurThreshold = 0.0f;
+			}
+			else if (levelName == "Level_1")
+			{
+				//depthBlurThreshold = 0.39997f;
+			}
+			else if (levelName == "Level_2")
+			{
+				//depthBlurThreshold = 0.0f;
+			}
+
+			DepthBlurEffect.Engine_SetDepthBlurThreshold(depthBlurThreshold);
 		}
 
 		public void Update()

@@ -28,10 +28,9 @@ namespace TRE
 
 	void DepthBlur::UpdateUBO()
 	{
-		//DepthBlurUBO UBO{};
-		//UBO.Color = m_Color;
-		//UBO.Threshold = m_Threshold;
+		DepthBlurUBO UBO{};
+		UBO.Threshold = m_Threshold;
 
-		//m_UBO->SetData(&UBO, sizeof(DepthBlurUBO));
+		m_UBO->SetData(&UBO, sizeof(DepthBlurUBO));
 	}
 }

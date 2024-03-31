@@ -2565,6 +2565,16 @@ namespace TRE
 	{
 		return PostProcessingManager::Instance().GetPostEffect<DepthBlur>("DepthBlur")->GetActive();
 	}
+
+	static void Engine_SetDepthBlurThreshold(float threshold)
+	{
+		PostProcessingManager::Instance().GetPostEffect<DepthBlur>("DepthBlur")->SetThreshold(threshold);
+	}
+
+	static float Engine_GetDepthBlurThreshold()
+	{
+		return PostProcessingManager::Instance().GetPostEffect<DepthBlur>("DepthBlur")->GetThreshold();
+	}
 #pragma endregion DepthBlur
 
 #pragma endregion PostProcessing
@@ -3095,6 +3105,8 @@ namespace TRE
 			//Depth Blur
 			mono_add_internal_call("TRE.DepthBlurEffect::Engine_SetDepthBlurActive", Engine_SetDepthBlurActive);
 			mono_add_internal_call("TRE.DepthBlurEffect::Engine_GetDepthBlurActive", Engine_GetDepthBlurActive);
+			mono_add_internal_call("TRE.DepthBlurEffect::Engine_SetDepthBlurThreshold", Engine_SetDepthBlurThreshold);
+			mono_add_internal_call("TRE.DepthBlurEffect::Engine_GetDepthBlurThreshold", Engine_GetDepthBlurThreshold);
 		}
 
 		// Renderer

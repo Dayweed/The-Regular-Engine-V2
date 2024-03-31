@@ -1846,6 +1846,10 @@ namespace TRE
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		public extern static bool Engine_GetDepthBlurActive();
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		public extern static void Engine_SetDepthBlurThreshold(float threshold);
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		public extern static float Engine_GetDepthBlurThreshold();
 	}
 
 	public class RendererSystem
