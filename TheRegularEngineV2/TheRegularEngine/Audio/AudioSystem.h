@@ -34,13 +34,11 @@ namespace TRE
 		void Load3DFile(Entity& go); //-----
 		//void CreateChildChannelGroup(FMOD::ChannelGroup* child, std::string name);
 		void Play(Entity& go, const bool shouldPlay);
-		void TogglePause(Entity& go);
 		void ToggleMute(Entity& go);
 		void Stop(Entity& go);
 		void CompileAudio(Entity& go);
 		void MuteAll();
 		void CompileFootstepsSounds(Entity& go);
-		void PlayFootsteps(Entity& go);
 		void PlayFootsteps(Entity& go, int i);
 
 		int ErrorCheck(FMOD_RESULT result, std::string function);
@@ -61,6 +59,8 @@ namespace TRE
 		float GetBGMVolume() const;
 		void SetSFXVolume(const float volume);
 		float GetSFXVolume() const;
+		void SetPause(Entity& go, const bool pause);
+		bool GetPause(Entity& go) const;
 
 		FMOD_VECTOR GetListenerPosition(Entity& go) const;
 		FMOD_VECTOR GetSourcePosition(Entity& go) const;

@@ -198,17 +198,20 @@ void main()
 	//const float specularIntensity = pow(max(dot(reflect(-In.DirectionalLightDirection, normal), eyeDirection), 0.0), shininess);
 	const vec3 ambient = In.AmbientColor.rgb * In.AmbientColor.a * texture(AOMap, In.TexCoord).rgb * texture(AOMap, In.TexCoord).a;
 	
-	float dp = max(dot(normalize(In.VertNormal), -normalize(In.DirectionalLightDirection.xyz)), 0.0025);
+	//float dp = max(dot(normalize(In.VertNormal), -normalize(In.DirectionalLightDirection.xyz)), 0.0025);
+	float dp = dot(normalize(In.VertNormal), -normalize(In.DirectionalLightDirection.xyz));
 
 	//Diffuse color
-	if(dp <= 0.05)
+	if(dp <= 0.0005)
 	{
 		shadow = 0.0;
 	}
 	diffuseIntensity = ceil(diffuseIntensity * CelShadingLevels) * CelScaleFactor;
-	dp = smoothstep(0.1, 1.0, dp) * float(CelShadingLevels);
+	dp = smoothstep(0.2, 1.0, dp) * float(CelShadingLevels);
 	dp = ceil(dp) * CelScaleFactor;
 	diffuseIntensity = mix(diffuseIntensity, dp, 0.5);
+	diffuseIntensity = clamp(diffuseIntensity, 0.0, 1.0);
+	shadow = clamp(shadow, 0.0, 0.95);
 	vec3 diffuse = In.VertColor * texture(DiffuseMap, In.TexCoord).rgb * In.MaterialColor.rgb * In.MaterialColor.a * diffuseIntensity * In.DirectionalLightColor.rgb * In.DirectionalLightColor.a;
 	vec3 rimColor = texture(DiffuseMap, In.TexCoord).rgb * rimFactor;
 	if(push.m_DrawShadow != 0)

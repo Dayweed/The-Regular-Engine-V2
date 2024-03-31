@@ -3,6 +3,8 @@ using GlmSharp;
 
 namespace TRE
 {
+	using AS = AudioSystem;
+
 	public class RandomizeFallingObjLocation : Entity
 	{
 		public Entity fallingRockPrefab;
@@ -27,6 +29,8 @@ namespace TRE
 		private List<float> itemsDelayTimer = new List<float>();
 		private List<vec3> itemsPos = new List<vec3>();
 		private List<vec3> itemsDefRot = new List<vec3>();
+
+		private ulong stonelandedSFX;
 
 		public void Start()
 		{
@@ -54,6 +58,8 @@ namespace TRE
 			// ID for prefabs are based on resource prefab GUID
 			fallingRockPrefab = new Entity(Prefab.GetPrefabIDFromName("FallingRock"));
 			CloudEffectPrefab = new Entity(Prefab.GetPrefabIDFromName("CloudEffect"));
+
+			stonelandedSFX = ECSManager.FindIDFromName("FallingRock");
 
 			CreateItems();
 		}
@@ -177,6 +183,12 @@ namespace TRE
 				itemsDelayTimer[i] -= Time.deltaTime;
 
 				if (itemsDelayTimer[i] > 0) continue;
+
+				if (Scene.GetSceneName() == "Tutorial")
+				{
+					if (ECSManager.IsValidEntity(stonelandedSFX))
+						AS.Play(stonelandedSFX);
+				}
 
 				// Reset falling object
 				itemsPos[i] = newpos;
