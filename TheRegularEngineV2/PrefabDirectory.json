@@ -38,6 +38,7 @@
             "16472183782282901065",
             "1469398891573777636",
             "3049474127598476984",
+            "8201192735896394143",
             "9384626678381253887",
             "1711396724928852651",
             "17896144981290866787",
@@ -52,8 +53,10 @@
             "16334699758206833652",
             "4137868201156863779",
             "9602251378270956871",
+            "7694462860107224732",
             "2508553406564842757",
-            "16789651771424100150"
+            "16789651771424100150",
+            "1530556547376967550"
         ],
         "m_ExistingPrefabsValue": [
             "../Resources/Prefabs/FallingMaracca.json",
@@ -93,6 +96,7 @@
             "../Resources/Prefabs/InvitationDialogue3.json",
             "../Resources/Prefabs/InvitationDialogue5.json",
             "../Resources/Prefabs/Frame4_1.json",
+            "../Resources/Prefabs/Level1_Cactus_01.json",
             "../Resources/Prefabs/OnOff_Platform_Opposite_Pivot.json",
             "../Resources/Prefabs/OnOff_Platform_Pivot.json",
             "../Resources/Prefabs/FallingRock.json",
@@ -107,8 +111,10 @@
             "../Resources/Prefabs/EffectsManager.json",
             "../Resources/Prefabs/Level1Diorama.json",
             "../Resources/Prefabs/Level2Diorama.json",
+            "../Resources/Prefabs/Environment_Cactus_2.json",
             "../Resources/Prefabs/Confetti Particle Right.json",
-            "../Resources/Prefabs/PauseMenu_Updated.json"
+            "../Resources/Prefabs/PauseMenu_Updated.json",
+            "../Resources/Prefabs/Environment_Cactus_3.json"
         ]
     }
 }

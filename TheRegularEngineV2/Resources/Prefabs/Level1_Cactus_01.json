@@ -1,0 +1,130 @@
+[
+   [
+      1,
+      0
+   ],
+   [
+      1,
+      0,
+      {
+         "m_IsMainPrefab": true,
+         "m_MainPrefabGUID": "8201192735896394143",
+         "m_Overrides": {},
+         "m_PrefabGUID": "8201192735896394143",
+         "m_RemovedComps": []
+      }
+   ],
+   [
+      1,
+      0,
+      {
+         "m_Children": [],
+         "m_Parent": ""
+      }
+   ],
+   [
+      1,
+      0,
+      {
+         "m_Active": true,
+         "m_GUID": "6910433869472559233",
+         "m_Index": 378,
+         "m_Name": "Environment_Cactus_1",
+         "m_Tag": ""
+      }
+   ],
+   [
+      1,
+      0,
+      {
+         "m_Position": [
+            -65.7020034790039,
+            21.58099937438965,
+            -169.70700073242188
+         ],
+         "m_Rotation": [
+            0.0,
+            0.0,
+            0.0
+         ],
+         "m_Scale": [
+            1.0,
+            1.0,
+            1.0
+         ]
+      }
+   ],
+   [
+      1,
+      0,
+      {
+         "ASSET_GEOM_m_RenderObject": "7976bd26371a635a",
+         "ASSET_MAT_m_AnimationMaterialInstance": "0",
+         "ASSET_MAT_m_MaterialInstance": "fc2fe787d1fb793b",
+         "m_DLightIndex": 0,
+         "m_DrawShadow": true,
+         "m_IsVisible": true
+      }
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      1,
+      0,
+      {
+         "m_RegisteredScripts": [
+            "TRE.CactusAnimation"
+         ],
+         "m_StoredClass": "TRE.CactusAnimation"
+      }
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ],
+   [
+      0
+   ]
+]
