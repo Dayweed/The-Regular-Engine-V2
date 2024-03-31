@@ -90,9 +90,9 @@ namespace TRE
 				float LoadedColor[4]{ Color[0], Color[1], Color[2], Color[3] };
 				t.m_Color = glm::make_vec4(LoadedColor);
 			}
-			if (j.contains("Slices"))
+			if (j.contains("m_Slices"))
 			{
-				t.m_Slices = j.at("Slices").get<int>();
+				t.m_Slices = j.at("m_Slices").get<int>();
 			}
 			if (j.contains("Animation Duration"))
 			{
