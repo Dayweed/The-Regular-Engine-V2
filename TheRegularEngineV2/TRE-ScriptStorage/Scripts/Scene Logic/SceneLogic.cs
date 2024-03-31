@@ -389,16 +389,9 @@ namespace TRE
 					{
 						ConfettiParticleLeft.GetComponent<Particle>().IsActive = true;
 						ConfettiParticleRight.GetComponent<Particle>().IsActive = true;
-						ConfettiParticleLeft.GetComponent<Transform>().Position = new vec3(CameraSystem.GetMainCameraPosition());
-						ConfettiParticleRight.GetComponent<Transform>().Position = new vec3(CameraSystem.GetMainCameraPosition());
-						ConfettiParticleLeft.GetComponent<Transform>().Position += new vec3(100f, -130f, -100f);
-						ConfettiParticleRight.GetComponent<Transform>().Position += new vec3(100f, -130f, -100f);
 						mConfettispawned = true;
 					}
-
-                    ConfettiParticleLeft.GetComponent<Transform>().Position = new vec3(ConfettiParticleLeft.GetComponent<Transform>().Position.x, ConfettiParticleLeft.GetComponent<Transform>().Position.y - 1f, ConfettiParticleLeft.GetComponent<Transform>().Position.z);
-					ConfettiParticleRight.GetComponent<Transform>().Position = new vec3(ConfettiParticleRight.GetComponent<Transform>().Position.x, ConfettiParticleRight.GetComponent<Transform>().Position.y - 1f, ConfettiParticleRight.GetComponent<Transform>().Position.z);
-				}
+                }
 			}
 
 			#region Stars

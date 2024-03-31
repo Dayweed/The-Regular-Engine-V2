@@ -27,7 +27,7 @@
       0,
       {
          "m_Active": true,
-         "m_GUID": "496552587672092390",
+         "m_GUID": "18422552109731920890",
          "m_Index": 1,
          "m_Name": "Confetti Particle Left",
          "m_Tag": ""
@@ -94,7 +94,7 @@
       1,
       0,
       {
-         "3DWorld": true,
+         "3DWorld": false,
          "Color": [
             1.0,
             1.0,
@@ -123,9 +123,9 @@
             1.0
          ],
          "Velocity": [
+            -2.0,
             -1.0,
-            1.0,
-            -1.0
+            0.0
          ]
       }
    ],
