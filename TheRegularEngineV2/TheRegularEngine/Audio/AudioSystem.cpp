@@ -74,20 +74,17 @@ namespace TRE
 				source.m_Channel->setPitch(source.m_Pitch);
 				source.m_Channel->setPriority(source.m_Priority);
 
-				if (!source.m_Spatialize)
+				if (source.m_ChannelGroup == m_MusicChannelGroup)
 				{
-					if (source.m_ChannelGroup == m_MusicChannelGroup)
-					{
-						source.m_Channel->setVolume(source.m_Volume * m_BGMVolume * m_MasterVolume);
-					}
-					else if (source.m_ChannelGroup == m_SFXChannelGroup)
-					{
-						source.m_Channel->setVolume(source.m_Volume * m_SFXVolume * m_MasterVolume);
-					}
-					else
-					{
-						source.m_Channel->setVolume(source.m_Volume * m_MasterVolume);
-					}
+					source.m_Channel->setVolume(source.m_Volume * m_BGMVolume * m_MasterVolume);
+				}
+				else if (source.m_ChannelGroup == m_SFXChannelGroup)
+				{
+					source.m_Channel->setVolume(source.m_Volume * m_SFXVolume * m_MasterVolume);
+				}
+				else
+				{
+					source.m_Channel->setVolume(source.m_Volume * m_MasterVolume);
 				}
 			}
 			else
@@ -321,6 +318,12 @@ namespace TRE
 		{
 			audio.m_Channel->setChannelGroup(m_MusicChannelGroup);
 			audio.m_ChannelGroup = m_MusicChannelGroup;
+		}
+		//Leftovers go here
+		else
+		{
+			audio.m_Channel->setChannelGroup(m_SFXChannelGroup);
+			audio.m_ChannelGroup = m_SFXChannelGroup;
 		}
 		audioMap.insert(go);
 		soundToRemove.insert({ go, audio.m_Sound });
