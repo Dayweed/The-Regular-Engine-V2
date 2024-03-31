@@ -506,9 +506,12 @@ namespace TRE
 			if (recalculateShadowFrustum)
 			{
 				glm::mat4 shadowDepthProjectionMatrix;
-				const float deltaX = m_ShadowAABBMax.x - m_ShadowAABBMin.x;
-				const float deltaY = m_ShadowAABBMax.y - m_ShadowAABBMin.y;
-				const float deltaZ = m_ShadowAABBMax.z - m_ShadowAABBMin.z;
+				//const float deltaX = m_ShadowAABBMax.x - m_ShadowAABBMin.x;
+				//const float deltaY = m_ShadowAABBMax.y - m_ShadowAABBMin.y;
+				//const float deltaZ = m_ShadowAABBMax.z - m_ShadowAABBMin.z;
+				const float deltaX = 500;
+				const float deltaY = 500;
+				const float deltaZ = 500;
 				const float orthoLength = deltaX;
 				const float orthoHeight = deltaY;
 				const float orthoNear = 0.1f;
