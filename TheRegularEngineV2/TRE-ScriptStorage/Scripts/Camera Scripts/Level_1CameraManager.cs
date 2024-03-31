@@ -274,12 +274,11 @@ namespace TRE
 				if (regionL)
 				{
 					//last platforming section
-					//for some reason it's offset to the left idk why
 					expectedPosition = new vec3(0, 10, 20);
 					expectedRotation = new vec3(20, 180, 0);
 					expectedDistance = 0;
 					cameraController.lookOnlyBool = false;
-					cameraController.expectedYPos = 130f;
+					cameraController.expectedYPos = 135f;
 					cameraController.forcedZ = -123.492f;
 					cameraController.forceZaxis = true;
 					cameraController.offsetX = 10f;
