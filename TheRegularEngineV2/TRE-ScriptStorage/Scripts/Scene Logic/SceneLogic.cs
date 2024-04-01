@@ -56,6 +56,7 @@ namespace TRE
 
 		//Audio
 		private ulong starSFX;
+		private ulong endCheerSFX;
 		private bool starSFXPlayed = false;
 
 		Entity ConfettiTrigger;
@@ -94,7 +95,7 @@ namespace TRE
 				triggerStars.Add(holeCheckDisplay2);
 				triggerStars.Add(holeCheckDisplay3);
 
-				starSFX = ECSManager.FindIDFromName("SFX_StarsCollected");
+				
 
 				PersistentSystem.SetValue(currentSceneName + "MaxStarsObtained", "3");
 
@@ -177,6 +178,8 @@ namespace TRE
 
 			endsceneBGM = ECSManager.FindIDFromName("BGM_End");
 			mainBGM = ECSManager.FindIDFromName("BGM");
+			starSFX = ECSManager.FindIDFromName("SFX_StarsCollected");
+			endCheerSFX = ECSManager.FindIDFromName("SFX_EndCheer");
 
 			confettiTime = false;
             mConfettispawned = false;
@@ -390,6 +393,12 @@ namespace TRE
 					{
 						ConfettiParticleLeft.GetComponent<Particle>().IsActive = true;
 						ConfettiParticleRight.GetComponent<Particle>().IsActive = true;
+
+						if (ECSManager.IsValidEntity(endCheerSFX))
+						{
+							AudioSystem.Play(endCheerSFX);
+						}
+
 						mConfettispawned = true;
 					}
                 }
