@@ -14,6 +14,7 @@ namespace TRE
 		std::string m_FileName{ "" };
 		std::vector<std::string> m_audioFiles;
 		float m_Volume{ 1.f };
+		float m_SpatialVolume{ 1.f };
 		float m_Pitch{ 1.f };
 		int m_Priority{ 0 };
 		bool m_Pause{ false };
