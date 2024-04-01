@@ -292,7 +292,7 @@ namespace TRE
 			vec3 titleStarsCollectedPos = TitleStarsCollected.GetComponent<Transform>().Position;
 			if (ToTutorialSelect.GetComponent<TunnelLogic>().MolesInside() || ToLevel1Select.GetComponent<TunnelLogic>().MolesInside() || ToLevel2Select.GetComponent<TunnelLogic>().MolesInside())
 			{
-				titleStarsCollectedPos.y = displayYPos;
+				titleStarsCollectedPos.y = displayYPos + 170f;
 				// Determine which stars to display
 				DetermineStarsDisplay();
 			}
