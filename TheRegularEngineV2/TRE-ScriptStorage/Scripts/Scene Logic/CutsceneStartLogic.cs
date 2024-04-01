@@ -126,7 +126,7 @@ namespace TRE
 			else
 			{
                 // Go to next scene
-                if (hasPlayerPressed && SpaceToContinue.GetActive() && currentFrame == frames.Count - 1)
+                if (hasPlayerPressed && SpaceToContinue.GetActive() && currentFrame >= frames.Count - 1)
                 {
                     if (ECSManager.IsValidEntity(BGM))
                         AS.Stop(BGM);
