@@ -228,6 +228,7 @@ namespace TRE
 			playerObj = null;
 			collected = false;
 			GetComponent<Rigidbody>().useGravity = true;
+			PhysicsSystem.SetLinearVelocity(ID, vec3.Zero);
 			PhysicsSystem.AddForce(this.ID, new vec3(dir.x * 10, 50, dir.y * 10), ForceMode.VelocityChange);
 			cooldownCurrent = cooldownDuration;
 		}
