@@ -61,7 +61,7 @@ namespace TRE
 			//bool paragraphIsHalfWay = false;
 
 			//Go to Credits Scene
-			if (hasPlayerPressed && /*SpaceToContinue.GetActive() && */currentFrame == frames.Count - 1)
+			if (hasPlayerPressed && /*SpaceToContinue.GetActive() && */currentFrame >= frames.Count - 1)
 			{
 				if (ECSManager.IsValidEntity(BGM))
 					AS.Stop(BGM);

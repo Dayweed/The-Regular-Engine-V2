@@ -436,6 +436,14 @@ namespace TRE
 
 			if (isPaused)
 			{
+				if(IS.GetKeyPress(InputKeys.Escape) || IS.GetKeyPress(InputKeys.Space) || IS.GetKeyPress(InputKeys.W) || IS.GetKeyPress(InputKeys.A) || IS.GetKeyPress(InputKeys.S) || IS.GetKeyPress(InputKeys.D)
+					|| IS.GetKeyPress(InputKeys.I) || IS.GetKeyPress(InputKeys.J) || IS.GetKeyPress(InputKeys.K) || IS.GetKeyPress(InputKeys.L) || IS.GetKeyPress(InputKeys.Enter)
+                    || ControllerInput(MenuNavigation.UP) || ControllerInput(MenuNavigation.DOWN) || ControllerInput(MenuNavigation.LEFT) || ControllerInput(MenuNavigation.RIGHT) || ControllerInput(MenuNavigation.CONFIRM)
+                    || IS.GetControllerButtonTriggered(0, IS.Button.Start) || IS.GetControllerButtonTriggered(1, IS.Button.Start))
+				{
+                    if (ECSManager.IsValidEntity(sfx))
+                        AS.Play(sfx);
+                }
 				// Pause menu logic
 				if (menustate == 0)
 				{
@@ -446,9 +454,6 @@ namespace TRE
 							currentOption = 2;
 						else
 							currentOption -= 1;
-
-						if (ECSManager.IsValidEntity(sfx))
-							AS.Play(sfx);
 					}
 
 					if (IS.GetKeyPress(InputKeys.S) || ControllerInput(MenuNavigation.DOWN))
@@ -457,9 +462,6 @@ namespace TRE
 							currentOption = 0;
 						else
 							currentOption += 1;
-
-						if (ECSManager.IsValidEntity(sfx))
-							AS.Play(sfx);
 					}
 
 					if (IS.GetKeyPress(InputKeys.Enter) || ControllerInput(MenuNavigation.CONFIRM))
@@ -484,9 +486,6 @@ namespace TRE
 							currentOption = 1;
 							isChangeMenu = true;
 						}
-
-						if (ECSManager.IsValidEntity(sfx))
-							AS.Play(sfx);
 					}
 
 					switch (currentOption)
@@ -517,9 +516,6 @@ namespace TRE
 							settingsOption = 3;
 						else
 							--settingsOption;
-
-						if (ECSManager.IsValidEntity(sfx))
-							AS.Play(sfx);
 					}
 
 					if (IS.GetKeyPress(InputKeys.D) || ControllerInput(MenuNavigation.RIGHT))
@@ -532,9 +528,6 @@ namespace TRE
 							settingsOption = 3;
 						else
 							++settingsOption;
-
-						if (ECSManager.IsValidEntity(sfx))
-							AS.Play(sfx);
 					}
 
 					switch (settingsOption)
@@ -756,7 +749,7 @@ namespace TRE
 									// Set persistent system
 									string sfxVolumeString = sfxVolume.ToString();
 									PRS.SetValue("sfxVolume", sfxVolumeString);
-								}
+                                }
 								else if (IS.GetKeyPress(InputKeys.D) || IS.GetKeyPress(InputKeys.Right) || ControllerInput(MenuNavigation.RIGHT))
 								{
 									sfxVolume += 10;
@@ -1137,9 +1130,6 @@ namespace TRE
 						//Set every pointer back to false
 						settingsPointer.GetComponent<SpriteRenderer>().isVisible = false;
 						controlsPointer.GetComponent<SpriteRenderer>().isVisible = false;
-
-						if (ECSManager.IsValidEntity(sfx))
-							AS.Play(sfx);
 					}
 				}
 				else // confirmation menu logic which is menustate == 2
@@ -1150,9 +1140,6 @@ namespace TRE
 							menuOption = 1;
 						else if (menuOption == 1)
 							menuOption = 0;
-
-						if (ECSManager.IsValidEntity(sfx))
-							AS.Play(sfx);
 					}
 
 					if (IS.GetKeyPress(InputKeys.D) || ControllerInput(MenuNavigation.RIGHT))
@@ -1161,9 +1148,6 @@ namespace TRE
 							menuOption = 1;
 						else if (menuOption == 1)
 							menuOption = 0;
-
-						if (ECSManager.IsValidEntity(sfx))
-							AS.Play(sfx);
 					}
 
 					if (IS.GetKeyPress(InputKeys.Enter) || ControllerInput(MenuNavigation.CONFIRM))
@@ -1189,8 +1173,6 @@ namespace TRE
 							isChangeMenu = true;
 							menuOption = 1;
 						}
-						if (ECSManager.IsValidEntity(sfx))
-							AS.Play(sfx);
 					}
 
 					switch (menuOption)
