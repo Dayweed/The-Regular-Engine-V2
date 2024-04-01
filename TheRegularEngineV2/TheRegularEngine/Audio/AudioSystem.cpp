@@ -74,7 +74,7 @@ namespace TRE
 				source.m_Channel->setPitch(source.m_Pitch);
 				source.m_Channel->setPriority(source.m_Priority);
 
-				const float volume = source.m_Spatialize ? source.m_SpatialVolume : source.m_Volume;
+				/*const float volume = source.m_Spatialize ? source.m_SpatialVolume : source.m_Volume;
 
 				if (source.m_ChannelGroup == m_MusicChannelGroup)
 				{
@@ -89,7 +89,7 @@ namespace TRE
 				else
 				{
 					source.m_Channel->setVolume(volume * m_MasterVolume);
-				}
+				}*/
 			}
 			else
 			{
