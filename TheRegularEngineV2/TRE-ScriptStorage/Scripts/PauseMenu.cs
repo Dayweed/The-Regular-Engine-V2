@@ -16,7 +16,8 @@ namespace TRE
 		RIGHT,
 		CONFIRM,
 		BACK,
-		START
+		START,
+		SELECT
 	}
 
 	public class PauseMenu : Entity
@@ -131,12 +132,16 @@ namespace TRE
 		private Entity moley;
 		private Entity holey;
 
+        private Entity scenelogic;
+
 		private bool externalPauseCommand = false;
 
 		public void Start()
 		{
 			moley = ECSManager.FindEntityByName("Moley");
 			holey = ECSManager.FindEntityByName("Holey");
+            scenelogic = ECSManager.FindEntityByName("Scene Transition Logic");
+            scenelogic = ECSManager.FindEntityByName("Scene Transition Logic");
 
 			options = new List<Entity>
 			{
@@ -846,7 +851,7 @@ namespace TRE
 							Debug.Log("mCurrentEditMember: " + mCurrentEditMember);
 						}
 
-						if (IS.GetKeyPress(InputKeys.Tab))
+						if (IS.GetKeyPress(InputKeys.Tab) || ControllerInput(MenuNavigation.SELECT))
 						{
 							if (mCurrentEditMember == 0)
 								mCurrentEditMember = 1;
@@ -1044,8 +1049,12 @@ namespace TRE
 									// Set persistent system
 									string powerUpsString = IsPowerUpOn.ToString();
 									PRS.SetValue("powerUps", powerUpsString);
+                                    if (scenelogic != null)
+                                    {
+                                        scenelogic.GetComponent<SceneLogic>().KeepInv(IsPowerUpOn);
+                                    }
 
-								}
+                                }
 								else if (IS.GetKeyPress(InputKeys.D) || IS.GetKeyPress(InputKeys.Right) || ControllerInput(MenuNavigation.RIGHT))
 								{
 									//off
@@ -1058,7 +1067,11 @@ namespace TRE
 									// Set persistent system
 									string powerUpsString = IsPowerUpOn.ToString();
 									PRS.SetValue("powerUps", powerUpsString);
-								}
+                                    if (scenelogic != null)
+                                    {
+                                        scenelogic.GetComponent<SceneLogic>().KeepInv(IsPowerUpOn);
+                                    }
+                                }
 								break;
 							case 1:
 								if (IS.GetKeyPress(InputKeys.A) || IS.GetKeyPress(InputKeys.Left) || ControllerInput(MenuNavigation.LEFT))
@@ -1074,7 +1087,12 @@ namespace TRE
 									// Set persistent system
 									string invulnerabilityString = IsInvulnerabilityOn.ToString();
 									PRS.SetValue("invulnerability", invulnerabilityString);
-								}
+
+                                    if (scenelogic != null)
+                                    {
+                                        scenelogic.GetComponent<SceneLogic>().CreativeMode(IsInvulnerabilityOn);
+                                    }
+                                }
 								else if (IS.GetKeyPress(InputKeys.D) || IS.GetKeyPress(InputKeys.Right) || ControllerInput(MenuNavigation.RIGHT))
 								{
 									//off
@@ -1088,7 +1106,12 @@ namespace TRE
 									// Set persistent system
 									string invulnerabilityString = IsInvulnerabilityOn.ToString();
 									PRS.SetValue("invulnerability", invulnerabilityString);
-								}
+
+                                    if (scenelogic != null)
+                                    {
+                                        scenelogic.GetComponent<SceneLogic>().CreativeMode(IsInvulnerabilityOn);
+                                    }
+                                }
 								break;
 						}
 
@@ -1313,6 +1336,10 @@ namespace TRE
 					if (IS.GetControllerButtonTriggered(0, IS.Button.Start) || IS.GetControllerButtonTriggered(1, IS.Button.Start))
 						return true;
 					break;
+				case MenuNavigation.SELECT:
+					if (IS.GetControllerButtonTriggered(0, IS.Button.Back) || IS.GetControllerButtonTriggered(1, IS.Button.Back))
+                        return true;
+                    break;
 			}
 			return false;
 		}
