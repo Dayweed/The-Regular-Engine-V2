@@ -491,14 +491,14 @@ namespace TRE
 			{
 				++numStars;
 				PersistentSystem.SetValue("TotalStarsObtained", numStars.ToString());
-				Debug.Log("Stars " + PersistentSystem.GetValue("TotalStarsObtained"));
+				//Debug.Log("Stars " + PersistentSystem.GetValue("TotalStarsObtained"));
 			}
 
 			if (int.TryParse(PersistentSystem.GetValue(mapName + "StarsObtained"), out int mapStars))
 			{
 				++mapStars;
 				PersistentSystem.SetValue(mapName + "StarsObtained", mapStars.ToString());
-				Debug.Log(mapName + " Stars " + PersistentSystem.GetValue(mapName + "StarsObtained"));
+				//Debug.Log(mapName + " Stars " + PersistentSystem.GetValue(mapName + "StarsObtained"));
 				return mapStars;
 			}
 
@@ -533,7 +533,7 @@ namespace TRE
             if (ECSManager.IsValidEntity(holey.ID))
             {
                 holey.GetComponent<HoleyController>().keepInventory = trigger;
-                Debug.Log("KEEPINVENTORY MODE: " + holey.GetComponent<HoleyController>().keepInventory);
+                //Debug.Log("KEEPINVENTORY MODE: " + holey.GetComponent<HoleyController>().keepInventory);
             }
         }
 
@@ -549,7 +549,7 @@ namespace TRE
             if (ECSManager.IsValidEntity(holey.ID))
             {
                 holey.GetComponent<HoleyController>().creativeMode = trigger;
-                Debug.Log("CREATIVE MODE: " + holey.GetComponent<HoleyController>().creativeMode);
+                //Debug.Log("CREATIVE MODE: " + holey.GetComponent<HoleyController>().creativeMode);
             }
         }
 	}
