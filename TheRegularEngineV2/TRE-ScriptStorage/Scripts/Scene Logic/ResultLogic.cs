@@ -37,8 +37,8 @@ namespace TRE
 			Star_2_BG = ECSManager.FindEntityByName("Star_2_BG");
 			Star_3_BG = ECSManager.FindEntityByName("Star_3_BG");
 
-			resultStarSFX -= ECSManager.FindIDFromName("SFX_ResultStar");
-			ResultSFX -= ECSManager.FindIDFromName("SFX_Result");
+			resultStarSFX = ECSManager.FindIDFromName("SFX_ResultStar");
+			ResultSFX = ECSManager.FindIDFromName("SFX_Result");
 
 			string prevSceneName = PersistentSystem.GetValue("PrevScene");
 			if (int.TryParse(PersistentSystem.GetValue(prevSceneName + "StarsObtained"), out numStars) && int.TryParse(PersistentSystem.GetValue(prevSceneName + "MaxStarsObtained"), out maxStars))
