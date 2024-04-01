@@ -436,9 +436,9 @@ namespace TRE
 
 			if (isPaused)
 			{
-				if(IS.GetKeyPress(InputKeys.Escape) || IS.GetKeyPress(InputKeys.Space) || IS.GetKeyPress(InputKeys.W) || IS.GetKeyPress(InputKeys.A) || IS.GetKeyPress(InputKeys.S) || IS.GetKeyPress(InputKeys.D)
+				if(IS.GetKeyPress(InputKeys.Escape) || IS.GetKeyPress(InputKeys.Tab) || IS.GetKeyPress(InputKeys.Space) || IS.GetKeyPress(InputKeys.W) || IS.GetKeyPress(InputKeys.A) || IS.GetKeyPress(InputKeys.S) || IS.GetKeyPress(InputKeys.D)
 					|| IS.GetKeyPress(InputKeys.I) || IS.GetKeyPress(InputKeys.J) || IS.GetKeyPress(InputKeys.K) || IS.GetKeyPress(InputKeys.L) || IS.GetKeyPress(InputKeys.Enter)
-                    || ControllerInput(MenuNavigation.UP) || ControllerInput(MenuNavigation.DOWN) || ControllerInput(MenuNavigation.LEFT) || ControllerInput(MenuNavigation.RIGHT) || ControllerInput(MenuNavigation.CONFIRM)
+                    || ControllerInput(MenuNavigation.UP) || ControllerInput(MenuNavigation.DOWN) || ControllerInput(MenuNavigation.LEFT) || ControllerInput(MenuNavigation.RIGHT) || ControllerInput(MenuNavigation.CONFIRM) || ControllerInput(MenuNavigation.SELECT)
                     || IS.GetControllerButtonTriggered(0, IS.Button.Start) || IS.GetControllerButtonTriggered(1, IS.Button.Start))
 				{
                     if (ECSManager.IsValidEntity(sfx))
