@@ -456,6 +456,10 @@ namespace TRE
 				{
 					AS.Play(hurtSFX);
 				}
+				else if (other.name == "RollingObstacle" && ECSManager.IsValidEntity(hurtSFX))
+				{
+					AS.Play(hurtSFX);
+				}
 			}
 			// Check is activated jumppad
 			if (other.CompareTag("JumpPad"))

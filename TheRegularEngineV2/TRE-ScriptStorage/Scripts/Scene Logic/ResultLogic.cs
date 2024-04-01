@@ -2,6 +2,7 @@ using System;
 
 namespace TRE
 {
+	using AS = AudioSystem;
 	public class ResultLogic : Entity
 	{
 		Entity CourseComplete;
@@ -22,8 +23,12 @@ namespace TRE
 		int numStars = 0;
 		int maxStars = 0;
 
+		private ulong resultStarSFX;
+		private ulong ResultSFX;
+
 		public void Start()
 		{
+			
 			CourseComplete = ECSManager.FindEntityByName("CourseComplete");
 			Star_1 = ECSManager.FindEntityByName("Star_1");
 			Star_2 = ECSManager.FindEntityByName("Star_2");
@@ -31,6 +36,9 @@ namespace TRE
 			Star_1_BG = ECSManager.FindEntityByName("Star_1_BG");
 			Star_2_BG = ECSManager.FindEntityByName("Star_2_BG");
 			Star_3_BG = ECSManager.FindEntityByName("Star_3_BG");
+
+			resultStarSFX -= ECSManager.FindIDFromName("SFX_ResultStar");
+			ResultSFX -= ECSManager.FindIDFromName("SFX_Result");
 
 			string prevSceneName = PersistentSystem.GetValue("PrevScene");
 			if (int.TryParse(PersistentSystem.GetValue(prevSceneName + "StarsObtained"), out numStars) && int.TryParse(PersistentSystem.GetValue(prevSceneName + "MaxStarsObtained"), out maxStars))
@@ -95,18 +103,33 @@ namespace TRE
 			{
 				Star_1.SetActive(true);
 				Star_1.GetComponent<VFX_SlapOn>().SlapOn();
+
+				if (ECSManager.IsValidEntity(resultStarSFX))
+				{
+					AS.Play(resultStarSFX);
+				}
 			}
 			// Do Star_2 if Star_1 is done
 			else if (Star_1.GetComponent<VFX_SlapOn>().CompletedVFX() && Star_2_BG.GetActive() && !Star_2.GetActive() && numStars >= 2)
 			{
 				Star_2.SetActive(true);
 				Star_2.GetComponent<VFX_SlapOn>().SlapOn();
+
+				if (ECSManager.IsValidEntity(resultStarSFX))
+				{
+					AS.Play(resultStarSFX);
+				}
 			}
 			// Do Star_3 if Star_2 is done
 			else if (Star_2.GetComponent<VFX_SlapOn>().CompletedVFX() && Star_3_BG.GetActive() && !Star_3.GetActive() && numStars >= 3)
 			{
 				Star_3.SetActive(true);
 				Star_3.GetComponent<VFX_SlapOn>().SlapOn();
+
+				if (ECSManager.IsValidEntity(resultStarSFX))
+				{
+					AS.Play(resultStarSFX);
+				}
 			}
 		}
 	}

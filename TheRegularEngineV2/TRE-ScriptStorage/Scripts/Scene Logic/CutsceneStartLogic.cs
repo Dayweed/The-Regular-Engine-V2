@@ -224,6 +224,12 @@ namespace TRE
                         TextSystem.StartDialogue(InvitationDialogue5.ID);
                 }
 
+                if(currentFrame == 8)
+                {
+					if (ECSManager.IsValidEntity(dialogueSFX))
+						AS.Stop(dialogueSFX);
+				}
+
                 // Ignore if last frame alr
                 if (currentFrame >= frames.Count) return;
 
