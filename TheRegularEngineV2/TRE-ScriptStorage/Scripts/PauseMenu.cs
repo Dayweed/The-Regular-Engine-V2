@@ -403,34 +403,34 @@ namespace TRE
 					isPaused = !isPaused;
 					menustate = 0;
 					currentOption = 0;
-					Debug.Log("Trigger: Go into pause state");
-				}
-				else if (mIsEditingSettings && menustate == 1)
+                    //Debug.Log("Trigger: Go into pause state");
+                }
+                else if (mIsEditingSettings && menustate == 1)
 				{
 					isChangeMenu = true;
 					menustate = 1;
 					mIsEditingSettings = false;
 					UIS.SetVisible(settingsPointer.ID, false);
 					UIS.SetVisible(controlsPointer.ID, false);
-					Debug.Log("Trigger: Get out of editing state");
-				}
-				else if (!mIsEditingSettings && menustate == 1)
+                    //Debug.Log("Trigger: Get out of editing state");
+                }
+                else if (!mIsEditingSettings && menustate == 1)
 				{
 					isChangeMenu = true;
 					menustate = 0;
 					BacktoMainPausePage();
-					Debug.Log("Trigger: Get out of controls panel");
-				}
-				else if (!mIsEditingSettings && menustate == 0)
+                    //Debug.Log("Trigger: Get out of controls panel");
+                }
+                else if (!mIsEditingSettings && menustate == 0)
 				{
 					isChangeMenu = true;
 					isPaused = !isPaused;
 					menustate = 0;
 					currentOption = 0;
-					Debug.Log("Trigger: Unpause the game");
-				}
+                    //Debug.Log("Trigger: Unpause the game");
+                }
 
-				if (ECSManager.IsValidEntity(sfx))
+                if (ECSManager.IsValidEntity(sfx))
 					AS.Play(sfx);
 			}
 
@@ -508,9 +508,9 @@ namespace TRE
 					//user can press A or D to move left or right for "Gameplay", "Graphics", "Audio", "Controls"
 					if (IS.GetKeyPress(InputKeys.A) || ControllerInput(MenuNavigation.LEFT))
 					{
-						Debug.Log("press left");
-						Debug.Log("mCurrentEditMember: " + mCurrentEditMember);
-						if (settingsOption <= 0)
+                        //Debug.Log("press left");
+                        //Debug.Log("mCurrentEditMember: " + mCurrentEditMember);
+                        if (settingsOption <= 0)
 							settingsOption = 0;
 						else if (settingsOption > 3)
 							settingsOption = 3;
@@ -520,9 +520,9 @@ namespace TRE
 
 					if (IS.GetKeyPress(InputKeys.D) || ControllerInput(MenuNavigation.RIGHT))
 					{
-						Debug.Log("press right");
-						Debug.Log("mCurrentEditMember: " + mCurrentEditMember);
-						if (settingsOption < 0)
+                        //Debug.Log("press right");
+                        //Debug.Log("mCurrentEditMember: " + mCurrentEditMember);
+                        if (settingsOption < 0)
 							settingsOption = 0;
 						else if (settingsOption >= 3)
 							settingsOption = 3;
@@ -644,9 +644,9 @@ namespace TRE
 						mIsEditingSettings = true;
 						mCurrentEditMember = 0; //Set it to be 0th member always at the start
 
-						Debug.Log("1st trigger mCurrentEditMember: " + mCurrentEditMember);
-					}
-				}
+                        //Debug.Log("1st trigger mCurrentEditMember: " + mCurrentEditMember);
+                    }
+                }
 				//edit settings here
 				else if (menustate == 1 && mIsEditingSettings)
 				{
@@ -655,8 +655,8 @@ namespace TRE
 						settingsPointer.GetComponent<SpriteRenderer>().isVisible = true;
 						if (IS.GetKeyPress(InputKeys.W) || ControllerInput(MenuNavigation.UP))
 						{
-							Debug.Log("press up");
-							if (mCurrentEditMember <= 0)
+                            //Debug.Log("press up");
+                            if (mCurrentEditMember <= 0)
 							{
 								mCurrentEditMember = -1;
 								mIsEditingSettings = false;
@@ -666,24 +666,24 @@ namespace TRE
 							else
 								--mCurrentEditMember;
 
-							Debug.Log("mCurrentEditMember: " + mCurrentEditMember);
-						}
+                            //Debug.Log("mCurrentEditMember: " + mCurrentEditMember);
+                        }
 
-						if (IS.GetKeyPress(InputKeys.S) || ControllerInput(MenuNavigation.DOWN))
+                        if (IS.GetKeyPress(InputKeys.S) || ControllerInput(MenuNavigation.DOWN))
 						{
-							Debug.Log("press down");
-							if (mCurrentEditMember < 0)
+                            //Debug.Log("press down");
+                            if (mCurrentEditMember < 0)
 								mIsEditingSettings = false;
 							else if (mCurrentEditMember >= 2)
 								mCurrentEditMember = 2;
 							else
 								++mCurrentEditMember;
 
-							Debug.Log("mCurrentEditMember: " + mCurrentEditMember);
-						}
+                            //Debug.Log("mCurrentEditMember: " + mCurrentEditMember);
+                        }
 
-						//adjust each setting
-						switch (mCurrentEditMember)
+                        //adjust each setting
+                        switch (mCurrentEditMember)
 						{
 							case 0:
 								if (IS.GetKeyPress(InputKeys.A) || IS.GetKeyPress(InputKeys.Left) || ControllerInput(MenuNavigation.LEFT))
@@ -785,8 +785,8 @@ namespace TRE
 						settingsPointer.GetComponent<SpriteRenderer>().isVisible = true;
 						if (IS.GetKeyPress(InputKeys.W) || ControllerInput(MenuNavigation.UP))
 						{
-							Debug.Log("press up");
-							if (mCurrentEditMember <= 0)
+                            //Debug.Log("press up");
+                            if (mCurrentEditMember <= 0)
 							{
 								mCurrentEditMember = -1;
 								mIsEditingSettings = false;
@@ -794,10 +794,10 @@ namespace TRE
 							else
 								--mCurrentEditMember;
 
-							Debug.Log("mCurrentEditMember: " + mCurrentEditMember);
-						}
+                            //Debug.Log("mCurrentEditMember: " + mCurrentEditMember);
+                        }
 
-						if (mCurrentEditMember == 0)
+                        if (mCurrentEditMember == 0)
 						{
 							settingsPointerTransform.Position = mGammaPanel.GetComponent<Transform>().Position;
 							if (IS.GetKeyPress(InputKeys.A) || IS.GetKeyPress(InputKeys.Left))
@@ -837,32 +837,32 @@ namespace TRE
 
 						if (IS.GetKeyPress(InputKeys.W) || ControllerInput(MenuNavigation.UP))
 						{
-							Debug.Log("press up");
-							mCurrentEditMember = -1;
+                            //Debug.Log("press up");
+                            mCurrentEditMember = -1;
 							mIsEditingSettings = false;
 
-							Debug.Log("mCurrentEditMember: " + mCurrentEditMember);
-						}
+                            //Debug.Log("mCurrentEditMember: " + mCurrentEditMember);
+                        }
 
-						if (IS.GetKeyPress(InputKeys.Tab) || ControllerInput(MenuNavigation.SELECT))
+                        if (IS.GetKeyPress(InputKeys.Tab) || ControllerInput(MenuNavigation.SELECT))
 						{
 							if (mCurrentEditMember == 0)
 								mCurrentEditMember = 1;
 							else if (mCurrentEditMember == 1)
 								mCurrentEditMember = 0;
 
-							Debug.Log("mCurrentEditMember: " + mCurrentEditMember);
-						}
+                            //Debug.Log("mCurrentEditMember: " + mCurrentEditMember);
+                        }
 
-						switch (mCurrentEditMember)
+                        switch (mCurrentEditMember)
 						{
 							case 0: //player 1
 								if (P1_IsKeyboard)
 								{
 									if (IS.GetKeyPress(InputKeys.A) || IS.GetKeyPress(InputKeys.D) || ControllerInput(MenuNavigation.LEFT) || ControllerInput(MenuNavigation.RIGHT))
 									{
-										Debug.Log("in controls panel");
-										if (P2_KeyboardPreset == 0)
+                                        //Debug.Log("in controls panel");
+                                        if (P2_KeyboardPreset == 0)
 										{
 											if (P1_KeyboardPreset == 1)
 												P1_KeyboardPreset = 2;
@@ -922,8 +922,8 @@ namespace TRE
 								{
 									if (IS.GetKeyPress(InputKeys.A) || IS.GetKeyPress(InputKeys.D) || ControllerInput(MenuNavigation.LEFT) || ControllerInput(MenuNavigation.RIGHT))
 									{
-										Debug.Log("in controls panel");
-										if (P1_KeyboardPreset == 0)
+                                        //Debug.Log("in controls panel");
+                                        if (P1_KeyboardPreset == 0)
 										{
 											if (P2_KeyboardPreset == 1)
 												P2_KeyboardPreset = 2;
@@ -953,9 +953,9 @@ namespace TRE
 										holey.GetComponent<HoleyController>().KeyboardPreset = P2_KeyboardPreset;
 										holey.GetComponent<HoleyController>().SetKeyboardPreset(P2_KeyboardPreset);
 
-										Debug.Log("P2_KeyboardPreset: " + P2_KeyboardPreset);
-									}
-								}
+                                        //Debug.Log("P2_KeyboardPreset: " + P2_KeyboardPreset);
+                                    }
+                                }
 								else
 								{
 									if (ControllerInput(MenuNavigation.LEFT) || ControllerInput(MenuNavigation.RIGHT) ||
@@ -998,8 +998,8 @@ namespace TRE
 						settingsPointer.GetComponent<SpriteRenderer>().isVisible = true;
 						if (IS.GetKeyPress(InputKeys.W) || ControllerInput(MenuNavigation.UP))
 						{
-							Debug.Log("press up");
-							if (mCurrentEditMember <= 0)
+                            //Debug.Log("press up");
+                            if (mCurrentEditMember <= 0)
 							{
 								mCurrentEditMember = -1;
 								mIsEditingSettings = false;
@@ -1009,24 +1009,24 @@ namespace TRE
 							else
 								--mCurrentEditMember;
 
-							Debug.Log("mCurrentEditMember: " + mCurrentEditMember);
-						}
+                            //Debug.Log("mCurrentEditMember: " + mCurrentEditMember);
+                        }
 
-						if (IS.GetKeyPress(InputKeys.S) || ControllerInput(MenuNavigation.DOWN))
+                        if (IS.GetKeyPress(InputKeys.S) || ControllerInput(MenuNavigation.DOWN))
 						{
-							Debug.Log("press down");
-							if (mCurrentEditMember < 0)
+                            //Debug.Log("press down");
+                            if (mCurrentEditMember < 0)
 								mIsEditingSettings = false;
 							else if (mCurrentEditMember >= 1)
 								mCurrentEditMember = 1;
 							else
 								++mCurrentEditMember;
 
-							Debug.Log("mCurrentEditMember: " + mCurrentEditMember);
-						}
+                            //Debug.Log("mCurrentEditMember: " + mCurrentEditMember);
+                        }
 
-						//adjust each setting
-						switch (mCurrentEditMember)
+                        //adjust each setting
+                        switch (mCurrentEditMember)
 						{
 							case 0:
 								if (IS.GetKeyPress(InputKeys.A) || IS.GetKeyPress(InputKeys.Left) || ControllerInput(MenuNavigation.LEFT))
@@ -1123,8 +1123,8 @@ namespace TRE
 					if ((IS.GetKeyPress(InputKeys.W) && !settingsPointer.GetComponent<SpriteRenderer>().isVisible) || ControllerInput(MenuNavigation.START))
 					{
 
-						Debug.Log("Triggered ESC to not editing settings");
-						mIsEditingSettings = false; //Set to not editing any option
+                        //Debug.Log("Triggered ESC to not editing settings");
+                        mIsEditingSettings = false; //Set to not editing any option
 						menustate = 1;
 
 						//Set every pointer back to false
