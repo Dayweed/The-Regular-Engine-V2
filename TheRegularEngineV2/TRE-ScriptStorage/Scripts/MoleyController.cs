@@ -1018,7 +1018,7 @@ namespace TRE
 				}
 			}
 
-			if (IS.GetControllerButtonTriggered(ControllerNumber, swap))
+			if (IS.GetControllerButtonTriggered(ControllerNumber, ability))
 			{
 				if (mainBlueberry || mainStrawberry)
 				{
