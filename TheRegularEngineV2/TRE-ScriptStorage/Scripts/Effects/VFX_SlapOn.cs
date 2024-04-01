@@ -23,7 +23,7 @@ namespace TRE
 		bool doneColor;
 
 		const float rotationSpeed = 8.5f;
-		const float scaleSpeed = 10.0f;
+		const float scaleSpeed = 20.0f;
 		const float colorSpeed = 2f;
 		const float offsetMult = 0.05f;
 
