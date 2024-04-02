@@ -30,6 +30,9 @@ namespace TRE
 		private ulong moleyCheer;
 		private ulong signpostSFX;
 
+		// const string potMaterial = "Pot.material";
+		// const string potOrangeMaterial = "Pot_Orange.material";
+
 		public void Start()
 		{
 			Moley = ECSManager.FindEntityByName("Moley");
@@ -130,6 +133,9 @@ namespace TRE
 				}
 				#endregion
 			}*/
+
+			// if only one mole approved, set it to orange
+			// if (MoleApproved()) GetComponent<MeshRenderer>().Material = potOrangeMaterial;
 		}
 
 		public void OnTriggerEnter(System.UInt64 otherID)
@@ -163,7 +169,13 @@ namespace TRE
 				HoleyApprove = false;
 			}
 		}
-
+		
+		/// <summary>Returns whether EXACTLY ONE mole has approved.</summary>
+		public bool MoleApproved()
+		{
+			return HoleyApprove ^ MoleyApprove;
+		}
+		
 		public bool MolesApproved()
 		{
 			return MoleyApprove && HoleyApprove;
