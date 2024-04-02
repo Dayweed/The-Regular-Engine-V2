@@ -23,7 +23,6 @@ namespace TRE
 				powerUpPrefab = new Entity(Prefab.GetPrefabIDFromName("Strawberry"));
 			else if (CompareTag("SpawnBlueberry"))
 				powerUpPrefab = new Entity(Prefab.GetPrefabIDFromName("Blueberry"));
-			
 
 			positionOffset = new vec3(0, 2, 0);
 

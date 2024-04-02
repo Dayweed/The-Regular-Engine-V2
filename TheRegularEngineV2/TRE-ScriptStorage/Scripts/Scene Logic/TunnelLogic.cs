@@ -164,13 +164,13 @@ namespace TRE
 				HoleyApprove = false;
 			}
 		}
-		
+
 		/// <summary>Returns whether EXACTLY ONE mole has approved.</summary>
 		public bool MoleApproved()
 		{
 			return HoleyApprove ^ MoleyApprove;
 		}
-		
+
 		public bool MolesApproved()
 		{
 			return MoleyApprove && HoleyApprove;

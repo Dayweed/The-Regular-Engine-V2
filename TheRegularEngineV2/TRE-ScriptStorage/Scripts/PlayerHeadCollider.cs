@@ -17,7 +17,7 @@ namespace TRE
 		{
 			if (playerObj == null || ECSManager.IsValidEntity(playerObj.ID) == false)
 				return;
-			
+
 			if (this.CompareTag(mole1tag))
 			{
 				vec3 newPos = playerObj.transform.Position;

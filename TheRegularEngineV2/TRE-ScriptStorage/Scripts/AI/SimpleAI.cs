@@ -50,7 +50,7 @@ namespace TRE
 			originalSpawnPoint = transform.Position;
 			mHoley = new Entity(ECSManager.FindIDFromName("Holey"));
 			mMoley = new Entity(ECSManager.FindIDFromName("Moley"));
-            mTutorialCactus = new Entity(ECSManager.FindIDFromName("Tutorial_Cactus"));
+			mTutorialCactus = new Entity(ECSManager.FindIDFromName("Tutorial_Cactus"));
 			pinataEffect = parenting.GetChildFromName("PinataEffect");
 			mTarget = new Entity(); // Invalid ID
 			mGround = new Entity(); // Invalid ID
@@ -90,16 +90,16 @@ namespace TRE
 				float distanceFromHoley = (transform.Position - mHoley.transform.Position).Length;
 				float distanceFromMoley = (transform.Position - mMoley.transform.Position).Length;
 				// Check if collide with moley or holey
-                if (PS.IsTriggerStay(mDetectorRange.ID, mHoley.ID))
+				if (PS.IsTriggerStay(mDetectorRange.ID, mHoley.ID))
 				{
 					mTarget = mHoley;
 					mFoundTarget = true;
-                }
+				}
 				if (PS.IsTriggerStay(mDetectorRange.ID, mMoley.ID) && distanceFromHoley > distanceFromMoley)
 				{
 					mTarget = mMoley;
 					mFoundTarget = true;
-                }
+				}
 			}
 			// Check if target is out of detect range
 			else
@@ -127,10 +127,10 @@ namespace TRE
 
 			// Check if player is within detect sphere
 			if (mFoundTarget && mGround.ID != 0)
-            {
-                mSawCactus = PS.IsTriggerStay(mAttackRange.ID, mTutorialCactus.ID) || (mAttackRange.HasComponent<AIAttackRange>() && ECSManager.IsValidEntity(mAttackRange.GetComponent<AIAttackRange>().mTarget.ID) && mAttackRange.GetComponent<AIAttackRange>().mTarget.CompareTag("Cactus"));
-                // Check if afraid move the other direction based on the following condition
-                isAfraid = mSawCactus || (mTarget.CompareTag("Blue") && mTarget.GetComponent<HoleyController>().mainStrawberry && mTarget.GetComponent<HoleyController>().isScaled);
+			{
+				mSawCactus = PS.IsTriggerStay(mAttackRange.ID, mTutorialCactus.ID) || (mAttackRange.HasComponent<AIAttackRange>() && ECSManager.IsValidEntity(mAttackRange.GetComponent<AIAttackRange>().mTarget.ID) && mAttackRange.GetComponent<AIAttackRange>().mTarget.CompareTag("Cactus"));
+				// Check if afraid move the other direction based on the following condition
+				isAfraid = mSawCactus || (mTarget.CompareTag("Blue") && mTarget.GetComponent<HoleyController>().mainStrawberry && mTarget.GetComponent<HoleyController>().isScaled);
 
 				// Set moveVector based on angle
 				moveVector = mTarget.transform.Position - transform.Position;
@@ -138,8 +138,8 @@ namespace TRE
 				// Determine if flip move direction if afraid
 				moveVector *= isAfraid ? new vec3(-1, -1, -1) : vec3.Ones;
 
-                // Ignore y-axis
-                PS.GetLinearVelocity(ID, out vec3 currVelocity);
+				// Ignore y-axis
+				PS.GetLinearVelocity(ID, out vec3 currVelocity);
 				moveVector = new vec3(moveVector.x, 0, moveVector.z);
 				moveVector = moveVector.NormalizedSafe;
 				vec3 moveDir = moveVector * moveSpeed * Time.deltaTime;
@@ -148,8 +148,8 @@ namespace TRE
 				vec2 rotAxis = MathF.GetLookAtAxis(transform.Position, mTarget.transform.Position);
 				// Rotate to Cactus instead if afraid
 				if (mSawCactus) rotAxis = MathF.GetLookAtAxis(transform.Position, mTutorialCactus.transform.Position);
-                // Set max look up for pinata
-                rotAxis.x = (rotAxis.x > 20f) ? 20f : rotAxis.x;
+				// Set max look up for pinata
+				rotAxis.x = (rotAxis.x > 20f) ? 20f : rotAxis.x;
 				rotAxis.x = (rotAxis.x < -20f) ? -20f : rotAxis.x;
 				transform.Rotation = new vec3(rotAxis.x, rotAxis.y, 0);
 
@@ -202,16 +202,16 @@ namespace TRE
 		}
 
 		private void OnCollisionStay(/*Collider*/System.UInt64 otherID)
-        {
-            // Assign ground if still have not found a ground
-            Entity other = new Entity(otherID);
-            if (mGround.ID == 0 && (other.CompareTag("Ground") || other.CompareTag("Platform")) && other.HasComponent<BoxCollider>())
-            {
-                mGround = other;
-                mCanChaseTarget = true;
-                isGrounded = true;
-            }
-        }
+		{
+			// Assign ground if still have not found a ground
+			Entity other = new Entity(otherID);
+			if (mGround.ID == 0 && (other.CompareTag("Ground") || other.CompareTag("Platform")) && other.HasComponent<BoxCollider>())
+			{
+				mGround = other;
+				mCanChaseTarget = true;
+				isGrounded = true;
+			}
+		}
 
 		private void OnCollisionExit(/*Collider*/System.UInt64 otherID)
 		{

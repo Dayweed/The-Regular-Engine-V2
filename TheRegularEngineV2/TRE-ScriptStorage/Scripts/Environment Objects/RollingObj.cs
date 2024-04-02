@@ -113,7 +113,7 @@ namespace TRE
 				// Bounce back if the Moley is using their strawberry powerUp
 				MoleyController ctrl = other.GetComponent<MoleyController>();
 				if (ctrl != null && ctrl.isScaled && ctrl.mainStrawberry)
-					Bounceback(other.transform.Position);	
+					Bounceback(other.transform.Position);
 				else
 					ctrl.TakeDamage();
 			}

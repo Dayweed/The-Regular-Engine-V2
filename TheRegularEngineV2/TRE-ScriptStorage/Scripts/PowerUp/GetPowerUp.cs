@@ -29,7 +29,7 @@ namespace TRE
 		private Entity particleMoley = null;
 
 
-        private PowerUpManager playerPowerUpManager;
+		private PowerUpManager playerPowerUpManager;
 
 		private const float groundOffset = 2;
 		private const float rotationSpeed = 20;
@@ -41,10 +41,10 @@ namespace TRE
 		{
 			collectedSFX = ECSManager.FindIDFromName("SFX_PowerUpsCollected");
 			originalScale = GetComponent<Transform>().Scale;
-            particleHoley = ECSManager.FindEntityByName("VFX_ParticleHoley");
-            particleMoley = ECSManager.FindEntityByName("VFX_ParticleMoley");
-            //Debug.Log("MY NAME IS " + name);
-        }
+			particleHoley = ECSManager.FindEntityByName("VFX_ParticleHoley");
+			particleMoley = ECSManager.FindEntityByName("VFX_ParticleMoley");
+			//Debug.Log("MY NAME IS " + name);
+		}
 
 		public void OnTriggerStay(/*Collider*/System.UInt64 otherID)
 		{
@@ -116,18 +116,18 @@ namespace TRE
 				// Determine which vfx to display
 				if (other.CompareTag(mole1tag) && ECSManager.IsValidEntity(particleMoley.ID))
 				{
-                    // Spawn particle vfx
-                    particleMoley.transform.Position = transform.Position;
-                    particleMoley.GetComponent<VFX_ParticleDisplay>().Display();
-                }
+					// Spawn particle vfx
+					particleMoley.transform.Position = transform.Position;
+					particleMoley.GetComponent<VFX_ParticleDisplay>().Display();
+				}
 				else if (other.CompareTag(mole2tag) && ECSManager.IsValidEntity(particleHoley.ID))
 				{
-                    // Spawn particle vfx
-                    particleHoley.transform.Position = transform.Position;
-                    particleHoley.GetComponent<VFX_ParticleDisplay>().Display();
-                }
+					// Spawn particle vfx
+					particleHoley.transform.Position = transform.Position;
+					particleHoley.GetComponent<VFX_ParticleDisplay>().Display();
+				}
 
-                vfxCollectComplete = false;
+				vfxCollectComplete = false;
 				RunCollectingVFX();
 			}
 		}
@@ -146,10 +146,10 @@ namespace TRE
 				TransformSystem.GetRotation(this.ID, out vec3 rot);
 
 				rot.y += rotSpeed * Time.deltaTime;
-				
+
 				if (rot.y >= 90)
 					rotSpeed = rotationSpeed * -1;
-				
+
 				else if (rot.y <= -90)
 					rotSpeed = rotationSpeed;
 

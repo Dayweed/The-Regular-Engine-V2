@@ -104,7 +104,7 @@ namespace TRE
 					}
 				}
 
-				
+
 
 				finalPos.x = MathF.Lerp(finalPos.x, pos.x, lerpSpeed * Time.deltaTime);
 				finalPos.y = MathF.Lerp(finalPos.y, pos.y, lerpSpeed * Time.deltaTime);

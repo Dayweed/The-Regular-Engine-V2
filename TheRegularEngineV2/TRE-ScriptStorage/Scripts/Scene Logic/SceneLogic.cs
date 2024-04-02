@@ -357,7 +357,7 @@ namespace TRE
 					// Lock Holey and Moley for a few seconds based on HITWcooldowntimer
 					HoleyController.uncontrollableTimer = HITWcooldowntimer;
 					MoleyController.uncontrollableTimer = HITWcooldowntimer;
-                    if (StarEmerge != null && currentStars <= StarParticlePositions.Count)
+					if (StarEmerge != null && currentStars <= StarParticlePositions.Count)
 					{
 						StarParticle.GetComponent<Particle>().IsActive = true;
 						StarParticle.GetComponent<Transform>().Position = new vec3(0f, -1500f, 0f);

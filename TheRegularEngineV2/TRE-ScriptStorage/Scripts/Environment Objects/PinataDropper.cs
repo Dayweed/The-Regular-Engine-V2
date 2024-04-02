@@ -120,7 +120,7 @@ namespace TRE
 				Pinata14.SetActive(true);
 				Pinata14.GetComponent<CapsuleCollider>().IsActive = true;
 			}
-				
+
 		}
 
 		private bool IsInsideTrigger(Entity entity)

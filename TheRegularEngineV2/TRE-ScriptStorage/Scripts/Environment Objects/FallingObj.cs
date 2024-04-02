@@ -13,7 +13,7 @@ namespace TRE
 
 		public bool isGrounded = false;
 
-        public void Update()
+		public void Update()
 		{
 			transform.Rotation = vec3.Zero;
 			// activeTimer -= Time.deltaTime;
@@ -40,23 +40,23 @@ namespace TRE
 		}
 
 		public void OnCollisionStay(System.UInt64 otherID)
-        {
-            Entity other = new Entity(otherID);
+		{
+			Entity other = new Entity(otherID);
 
-            if (other.CompareTag("Ground") || other.CompareTag("Platform"))
-            {
-                isGrounded = true;
-            }
-        }
+			if (other.CompareTag("Ground") || other.CompareTag("Platform"))
+			{
+				isGrounded = true;
+			}
+		}
 
-        public void OnCollisionExit(System.UInt64 otherID)
-        {
-            Entity other = new Entity(otherID);
+		public void OnCollisionExit(System.UInt64 otherID)
+		{
+			Entity other = new Entity(otherID);
 
-            if (other.CompareTag("Ground") || other.CompareTag("Platform"))
-            {
-                //isGrounded = false;
-            }
-        }
-    }
+			if (other.CompareTag("Ground") || other.CompareTag("Platform"))
+			{
+				//isGrounded = false;
+			}
+		}
+	}
 }
