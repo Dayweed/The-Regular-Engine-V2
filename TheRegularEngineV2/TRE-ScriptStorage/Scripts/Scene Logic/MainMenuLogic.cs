@@ -36,9 +36,11 @@ namespace TRE
 
 		// Tunnel Materials
 		const string potMaterial = "Pot.material";
+		const string potOrangeMaterial = "Pot_Orange.material";
 		const string potGreenMaterial = "Pot_Green.material";
 
-		// Entity[] tunnelList;
+		Entity[] tunnelList;
+		int[] tunnelPreviousMoleApprovalCount;
 		#endregion
 
 		Entity QuitConfirmation;
@@ -89,16 +91,18 @@ namespace TRE
 			Moley = ECSManager.FindEntityByName("Moley");
 			Holey = ECSManager.FindEntityByName("Holey");
 
-			// tunnelList = new Entity[] { };
-			ToOptionSelect = ECSManager.FindEntityByName("ToOptionSelect");
-			ToLevelSelect = ECSManager.FindEntityByName("ToLevelSelect");
-			ToCreditsSelect = ECSManager.FindEntityByName("ToCreditsSelect");
-			ToQuitSelect = ECSManager.FindEntityByName("ToQuitSelect");
-
-			ToReturnSelect = ECSManager.FindEntityByName("ToReturnSelect");
-			ToTutorialSelect = ECSManager.FindEntityByName("ToTutorialSelect");
-			ToLevel1Select = ECSManager.FindEntityByName("ToLevel1Select");
-			ToLevel2Select = ECSManager.FindEntityByName("ToLevel2Select");
+			tunnelList = new Entity[]
+			{
+				ToOptionSelect = ECSManager.FindEntityByName("ToOptionSelect"),
+				ToLevelSelect = ECSManager.FindEntityByName("ToLevelSelect"),
+				ToCreditsSelect = ECSManager.FindEntityByName("ToCreditsSelect"),
+				ToQuitSelect = ECSManager.FindEntityByName("ToQuitSelect"),
+				ToReturnSelect = ECSManager.FindEntityByName("ToReturnSelect"),
+				ToTutorialSelect = ECSManager.FindEntityByName("ToTutorialSelect"),
+				ToLevel1Select = ECSManager.FindEntityByName("ToLevel1Select"),
+				ToLevel2Select = ECSManager.FindEntityByName("ToLevel2Select")
+			};
+			tunnelPreviousMoleApprovalCount = new int[tunnelList.Length];
 
 			QuitConfirmation = ECSManager.FindEntityByName("QuitConfirmationPopup");
 			QuitConfirmationYes = ECSManager.FindEntityByName("YesQuit");
@@ -320,6 +324,22 @@ namespace TRE
 				TitleStarsCollected.GetComponent<TextBounce>().Resume();
 			}
 			#endregion
+
+			// Set correct material(color)(orange/normal) based on the CHANGE of # of moles approved.
+			for (int i = 0; i < tunnelList.Length; ++i)
+			{
+				TunnelLogic tunnel = tunnelList[i].GetComponent<TunnelLogic>();
+				int previousMoleApprovalCount = tunnelPreviousMoleApprovalCount[i];
+				int currentMoleApprovalCount = tunnel.MoleApproved() ? 1 : 0;
+				
+				if (previousMoleApprovalCount == 0 && currentMoleApprovalCount == 1)
+					tunnel.GetComponent<MeshRenderer>().Material = potOrangeMaterial;
+				else if (previousMoleApprovalCount == 1 && currentMoleApprovalCount == 0)
+					tunnel.GetComponent<MeshRenderer>().Material = potMaterial;
+				
+				// store the number of moles approved for use in next Update() call
+				tunnelPreviousMoleApprovalCount[i] = currentMoleApprovalCount;
+			}
 
 			bool isAnythingSelected = selectedOption || selectedLevel || selectedCredits || selectedQuit ||
 				selectedReturn || selectedTutorial || selectedLevel1 || selectedLevel2;
