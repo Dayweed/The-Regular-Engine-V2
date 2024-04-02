@@ -24,7 +24,7 @@ namespace TRE
 
 		const float rotationSpeed = 8.5f;
 		const float scaleSpeed = 20.0f;
-		const float colorSpeed = 2f;
+		const float colorSpeed = 5f;
 		const float offsetMult = 0.05f;
 
 		vec3 MinRotateOffset;

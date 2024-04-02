@@ -53,6 +53,7 @@ namespace TRE
 		private bool isControllerConnected = false;
 		private bool lastControllerConnected = false;
 		private bool changeUI = false;
+        public float uncontrollableTimer = 0f;
 		private Entity CharacterUI;
 
         public int ControllerPreset = 0;
@@ -956,7 +957,7 @@ namespace TRE
 			}
 
 			// Check if can trigger ability
-			if (IS.GetKeyPress(playerAbilityKey))
+			if (isControllable && IS.GetKeyPress(playerAbilityKey))
 			{
 				if (mainBlueberry || mainStrawberry)
 				{
@@ -997,7 +998,7 @@ namespace TRE
 				}
 			}
 
-			if (IS.GetControllerButtonTriggered(ControllerNumber, ability))
+			if (isControllable && IS.GetControllerButtonTriggered(ControllerNumber, ability))
 			{
 				if (mainBlueberry || mainStrawberry)
 				{
@@ -1168,7 +1169,9 @@ namespace TRE
 				holeyTransform.Scale = new vec3(holeyTransform.Scale.x, 0.01f, holeyTransform.Scale.z);
 			}
 			Invulnerability = true;
-		}
+
+            ECSManager.FindEntityByName("Moley").GetComponent<MoleyController>().IsActivated = true;
+        }
 
 		public void ResetToInitialPos()
 		{
@@ -1248,9 +1251,12 @@ namespace TRE
                 cameraTransiting = true;
             }
 
+            // Reduce uncontrollable timer if > 0
+            if (uncontrollableTimer > 0f) uncontrollableTimer -= Time.deltaTime;
+            if (uncontrollableTimer < 0f) uncontrollableTimer = 0f;
 
             // Logic to handle isControllable
-            if (Scene.IsTransiting() || cameraTransiting || confirmationPopUp)
+            if (Scene.IsTransiting() || cameraTransiting || confirmationPopUp || uncontrollableTimer > 0f)
 			{
 				isControllable = false;
 			}

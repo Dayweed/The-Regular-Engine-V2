@@ -19,6 +19,8 @@
 			PersistentSystem.SetValue("Tutorial" + "StarsObtained", "0");
 			PersistentSystem.SetValue("Level_1" + "StarsObtained", "0");
 			PersistentSystem.SetValue("Level_2" + "StarsObtained", "0");
+			PersistentSystem.SetValue("PartyHat", "false");
+			PersistentSystem.SetValue("Maracca", "false");
 		}
 
 		public void Update()

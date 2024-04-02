@@ -12,13 +12,15 @@ namespace TRE
 		Entity Star_1_BG;
 		Entity Star_2_BG;
 		Entity Star_3_BG;
+        Entity PartyHat;
+        Entity Maracca;
 
-		// bool allStarsShown = false;
+        Entity LastStar = null;
 
-		private float currentTimer;
+        private float currentTimer;
 		private bool startBufferComplete = false;
 		private const float delayBufferStart = 2f;
-		private const float delayBufferStars = 0.15f;
+		private const float delayBufferStars = 0.05f;
 
 		int numStars = 0;
 		int maxStars = 0;
@@ -36,6 +38,8 @@ namespace TRE
 			Star_1_BG = ECSManager.FindEntityByName("Star_1_BG");
 			Star_2_BG = ECSManager.FindEntityByName("Star_2_BG");
 			Star_3_BG = ECSManager.FindEntityByName("Star_3_BG");
+            PartyHat = ECSManager.FindEntityByName("PartyHat");
+            Maracca = ECSManager.FindEntityByName("Maracca");
 
 			resultStarSFX = ECSManager.FindIDFromName("SFX_ResultStar");
 			ResultSFX = ECSManager.FindIDFromName("SFX_Result");
@@ -61,6 +65,8 @@ namespace TRE
 			Star_1.SetActive(false);
 			Star_2.SetActive(false);
 			Star_3.SetActive(false);
+            PartyHat.SetActive(false);
+            Maracca.SetActive(false);
 
 			currentTimer = delayBufferStart;
 		}
@@ -107,8 +113,10 @@ namespace TRE
 				if (ECSManager.IsValidEntity(resultStarSFX))
 				{
 					AS.Play(resultStarSFX);
-				}
-			}
+                }
+
+                LastStar = (numStars == 1) ? Star_1 : null;
+            }
 			// Do Star_2 if Star_1 is done
 			else if (Star_1.GetComponent<VFX_SlapOn>().CompletedVFX() && Star_2_BG.GetActive() && !Star_2.GetActive() && numStars >= 2)
 			{
@@ -119,7 +127,9 @@ namespace TRE
 				{
 					AS.Play(resultStarSFX);
 				}
-			}
+
+                LastStar = (numStars == 2) ? Star_2 : null;
+            }
 			// Do Star_3 if Star_2 is done
 			else if (Star_2.GetComponent<VFX_SlapOn>().CompletedVFX() && Star_3_BG.GetActive() && !Star_3.GetActive() && numStars >= 3)
 			{
@@ -129,8 +139,24 @@ namespace TRE
 				if (ECSManager.IsValidEntity(resultStarSFX))
 				{
 					AS.Play(resultStarSFX);
-				}
-			}
+                }
+
+                LastStar = (numStars == 3) ? Star_3 : null;
+            }
+			// Do PartyHat/Maracca if all stars are done
+			else if (LastStar == null || LastStar.GetComponent<VFX_SlapOn>().CompletedVFX())
+			{
+                if (PersistentSystem.GetValue("PrevScene") == "Level_1" && PersistentSystem.GetValue("PartyHat") == "true" && !PartyHat.GetActive())
+				{
+					PartyHat.SetActive(true);
+                    PartyHat.GetComponent<VFX_SlapOn>().SlapOn();
+                }
+                if (PersistentSystem.GetValue("PrevScene") == "Level_2" && PersistentSystem.GetValue("Maracca") == "true" && !Maracca.GetActive())
+                {
+                    Maracca.SetActive(true);
+                    Maracca.GetComponent<VFX_SlapOn>().SlapOn();
+                }
+            }
 		}
 	}
 }

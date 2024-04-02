@@ -51,6 +51,7 @@ namespace TRE
 		private bool isControllerConnected = false;
 		private bool lastControllerConnected = false;
 		private bool changeUI = false;
+        public float uncontrollableTimer = 0f;
 		private Entity CharacterUI;
 
         public int ControllerPreset = 0;
@@ -166,7 +167,7 @@ namespace TRE
 
 		//these variables are enclusive to Moley
 		private Entity UIPopup2;
-		private bool IsActivated = false;
+		public bool IsActivated = false;
 		private bool HasBeenTriggeredBefore = false;
 
 		//For camera controller
@@ -999,7 +1000,7 @@ namespace TRE
 			}
 
 			// Check if can trigger ability
-			if (IS.GetKeyPress(playerAbilityKey))
+			if (isControllable && IS.GetKeyPress(playerAbilityKey))
 			{
 				if (mainBlueberry || mainStrawberry)
 				{
@@ -1018,7 +1019,7 @@ namespace TRE
 				}
 			}
 
-			if (IS.GetControllerButtonTriggered(ControllerNumber, ability))
+			if (isControllable && IS.GetControllerButtonTriggered(ControllerNumber, ability))
 			{
 				if (mainBlueberry || mainStrawberry)
 				{
@@ -1185,25 +1186,27 @@ namespace TRE
 			}
 			Invulnerability = true;
 
-			// Commenting out for now until IsActivated is cfm not needed
-			//if (Invulnerability)
-			//{
-			//	IsActivated = true;
-			//	return;
-			//}
+			IsActivated = true;
 
-			//if (MyPowerManager.powerUps.Count > 0)
-			//{
-			//	MyPowerManager.LoseMain();
-			//	isScaled = false;
-			//}
-			//else
-			//{
-			//	isDead = true;
-			//	RespawnPlayer = true;
-			//}
-			//Invulnerability = true;
-		}
+            // Commenting out for now until IsActivated is cfm not needed
+            //if (Invulnerability)
+            //{
+            //	IsActivated = true;
+            //	return;
+            //}
+
+            //if (MyPowerManager.powerUps.Count > 0)
+            //{
+            //	MyPowerManager.LoseMain();
+            //	isScaled = false;
+            //}
+            //else
+            //{
+            //	isDead = true;
+            //	RespawnPlayer = true;
+            //}
+            //Invulnerability = true;
+        }
 
 		public void ResetToInitialPos()
 		{
@@ -1283,8 +1286,12 @@ namespace TRE
                 cameraTransiting = true;
             }
 
+			// Reduce uncontrollable timer if > 0
+			if (uncontrollableTimer > 0f) uncontrollableTimer -= Time.deltaTime;
+			if (uncontrollableTimer < 0f) uncontrollableTimer = 0f;
+
             // Logic to handle isControllable
-            if (Scene.IsTransiting() || cameraTransiting || confirmationPopUp)
+            if (Scene.IsTransiting() || cameraTransiting || confirmationPopUp || uncontrollableTimer > 0f)
 			{
 				isControllable = false;
 			}

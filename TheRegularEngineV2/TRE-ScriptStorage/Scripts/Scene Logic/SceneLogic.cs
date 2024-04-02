@@ -20,6 +20,8 @@ namespace TRE
 
 		private bool forceGoToNextScene = false;
 
+		private float HITWcooldowntimer = 2.5f;
+
 		// cheats flag
 		public bool keepinvCheat = false;
 		public bool creativeCheat = false;
@@ -61,6 +63,8 @@ namespace TRE
 		Entity EndingFlagTrigger;
 		Entity Holey;
 		Entity Moley;
+		HoleyController HoleyController;
+		MoleyController MoleyController;
 
 		public void Start()
 		{
@@ -173,6 +177,8 @@ namespace TRE
 			EndingFlagTrigger = ECSManager.FindEntityByName("EndingTrigger");
 			Holey = ECSManager.FindEntityByName("Holey's Head Collider");
 			Moley = ECSManager.FindEntityByName("Moley's Head Collider");
+			MoleyController = ECSManager.FindEntityByName("Moley").GetComponent<MoleyController>();
+			HoleyController = ECSManager.FindEntityByName("Holey").GetComponent<HoleyController>();
 
 			endsceneBGM = ECSManager.FindIDFromName("BGM_End");
 			mainBGM = ECSManager.FindIDFromName("BGM");
@@ -348,7 +354,10 @@ namespace TRE
 				{
 					int currentStars = IncrementStars(currentSceneName);
 					triggerStars.RemoveAt(i);
-					if (StarEmerge != null && currentStars <= StarParticlePositions.Count)
+					// Lock Holey and Moley for a few seconds based on HITWcooldowntimer
+					HoleyController.uncontrollableTimer = HITWcooldowntimer;
+					MoleyController.uncontrollableTimer = HITWcooldowntimer;
+                    if (StarEmerge != null && currentStars <= StarParticlePositions.Count)
 					{
 						StarParticle.GetComponent<Particle>().IsActive = true;
 						StarParticle.GetComponent<Transform>().Position = new vec3(0f, -1500f, 0f);

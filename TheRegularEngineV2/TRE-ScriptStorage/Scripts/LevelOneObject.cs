@@ -1,4 +1,5 @@
 ﻿using GlmSharp;
+using System.Runtime.Remoting.Metadata.W3cXsd2001;
 
 namespace TRE
 {
@@ -79,13 +80,14 @@ namespace TRE
 		{
 			Entity other = new Entity(otherID);
 
-			if (other.CompareTag("Red") || other.CompareTag("Blue"))
+			if (!pickedUp && (other.CompareTag("Red") || other.CompareTag("Blue")))
 			{
 				GetComponent<MeshRenderer>().Visible = false;
 				pickedUp = true;
 				LvlObjUI.GetComponent<VFX_Emerge>().Emerge(vec3.Zero, new vec3(-840f, -280f, 0f), new vec3(1.5f, 1.5f, 1));
 				SetRadialEffect(other);
-			}
+                PersistentSystem.SetValue(GetTag(), "true");
+            }
 		}
 	}
 }
