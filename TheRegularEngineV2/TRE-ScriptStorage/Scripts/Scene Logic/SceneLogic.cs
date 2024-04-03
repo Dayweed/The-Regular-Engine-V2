@@ -20,7 +20,7 @@ namespace TRE
 
 		private bool forceGoToNextScene = false;
 
-		private float HITWcooldowntimer = 1.2f;
+		private float HITWcooldowntimer = 0.0f;
 
 		// cheats flag
 		public bool keepinvCheat = false;
