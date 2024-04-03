@@ -36,7 +36,7 @@ namespace TRE
 		vec4 MaxColorOffset;
 
 		float TimerToStop;
-		const float TimerToStopDefault = 2f;
+		const float TimerToStopDefault = 1f;
 
 		/// <summary>This is to ensure it wont be stuck looping forever.</summary>
 		const float OffsetScale = 1f;

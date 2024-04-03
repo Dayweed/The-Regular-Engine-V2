@@ -29,18 +29,18 @@ namespace TRE
 		bool idle = true;
 		bool softrestting = false; // Move the values closer to the correct spot
 
-		const float scaleSpeed = 1.5f;
+		const float scaleSpeed = 2.0f;
 		const float rotateSpeed = 15.0f;
-		const float moveSpeed = 3f;
+		const float moveSpeed = 5f;
 
 		vec3 MinScaleOffset;
 		vec3 MaxScaleOffset;
 
 		float coolDown = 0;
-		const float coolDownDefault = 0.45f;
+		const float coolDownDefault = 0.25f;
 
 		float TimerToStop;
-		const float TimerToStopDefault = 2.4f;
+		const float TimerToStopDefault = 1.25f;
 
 		SpriteRenderer MyRenderer;
 

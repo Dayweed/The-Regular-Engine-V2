@@ -1086,7 +1086,7 @@ namespace TRE
 					if (HasComponent<Animation>())
 						RemoveComponent<Animation>();
 				}
-				currentHeight = MathF.Lerp(currentHeight, blueberrysuperHeight, 0.5f * lerpSpeed * Time.deltaTime);
+				currentHeight = MathF.Lerp(currentHeight, blueberrysuperHeight, 0.25f * lerpSpeed * Time.deltaTime);
 				currentRadius = MathF.Lerp(currentRadius, blueberrysuperRadius, lerpSpeed * Time.deltaTime);
 				currOffset = MathF.Lerp(currOffset, 5.8f, lerpSpeed * Time.deltaTime);
 				currentXform = blueberryscaledXform;
