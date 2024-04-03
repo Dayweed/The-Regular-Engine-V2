@@ -27,7 +27,7 @@
       0,
       {
          "m_Active": true,
-         "m_GUID": "10242283790039715177",
+         "m_GUID": "1571653183067300022",
          "m_Index": 1,
          "m_Name": "VFX_Particle",
          "m_Tag": ""
@@ -123,7 +123,7 @@
             1.0
          ],
          "Texture": "f6bd313f520e6e41",
-         "m_AnimationDuration": 1.0,
+         "m_AnimationDuration": 1.5,
          "m_IsSpriteSheet": true,
          "m_IsVisible": false,
          "m_Slices": 32
