@@ -74,12 +74,12 @@ namespace TRE
 		}
 
 		public void ForceComplete()
-        {
+		{
 			if (HasComponent<SpriteRenderer>())
 			{
 				MyRenderer = GetComponent<SpriteRenderer>();
 				MyRenderer.Color = new vec4(OriginalColor.x, OriginalColor.y, OriginalColor.z, 0);
-            }
+			}
 			UpdateChildren(this, 0);
 			fading = false;
 			doneFading = true;

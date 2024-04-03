@@ -29,18 +29,18 @@ namespace TRE
 		bool idle = true;
 		bool softrestting = false; // Move the values closer to the correct spot
 
-		const float scaleSpeed = 1.5f;
+		const float scaleSpeed = 2.0f;
 		const float rotateSpeed = 15.0f;
-		const float moveSpeed = 3f;
+		const float moveSpeed = 5f;
 
 		vec3 MinScaleOffset;
 		vec3 MaxScaleOffset;
 
 		float coolDown = 0;
-		const float coolDownDefault = 0.45f;
+		const float coolDownDefault = 0.25f;
 
 		float TimerToStop;
-		const float TimerToStopDefault = 2.4f;
+		const float TimerToStopDefault = 1.25f;
 
 		SpriteRenderer MyRenderer;
 
@@ -115,7 +115,7 @@ namespace TRE
 				else if (shrinking && ReachEndPosition())
 				{
 					softrestting = true;
-                    SoftReset();
+					SoftReset();
 				}
 			}
 			else if (!emerging && !shrinking && !idle && coolDown > 0)
@@ -141,11 +141,11 @@ namespace TRE
 			// PositionVec = new vec3(-10, -6, 0);
 			// EndPosition = new vec3(-865, -440, 0);
 			transform.Position = startPos;
-            EndPosition = endPos;
-            EndScale = endScale;
+			EndPosition = endPos;
+			EndScale = endScale;
 
-            // Force stop it using timer
-            TimerToStop = TimerToStopDefault;
+			// Force stop it using timer
+			TimerToStop = TimerToStopDefault;
 
 			MyRenderer.isVisible = true;
 
@@ -154,24 +154,24 @@ namespace TRE
 			idle = false;
 
 			ScaleVec = (EndScale - StartScale);
-            if (ScaleVec.Length != 0) ScaleVec = ScaleVec.Normalized;
+			if (ScaleVec.Length != 0) ScaleVec = ScaleVec.Normalized;
 
 			transform.Scale = StartScale;
 
 			vec3 scaOff = ScaleVec * scaleSpeed * 0.75f * Time.deltaTime;
 			MinScaleOffset = new vec3(EndScale - scaOff);
 			MaxScaleOffset = new vec3(EndScale + scaOff);
-            //MinScaleOffset = new vec3(
-            //	(EndScale.x - scaOff.x < EndScale.x + scaOff.x) ? EndScale.x - scaOff.x : EndScale.x + scaOff.x,
-            //	(EndScale.y - scaOff.y < EndScale.y + scaOff.y) ? EndScale.y - scaOff.y : EndScale.y + scaOff.y,
-            //	(EndScale.z - scaOff.z < EndScale.z + scaOff.z) ? EndScale.z - scaOff.z : EndScale.z + scaOff.z
-            //	);
-            //MaxScaleOffset = new vec3(
-            //	(EndScale.x - scaOff.x > EndScale.x + scaOff.x) ? EndScale.x - scaOff.x : EndScale.x + scaOff.x,
-            //	(EndScale.y - scaOff.y > EndScale.y + scaOff.y) ? EndScale.y - scaOff.y : EndScale.y + scaOff.y,
-            //	(EndScale.z - scaOff.z > EndScale.z + scaOff.z) ? EndScale.z - scaOff.z : EndScale.z + scaOff.z
-            //	);
-        }
+			//MinScaleOffset = new vec3(
+			//	(EndScale.x - scaOff.x < EndScale.x + scaOff.x) ? EndScale.x - scaOff.x : EndScale.x + scaOff.x,
+			//	(EndScale.y - scaOff.y < EndScale.y + scaOff.y) ? EndScale.y - scaOff.y : EndScale.y + scaOff.y,
+			//	(EndScale.z - scaOff.z < EndScale.z + scaOff.z) ? EndScale.z - scaOff.z : EndScale.z + scaOff.z
+			//	);
+			//MaxScaleOffset = new vec3(
+			//	(EndScale.x - scaOff.x > EndScale.x + scaOff.x) ? EndScale.x - scaOff.x : EndScale.x + scaOff.x,
+			//	(EndScale.y - scaOff.y > EndScale.y + scaOff.y) ? EndScale.y - scaOff.y : EndScale.y + scaOff.y,
+			//	(EndScale.z - scaOff.z > EndScale.z + scaOff.z) ? EndScale.z - scaOff.z : EndScale.z + scaOff.z
+			//	);
+		}
 
 		public void ShrinkBack()
 		{
@@ -216,16 +216,16 @@ namespace TRE
 		public bool FinishVFX()
 		{
 			return !MyRenderer.isVisible;
-        }
+		}
 
 		public void SoftReset()
-        {
-            if (Math.Abs(OriginalRotation.z - transform.Rotation.z) <= rotateSpeed * 5f)
+		{
+			if (Math.Abs(OriginalRotation.z - transform.Rotation.z) <= rotateSpeed * 5f)
 			{
 				softrestting = false;
 				HardReset();
-            }
-        }
+			}
+		}
 
 		public void HardReset()
 		{

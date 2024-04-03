@@ -1,4 +1,5 @@
 ﻿using GlmSharp;
+using System.Runtime.Remoting.Metadata.W3cXsd2001;
 
 namespace TRE
 {
@@ -6,9 +7,9 @@ namespace TRE
 	{
 		// private Entity LevelObject;
 		private Entity LvlObjUI;
-        public Entity mainCamera;
+		public Entity mainCamera;
 
-        public bool pickedUp = false;
+		public bool pickedUp = false;
 
 		private const float rotationSpeed = 20;
 		float rotSpeed = rotationSpeed;
@@ -20,11 +21,11 @@ namespace TRE
 
 		public void OnCreate()
 		{
-            // LevelObject = ECSManager.FindEntityByName("LevelObject_PickMe");
-            mainCamera = ECSManager.FindEntityByName("Main Camera");
-            LvlObjUI = ECSManager.FindEntityByName("LevelObject");
-            mRadialVFX = ECSManager.FindEntityByName("RadialEffectVFX");
-        }
+			// LevelObject = ECSManager.FindEntityByName("LevelObject_PickMe");
+			mainCamera = ECSManager.FindEntityByName("Main Camera");
+			LvlObjUI = ECSManager.FindEntityByName("LevelObject");
+			mRadialVFX = ECSManager.FindEntityByName("RadialEffectVFX");
+		}
 
 		public void Update()
 		{
@@ -48,16 +49,16 @@ namespace TRE
 
 			if (mIsRadialVFX)
 			{
-                // Always look at the main camera
-                if (mainCamera != null)
-                {
-                    // Rotate Character to look at target
-                    vec2 rotAxis = MathF.GetLookAtAxis(mRadialVFX.transform.Position, mainCamera.transform.Position);
-                    mRadialVFX.transform.Rotation = new vec3(rotAxis.x, rotAxis.y, 0);
-                }
+				// Always look at the main camera
+				if (mainCamera != null)
+				{
+					// Rotate Character to look at target
+					vec2 rotAxis = MathF.GetLookAtAxis(mRadialVFX.transform.Position, mainCamera.transform.Position);
+					mRadialVFX.transform.Rotation = new vec3(rotAxis.x, rotAxis.y, 0);
+				}
 
-                mRadialVFXDuration -= Time.GetDeltaTime();
-				if (mRadialVFXDuration < 0 )
+				mRadialVFXDuration -= Time.GetDeltaTime();
+				if (mRadialVFXDuration < 0)
 				{
 					mRadialVFXDuration = 3f;
 					mIsRadialVFX = false;
@@ -71,20 +72,21 @@ namespace TRE
 			vec3 MolePos = mole.GetComponent<Transform>().Position;
 			MolePos.y += 5;
 			mRadialVFX.GetComponent<Transform>().Position = MolePos;
-            SpriteSystem.SetSprite3DVisibility(mRadialVFX.ID, true);
-            mIsRadialVFX = true;
-        }
+			SpriteSystem.SetSprite3DVisibility(mRadialVFX.ID, true);
+			mIsRadialVFX = true;
+		}
 
 		public void OnTriggerEnter(System.UInt64 otherID)
 		{
 			Entity other = new Entity(otherID);
 
-			if (other.CompareTag("Red") || other.CompareTag("Blue"))
+			if (!pickedUp && (other.CompareTag("Red") || other.CompareTag("Blue")))
 			{
 				GetComponent<MeshRenderer>().Visible = false;
 				pickedUp = true;
 				LvlObjUI.GetComponent<VFX_Emerge>().Emerge(vec3.Zero, new vec3(-840f, -280f, 0f), new vec3(1.5f, 1.5f, 1));
 				SetRadialEffect(other);
+				PersistentSystem.SetValue(GetTag(), "true");
 			}
 		}
 	}

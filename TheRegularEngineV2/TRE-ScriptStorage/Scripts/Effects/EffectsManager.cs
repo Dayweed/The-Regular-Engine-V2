@@ -89,7 +89,7 @@
 				}
 
 				//If camera following player, enable depth blur
-				if(cameraController.freeCamera)
+				if (cameraController.freeCamera)
 					DepthBlurEffect.Engine_SetDepthBlurActive(!pauseMenu.isPaused);
 				else
 					DepthBlurEffect.Engine_SetDepthBlurActive(false);

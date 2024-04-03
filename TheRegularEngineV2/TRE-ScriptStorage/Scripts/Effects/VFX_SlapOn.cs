@@ -23,8 +23,8 @@ namespace TRE
 		bool doneColor;
 
 		const float rotationSpeed = 8.5f;
-		const float scaleSpeed = 10.0f;
-		const float colorSpeed = 2f;
+		const float scaleSpeed = 20.0f;
+		const float colorSpeed = 5f;
 		const float offsetMult = 0.05f;
 
 		vec3 MinRotateOffset;
@@ -36,7 +36,7 @@ namespace TRE
 		vec4 MaxColorOffset;
 
 		float TimerToStop;
-		const float TimerToStopDefault = 2f;
+		const float TimerToStopDefault = 1f;
 
 		/// <summary>This is to ensure it wont be stuck looping forever.</summary>
 		const float OffsetScale = 1f;

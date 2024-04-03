@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace TRE
 {
@@ -30,6 +31,10 @@ namespace TRE
 		List<Entity> frames = new List<Entity>();
 		List<string> nextScenes = new List<string>();
 
+        private bool controllerConnected = false;
+        private bool prevControllerConnected = false;
+		private bool changeUI = false;
+
 		public void Start()
 		{
 			Frame_1 = ECSManager.FindEntityByName("Frame1");
@@ -51,17 +56,46 @@ namespace TRE
 			frames[currentFrame].SetActive(true);
 			frames[currentFrame].GetComponent<VFX_FadeIn>().FadeIn();
 			currentTime = delayFrame;
+
+            if (InputSystem.GetControllerConnected(0) || InputSystem.GetControllerConnected(1))
+            {
+                controllerConnected = true;
+                prevControllerConnected = true;
+                changeUI = true;
+            }
+            else
+            {
+                controllerConnected = false;
+                prevControllerConnected = false;
+            
+            }
 		}
 
 		public void Update()
 		{
+			controllerConnected = InputSystem.GetControllerConnected(0) || InputSystem.GetControllerConnected(1);
+            if (controllerConnected != prevControllerConnected)
+            {
+                changeUI = true;
+                prevControllerConnected = controllerConnected;
+            }
+
+            if (controllerConnected && changeUI)
+            {
+                //SpaceToContinue.GetComponent<SpriteRenderer>().Texture = "";
+            }
+			else if (!controllerConnected && changeUI)
+            {
+				//SpaceToContinue.GetComponent<SpriteRenderer>().Texture = "";
+            }
+
 			bool pressedSpace = InputSystem.GetKeyPress(InputKeys.Space);
 			bool pressA = InputSystem.GetControllerButtonTriggered(0, InputSystem.Button.A);
 			bool hasPlayerPressed = pressedSpace || pressA;
 			//bool paragraphIsHalfWay = false;
 
 			//Go to Credits Scene
-			if (hasPlayerPressed && /*SpaceToContinue.GetActive() && */currentFrame == frames.Count - 1)
+			if (hasPlayerPressed && /*SpaceToContinue.GetActive() && */currentFrame >= frames.Count - 1)
 			{
 				if (ECSManager.IsValidEntity(BGM))
 					AS.Stop(BGM);

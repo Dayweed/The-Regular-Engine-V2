@@ -1,6 +1,4 @@
-using System;
 using System.Collections.Generic;
-using System.Dynamic;
 using GlmSharp;
 
 namespace TRE
@@ -21,6 +19,8 @@ namespace TRE
 		public float waitingTime = 0.90f;
 
 		private bool forceGoToNextScene = false;
+
+		private float HITWcooldowntimer = 0.0f;
 
 		// cheats flag
 		public bool keepinvCheat = false;
@@ -51,17 +51,20 @@ namespace TRE
 		private float mConfettiTimeDurian = 3f;
 		private bool mConfettispawned = false;
 
-        private ulong endsceneBGM;
+		private ulong endsceneBGM;
 		private ulong mainBGM;
 
 		//Audio
 		private ulong starSFX;
+		private ulong endCheerSFX;
 		private bool starSFXPlayed = false;
 
 		Entity ConfettiTrigger;
 		Entity EndingFlagTrigger;
 		Entity Holey;
 		Entity Moley;
+		HoleyController HoleyController;
+		MoleyController MoleyController;
 
 		public void Start()
 		{
@@ -94,7 +97,7 @@ namespace TRE
 				triggerStars.Add(holeCheckDisplay2);
 				triggerStars.Add(holeCheckDisplay3);
 
-				starSFX = ECSManager.FindIDFromName("SFX_StarsCollected");
+
 
 				PersistentSystem.SetValue(currentSceneName + "MaxStarsObtained", "3");
 
@@ -174,43 +177,47 @@ namespace TRE
 			EndingFlagTrigger = ECSManager.FindEntityByName("EndingTrigger");
 			Holey = ECSManager.FindEntityByName("Holey's Head Collider");
 			Moley = ECSManager.FindEntityByName("Moley's Head Collider");
+			MoleyController = ECSManager.FindEntityByName("Moley").GetComponent<MoleyController>();
+			HoleyController = ECSManager.FindEntityByName("Holey").GetComponent<HoleyController>();
 
 			endsceneBGM = ECSManager.FindIDFromName("BGM_End");
 			mainBGM = ECSManager.FindIDFromName("BGM");
+			starSFX = ECSManager.FindIDFromName("SFX_StarsCollected");
+			endCheerSFX = ECSManager.FindIDFromName("SFX_EndCheer");
 
 			confettiTime = false;
-            mConfettispawned = false;
-            mConfettiTimeDurian = 3f;
+			mConfettispawned = false;
+			mConfettiTimeDurian = 3f;
 
 			// Load Cheats
-            if (bool.TryParse(PersistentSystem.GetValue("powerUps"), out bool powerResult))
-            {
-                keepinvCheat = powerResult;
-            }
-            else
-            { 
-                keepinvCheat = false;
+			if (bool.TryParse(PersistentSystem.GetValue("powerUps"), out bool powerResult))
+			{
+				keepinvCheat = powerResult;
+			}
+			else
+			{
+				keepinvCheat = false;
 				string powerUpsString = keepinvCheat.ToString();
-                PersistentSystem.SetValue("powerUps", powerUpsString);
-            }
+				PersistentSystem.SetValue("powerUps", powerUpsString);
+			}
 
-            if (bool.TryParse(PersistentSystem.GetValue("invulnerability"), out bool invResult))
-            {
-                creativeCheat = invResult;
-            }
-            else
-            {
-                creativeCheat = false;
+			if (bool.TryParse(PersistentSystem.GetValue("invulnerability"), out bool invResult))
+			{
+				creativeCheat = invResult;
+			}
+			else
+			{
+				creativeCheat = false;
 				string invulnerabilityString = creativeCheat.ToString();
 				PersistentSystem.SetValue("invulnerability", invulnerabilityString);
-            }
+			}
 
-            if (keepinvCheat || creativeCheat)
-            {
+			if (keepinvCheat || creativeCheat)
+			{
 				triggerCheats = true;
-            }
-            
-        }
+			}
+
+		}
 
 		public void Update()
 		{
@@ -220,38 +227,38 @@ namespace TRE
 				if ((InputSystem.GetKeyHold(InputKeys.LeftControl) || InputSystem.GetKeyHold(InputKeys.RightControl)) && InputSystem.GetKeyPress(InputKeys.D1))
 				{
 					forceGoToNextScene = true;
-                    confettiTime = true;
-                }
+					confettiTime = true;
+				}
 			}
 			else if (currentSceneName == "Level_1")
 			{
 				if ((InputSystem.GetKeyHold(InputKeys.LeftControl) || InputSystem.GetKeyHold(InputKeys.RightControl)) && InputSystem.GetKeyPress(InputKeys.D1))
 				{
 					forceGoToNextScene = true;
-                    confettiTime = true;
-                }
+					confettiTime = true;
+				}
 
 				if ((InputSystem.GetKeyHold(InputKeys.LeftControl) || InputSystem.GetKeyHold(InputKeys.RightControl)) && InputSystem.GetKeyPress(InputKeys.D2))
 				{
 					MoleyController moley = ECSManager.FindEntityByName("Moley").GetComponent<MoleyController>();
 					//first one is to rolling obj section, second one is to last platforming section, third one is all the way to the last section
-					//moley.GetComponent<Transform>().Position = new GlmSharp.vec3(180, 50, -330);
-					moley.GetComponent<Transform>().Position = new GlmSharp.vec3(602.175f, 107, -189.596f);
+					//moley.GetComponent<Transform>().Position = new vec3(180, 50, -330);
+					moley.GetComponent<Transform>().Position = new vec3(602.175f, 107, -189.596f);
 					//moley.GetComponent<Transform>().Position = new vec3(970, 108, -193);
 
 					HoleyController holey = ECSManager.FindEntityByName("Holey").GetComponent<HoleyController>();
-					//holey.GetComponent<Transform>().Position = new GlmSharp.vec3(180, 50, -310);
-					holey.GetComponent<Transform>().Position = new GlmSharp.vec3(602.175f, 107, -174.596f);
+					//holey.GetComponent<Transform>().Position = new vec3(180, 50, -310);
+					holey.GetComponent<Transform>().Position = new vec3(602.175f, 107, -174.596f);
 					//holey.GetComponent<Transform>().Position = new vec3(970, 108, -167);
 				}
 
 				//if ((InputSystem.GetKeyHold(InputKeys.LeftControl) || InputSystem.GetKeyHold(InputKeys.RightControl)) && InputSystem.GetKeyPress(InputKeys.D2))
 				//{
 				//	MoleyController moley = ECSManager.FindEntityByName("Moley").GetComponent<MoleyController>();
-				//	moley.GetComponent<Transform>().Position = new GlmSharp.vec3(600, 120, -170);
+				//	moley.GetComponent<Transform>().Position = new vec3(600, 120, -170);
 
 				//	HoleyController holey = ECSManager.FindEntityByName("Holey").GetComponent<HoleyController>();
-				//	holey.GetComponent<Transform>().Position = new GlmSharp.vec3(600, 120, -150);
+				//	holey.GetComponent<Transform>().Position = new vec3(600, 120, -150);
 				//}
 			}
 			else if (currentSceneName == "Level_2")
@@ -259,22 +266,22 @@ namespace TRE
 				if ((InputSystem.GetKeyHold(InputKeys.LeftControl) || InputSystem.GetKeyHold(InputKeys.RightControl)) && InputSystem.GetKeyPress(InputKeys.D1))
 				{
 					forceGoToNextScene = true;
-                    confettiTime = true;
-                }
+					confettiTime = true;
+				}
 
 				if ((InputSystem.GetKeyHold(InputKeys.LeftControl) || InputSystem.GetKeyHold(InputKeys.RightControl)) && InputSystem.GetKeyPress(InputKeys.D2))
 				{
 					MoleyController moley = ECSManager.FindEntityByName("Moley").GetComponent<MoleyController>();
-					//moley.GetComponent<Transform>().Position = new GlmSharp.vec3(64, 30, -174);
-					//moley.GetComponent<Transform>().Position = new GlmSharp.vec3(293, 30, -138);
-					//moley.GetComponent<Transform>().Position = new GlmSharp.vec3(406, 19, -430);
-					moley.GetComponent<Transform>().Position = new vec3(610, 19, -430);
+					//moley.GetComponent<Transform>().Position = new vec3(64, 30, -174);
+					moley.GetComponent<Transform>().Position = new vec3(293, 30, -138);
+					//moley.GetComponent<Transform>().Position = new vec3(406, 19, -430);
+					//moley.GetComponent<Transform>().Position = new vec3(610, 19, -430);
 
 					HoleyController holey = ECSManager.FindEntityByName("Holey").GetComponent<HoleyController>();
-					//holey.GetComponent<Transform>().Position = new GlmSharp.vec3(77, 30, -174);
-					//holey.GetComponent<Transform>().Position = new GlmSharp.vec3(293, 30, -120);
-					//holey.GetComponent<Transform>().Position = new GlmSharp.vec3(408, 19, -417);
-					holey.GetComponent<Transform>().Position = new vec3(610, 19, -417);
+					//holey.GetComponent<Transform>().Position = new vec3(77, 30, -174);
+					holey.GetComponent<Transform>().Position = new vec3(293, 30, -120);
+					//holey.GetComponent<Transform>().Position = new vec3(408, 19, -417);
+					//holey.GetComponent<Transform>().Position = new vec3(610, 19, -417);
 				}
 			}
 
@@ -287,15 +294,15 @@ namespace TRE
 			if ((InputSystem.GetKeyHold(InputKeys.LeftControl) || InputSystem.GetKeyHold(InputKeys.RightControl)) && InputSystem.GetKeyRelease(InputKeys.D4))
 			{
 				creativeCheat = !creativeCheat;
-                triggerCheats = true;
+				triggerCheats = true;
 			}
 
-            if (triggerCheats)
-            {
-                KeepInv(keepinvCheat);
-                CreativeMode(creativeCheat);
-                triggerCheats = false;
-            }
+			if (triggerCheats)
+			{
+				KeepInv(keepinvCheat);
+				CreativeMode(creativeCheat);
+				triggerCheats = false;
+			}
 
 
 
@@ -321,10 +328,10 @@ namespace TRE
 				Entity holeyStrawberry = ECSManager.Instantiate(strawberryCheat);
 				holeyStrawberry.GetComponent<Transform>().Position = newHoleyPos;
 			}
-            #endregion
-            //Debug.Log(CameraSystem.GetMainCameraPosition().x.ToString() + " Y: " + CameraSystem.GetMainCameraPosition().y.ToString() + "Z: " + CameraSystem.GetMainCameraPosition().z.ToString());
-            // Late Start to ensure transform for stars arent screwed by parenting
-            if (lateStart < 2) ++lateStart;
+			#endregion
+			//Debug.Log(CameraSystem.GetMainCameraPosition().x.ToString() + " Y: " + CameraSystem.GetMainCameraPosition().y.ToString() + "Z: " + CameraSystem.GetMainCameraPosition().z.ToString());
+			// Late Start to ensure transform for stars arent screwed by parenting
+			if (lateStart < 2) ++lateStart;
 			if (lateStart == 2 && ECSManager.IsValidEntity(StarsCollected.ID) && ECSManager.IsValidEntity(Stars1.ID) && ECSManager.IsValidEntity(Stars2.ID) && ECSManager.IsValidEntity(Stars3.ID))
 			{
 				DetermineStarsDisplay(currentSceneName);
@@ -347,6 +354,9 @@ namespace TRE
 				{
 					int currentStars = IncrementStars(currentSceneName);
 					triggerStars.RemoveAt(i);
+					// Lock Holey and Moley for a few seconds based on HITWcooldowntimer
+					HoleyController.uncontrollableTimer = HITWcooldowntimer;
+					MoleyController.uncontrollableTimer = HITWcooldowntimer;
 					if (StarEmerge != null && currentStars <= StarParticlePositions.Count)
 					{
 						StarParticle.GetComponent<Particle>().IsActive = true;
@@ -364,35 +374,41 @@ namespace TRE
 						StarParticle.GetComponent<Transform>().Position = CameraSystem.GetMainCameraPosition();
 						StarParticle.GetComponent<Transform>().Position += CameraSystem.GetMainCameraForwardVec().Normalized * 55f;
 						StarParticle.GetComponent<Transform>().Position = new vec3(StarParticle.GetComponent<Transform>().Position.x,
-																				   StarParticle.GetComponent<Transform>().Position.y - 10f, 
+																				   StarParticle.GetComponent<Transform>().Position.y - 10f,
 																				   StarParticle.GetComponent<Transform>().Position.z);
 					}
 				}
 			}
 
-            if (PhysicsSystem.IsTriggerStay(Holey.ID, ConfettiTrigger.ID) && PhysicsSystem.IsTriggerStay(Moley.ID, ConfettiTrigger.ID))
+			if (PhysicsSystem.IsTriggerStay(Holey.ID, ConfettiTrigger.ID) && PhysicsSystem.IsTriggerStay(Moley.ID, ConfettiTrigger.ID))
 			{
 				confettiTime = true;
 			}
 
-            if (confettiTime)
+			if (confettiTime)
 			{
 				mConfettiTimeDurian -= Time.GetDeltaTime();
 				if (mConfettiTimeDurian <= 0)
 				{
 					confettiTime = false;
-                    ConfettiParticleLeft.GetComponent<Particle>().IsActive = false;
-                    ConfettiParticleRight.GetComponent<Particle>().IsActive = false;
-                }
+					ConfettiParticleLeft.GetComponent<Particle>().IsActive = false;
+					ConfettiParticleRight.GetComponent<Particle>().IsActive = false;
+				}
 				else
 				{
 					if (!mConfettispawned)
 					{
 						ConfettiParticleLeft.GetComponent<Particle>().IsActive = true;
 						ConfettiParticleRight.GetComponent<Particle>().IsActive = true;
+
+						if (ECSManager.IsValidEntity(endCheerSFX))
+						{
+							AudioSystem.Play(endCheerSFX);
+						}
+
 						mConfettispawned = true;
 					}
-                }
+				}
 			}
 
 			#region Stars
@@ -482,14 +498,14 @@ namespace TRE
 			{
 				++numStars;
 				PersistentSystem.SetValue("TotalStarsObtained", numStars.ToString());
-				Debug.Log("Stars " + PersistentSystem.GetValue("TotalStarsObtained"));
+				//Debug.Log("Stars " + PersistentSystem.GetValue("TotalStarsObtained"));
 			}
 
 			if (int.TryParse(PersistentSystem.GetValue(mapName + "StarsObtained"), out int mapStars))
 			{
 				++mapStars;
 				PersistentSystem.SetValue(mapName + "StarsObtained", mapStars.ToString());
-				Debug.Log(mapName + " Stars " + PersistentSystem.GetValue(mapName + "StarsObtained"));
+				//Debug.Log(mapName + " Stars " + PersistentSystem.GetValue(mapName + "StarsObtained"));
 				return mapStars;
 			}
 
@@ -512,36 +528,36 @@ namespace TRE
 		}
 
 
-        public void KeepInv(bool trigger)
-        {
-            Entity moley = ECSManager.FindEntityByName("Moley");
-            Entity holey = ECSManager.FindEntityByName("Holey");
+		public void KeepInv(bool trigger)
+		{
+			Entity moley = ECSManager.FindEntityByName("Moley");
+			Entity holey = ECSManager.FindEntityByName("Holey");
 
-            if (ECSManager.IsValidEntity(moley.ID))
-            {
-                moley.GetComponent<MoleyController>().keepInventory = trigger;
-            }
-            if (ECSManager.IsValidEntity(holey.ID))
-            {
-                holey.GetComponent<HoleyController>().keepInventory = trigger;
-                Debug.Log("KEEPINVENTORY MODE: " + holey.GetComponent<HoleyController>().keepInventory);
-            }
-        }
+			if (ECSManager.IsValidEntity(moley.ID))
+			{
+				moley.GetComponent<MoleyController>().keepInventory = trigger;
+			}
+			if (ECSManager.IsValidEntity(holey.ID))
+			{
+				holey.GetComponent<HoleyController>().keepInventory = trigger;
+				//Debug.Log("KEEPINVENTORY MODE: " + holey.GetComponent<HoleyController>().keepInventory);
+			}
+		}
 
-        public void CreativeMode(bool trigger)
-        {
-            Entity moley = ECSManager.FindEntityByName("Moley");
-            Entity holey = ECSManager.FindEntityByName("Holey");
+		public void CreativeMode(bool trigger)
+		{
+			Entity moley = ECSManager.FindEntityByName("Moley");
+			Entity holey = ECSManager.FindEntityByName("Holey");
 
-            if (ECSManager.IsValidEntity(moley.ID))
-            {
-                moley.GetComponent<MoleyController>().creativeMode = trigger;
-            }
-            if (ECSManager.IsValidEntity(holey.ID))
-            {
-                holey.GetComponent<HoleyController>().creativeMode = trigger;
-                Debug.Log("CREATIVE MODE: " + holey.GetComponent<HoleyController>().creativeMode);
-            }
-        }
+			if (ECSManager.IsValidEntity(moley.ID))
+			{
+				moley.GetComponent<MoleyController>().creativeMode = trigger;
+			}
+			if (ECSManager.IsValidEntity(holey.ID))
+			{
+				holey.GetComponent<HoleyController>().creativeMode = trigger;
+				//Debug.Log("CREATIVE MODE: " + holey.GetComponent<HoleyController>().creativeMode);
+			}
+		}
 	}
 }

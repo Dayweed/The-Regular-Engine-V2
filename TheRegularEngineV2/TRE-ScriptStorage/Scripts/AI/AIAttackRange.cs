@@ -16,23 +16,23 @@ namespace TRE
 
 		public void Update()
 		{
-			
+
 		}
 
 		private void OnTriggerEnter(/*Collider*/System.UInt64 otherID)
 		{
-            mTarget = new Entity(otherID);
-        }
+			mTarget = new Entity(otherID);
+		}
 
 		private void OnTriggerStay(/*Collider*/System.UInt64 otherID)
-        {
-            mTarget = new Entity(otherID);
-        }
+		{
+			mTarget = new Entity(otherID);
+		}
 
 		private void OnTriggerExit(/*Collider*/System.UInt64 otherID)
 		{
 			if (mTarget.ID == otherID) mTarget = null;
 
-        }
+		}
 	}
 }

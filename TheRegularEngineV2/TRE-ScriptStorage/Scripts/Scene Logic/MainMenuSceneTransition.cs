@@ -14,8 +14,8 @@ namespace TRE
 		public bool ControllerAPressed;
 		public bool ControllerBPressed;
 
-        public bool ControllerConnected;
-        private Entity StartText;
+		public bool ControllerConnected;
+		private Entity StartText;
 		private bool changeUI = false;
 
 		public void Start()
@@ -27,48 +27,48 @@ namespace TRE
 			ControllerAPressed = false;
 			ControllerBPressed = false;
 
-            StartText = ECSManager.FindEntityByName("Start_Text");
+			StartText = ECSManager.FindEntityByName("Start_Text");
 
-            if (IS.GetControllerConnected(0) || IS.GetControllerConnected(1))
-            {
-                ControllerConnected = true;
+			if (IS.GetControllerConnected(0) || IS.GetControllerConnected(1))
+			{
+				ControllerConnected = true;
 				// change the texture for the ui display
 				StartText.GetComponent<SpriteRenderer>().Texture = "ui-start-controller.png";
 
-            }
-            else
-            {
-                ControllerConnected = false;
-            }
+			}
+			else
+			{
+				ControllerConnected = false;
+			}
 		}
 
 		public void Update()
 		{
 
 			// check for controller hotplug
-            if ((IS.GetControllerConnected(0) || IS.GetControllerConnected(1)) && changeUI == false)
-            {
-                ControllerConnected = true;
+			if ((IS.GetControllerConnected(0) || IS.GetControllerConnected(1)) && changeUI == false)
+			{
+				ControllerConnected = true;
 				changeUI = true;
-            }
-            else if((!IS.GetControllerConnected(0) || !IS.GetControllerConnected(1)) && changeUI == false)
-            {
-                ControllerConnected = false;
-                changeUI = true;
-            }
+			}
+			else if ((!IS.GetControllerConnected(0) || !IS.GetControllerConnected(1)) && changeUI == false)
+			{
+				ControllerConnected = false;
+				changeUI = true;
+			}
 
-            if (changeUI)
-            {
-                if (ControllerConnected)
-                {
-                    StartText.GetComponent<SpriteRenderer>().Texture = "ui-start-controller.png";
-                }
-                else
-                {
-                    StartText.GetComponent<SpriteRenderer>().Texture = "ui-start.png";
-                }
-                changeUI = false;
-            }
+			if (changeUI)
+			{
+				if (ControllerConnected)
+				{
+					StartText.GetComponent<SpriteRenderer>().Texture = "ui-start-controller.png";
+				}
+				else
+				{
+					StartText.GetComponent<SpriteRenderer>().Texture = "ui-start.png";
+				}
+				changeUI = false;
+			}
 
 
 			// Close Game
@@ -94,15 +94,15 @@ namespace TRE
 			if (IS.GetControllerButtonTriggered(0, IS.Button.A) || IS.GetControllerButtonTriggered(1, IS.Button.A))
 			{
 				ControllerAPressed = true;
-                if (ECSManager.IsValidEntity(13376208322872696703))
-                    AS.Play(13376208322872696703);
+				if (ECSManager.IsValidEntity(13376208322872696703))
+					AS.Play(13376208322872696703);
 			}
-            if (IS.GetControllerButtonTriggered(0, IS.Button.B) || IS.GetControllerButtonTriggered(1, IS.Button.B))
-            {
-                ControllerBPressed = true;
-                if (ECSManager.IsValidEntity(13376208322872696703))
-                    AS.Play(13376208322872696703);
-            }
+			if (IS.GetControllerButtonTriggered(0, IS.Button.B) || IS.GetControllerButtonTriggered(1, IS.Button.B))
+			{
+				ControllerBPressed = true;
+				if (ECSManager.IsValidEntity(13376208322872696703))
+					AS.Play(13376208322872696703);
+			}
 
 			if ((spacePressed && enterPressed) || (ControllerAPressed && ControllerBPressed))
 			{

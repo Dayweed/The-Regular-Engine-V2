@@ -51,15 +51,16 @@ namespace TRE
 		private bool isControllerConnected = false;
 		private bool lastControllerConnected = false;
 		private bool changeUI = false;
+		public float uncontrollableTimer = 0f;
 		private Entity CharacterUI;
 
-        public int ControllerPreset = 0;
-        public int KeyboardPreset = 0;
+		public int ControllerPreset = 0;
+		public int KeyboardPreset = 0;
 
 		// the controls/keys that THIS player (Moley) will use
 		#region Player Controls
-        InputKeys playerUpKey = InputKeys.W;
-        InputKeys playerDownKey = InputKeys.S;
+		InputKeys playerUpKey = InputKeys.W;
+		InputKeys playerDownKey = InputKeys.S;
 		InputKeys playerLeftKey = InputKeys.A;
 		InputKeys playerRightKey = InputKeys.D;
 		InputKeys playerJumpKey = InputKeys.Space;
@@ -166,7 +167,7 @@ namespace TRE
 
 		//these variables are enclusive to Moley
 		private Entity UIPopup2;
-		private bool IsActivated = false;
+		public bool IsActivated = false;
 		private bool HasBeenTriggeredBefore = false;
 
 		//For camera controller
@@ -193,12 +194,12 @@ namespace TRE
 		private const string strawberryMaterial = "Moley_Strawberry.material";
 		private const string strawberryMesh = "Moley_Strawberry.fbx";
 
-        //VFX
-        private Entity mImpactedVFX;
-        private float mImpactedVFXTimer = 1f;
-        private bool mIsImpacted = false;
+		//VFX
+		private Entity mImpactedVFX;
+		private float mImpactedVFXTimer = 1f;
+		private bool mIsImpacted = false;
 
-        public void Start()
+		public void Start()
 		{
 			#region UI Variables
 			MyPauseMenu = ECSManager.FindEntityByName("PauseMenu").GetComponent<PauseMenu>();
@@ -207,10 +208,10 @@ namespace TRE
 			MyPowerManager.MyPowerUpUI = MyPowerUpUI;
 			MyPowerUpUI.UpdateUI(MyPowerManager.powerUps);
 			CharacterUI = ECSManager.FindEntityByName("LeftCharacter_HUD");
-            #endregion
+			#endregion
 
-            mainCamera = ECSManager.FindEntityByName("Main Camera");
-            UIPopup2 = ECSManager.FindEntityByName("PopupUI2");
+			mainCamera = ECSManager.FindEntityByName("Main Camera");
+			UIPopup2 = ECSManager.FindEntityByName("PopupUI2");
 			IsActivated = false;
 			HasBeenTriggeredBefore = false;
 
@@ -262,34 +263,35 @@ namespace TRE
 			GetComponent<MeshRenderer>().AnimMaterial = defaultAnimationMaterial;
 
 			// Keyboard Persistent
-            // Presistent Controls
-            if (int.TryParse(PRS.GetValue("MoleyKB"), out int result))
-            {
-                KeyboardPreset = result;
-                SetKeyboardPreset(result);
-            }
-            else
-            {
+			// Presistent Controls
+			if (int.TryParse(PRS.GetValue("MoleyKB"), out int result))
+			{
+				KeyboardPreset = result;
+				SetKeyboardPreset(result);
+			}
+			else
+			{
 				//write the default value to the file
 				PRS.SetValue("MoleyKB", "0");
-            }
+			}
 
-            if (int.TryParse(PRS.GetValue("MoleyController"), out result))
-            {
-                ControllerPreset = result;
-                SetControllerPreset(result);
-            }
-            else
-            {
+			if (int.TryParse(PRS.GetValue("MoleyController"), out result))
+			{
+				ControllerPreset = result;
+				SetControllerPreset(result);
+			}
+			else
+			{
 				//write the default value to the file
 				PRS.SetValue("MoleyController", "0");
-            }
+			}
 
-            mImpactedVFX = ECSManager.FindEntityByName("ImpactedVFXMoley");
-        }
+			mImpactedVFX = ECSManager.FindEntityByName("ImpactedVFXMoley");
+		}
 
 		public void Update()
 		{
+			#region UI
 			// check if controller connected
 			isControllerConnected = IS.GetControllerConnected(ControllerNumber);
 			if (lastControllerConnected != isControllerConnected)
@@ -309,7 +311,7 @@ namespace TRE
 				changeUI = false;
 				CharacterUI.GetComponent<SpriteRenderer>().Texture = "CharacterUI_Right.png";
 			}
-
+			#endregion
 
 			CheckControllability();
 
@@ -385,27 +387,27 @@ namespace TRE
 				}
 			}
 
-            if (mIsImpacted)
-            {
-                // Always look at the main camera
-                if (mainCamera != null)
-                {
-                    // Rotate Character to look at target
-                    vec2 rotAxis = MathF.GetLookAtAxis(mImpactedVFX.transform.Position, mainCamera.transform.Position);
-                    mImpactedVFX.transform.Rotation = new vec3(rotAxis.x, rotAxis.y, 0);
-                }
+			if (mIsImpacted)
+			{
+				// Always look at the main camera
+				if (mainCamera != null)
+				{
+					// Rotate Character to look at target
+					vec2 rotAxis = MathF.GetLookAtAxis(mImpactedVFX.transform.Position, mainCamera.transform.Position);
+					mImpactedVFX.transform.Rotation = new vec3(rotAxis.x, rotAxis.y, 0);
+				}
 
-                mImpactedVFXTimer -= Time.GetDeltaTime();
-                if (mImpactedVFXTimer < 0)
-                {
-                    mIsImpacted = false;
-                    mImpactedVFXTimer = 1f;
-                    SpriteSystem.SetSprite3DVisibility(mImpactedVFX.ID, false);
-                }
-            }
+				mImpactedVFXTimer -= Time.GetDeltaTime();
+				if (mImpactedVFXTimer < 0)
+				{
+					mIsImpacted = false;
+					mImpactedVFXTimer = 1f;
+					SpriteSystem.SetSprite3DVisibility(mImpactedVFX.ID, false);
+				}
+			}
 
-            #region UI Popup Region
-            if (!HasBeenTriggeredBefore)
+			#region UI Popup Region
+			if (!HasBeenTriggeredBefore)
 			{
 				if (IsActivated)
 				{
@@ -426,33 +428,37 @@ namespace TRE
 			PS.AddForce(this.ID, JumpHeight, ForceMode.VelocityChange);
 		}
 
-        private void SetImpactedVFX()
-        {
-            vec3 HoleyPos = new vec3(this.GetComponent<Transform>().Position);
-            HoleyPos += new vec3(0, 4, 0);
-            mImpactedVFX.GetComponent<Transform>().Position = HoleyPos;
-            SpriteSystem.SetSprite3DVisibility(mImpactedVFX.ID, true);
-            mIsImpacted = true;
-        }
+		private void SetImpactedVFX()
+		{
+			vec3 HoleyPos = new vec3(this.GetComponent<Transform>().Position);
+			HoleyPos += new vec3(0, 4, 0);
+			mImpactedVFX.GetComponent<Transform>().Position = HoleyPos;
+			SpriteSystem.SetSprite3DVisibility(mImpactedVFX.ID, true);
+			mIsImpacted = true;
+		}
 
-        public void OnCollisionStay(System.UInt64 otherID)
+		public void OnCollisionStay(System.UInt64 otherID)
 		{
 			//isGrounded = false;
 
 			Entity other = new Entity(otherID);
-            // Ignore damage for fallingObstacle under the following conditions
-            // Falling object is no longer falling
-            if (other.CompareTag("FallingObstacle") && other.GetComponent<FallingObj>().isGrounded) return;
-            // Moley is using the blueberry powerup
-            if (other.CompareTag("FallingObstacle") && mainBlueberry && isScaled) return;
+			// Ignore damage for fallingObstacle under the following conditions
+			// Falling object is no longer falling
+			if (other.CompareTag("FallingObstacle") && other.GetComponent<FallingObj>().isGrounded) return;
+			// Moley is using the blueberry powerup
+			if (other.CompareTag("FallingObstacle") && mainBlueberry && isScaled) return;
 
-            if (other.CompareTag("FallingObstacle") || other.CompareTag("RollingObstacle"))
-            {
-                // Make it loose one of it's powerups
-                TakeDamage();
+			if (other.CompareTag("FallingObstacle") || other.CompareTag("RollingObstacle"))
+			{
+				// Make it loose one of it's powerups
+				TakeDamage();
 				SetImpactedVFX();
 
 				if (other.name == "FallingRock" && ECSManager.IsValidEntity(hurtSFX))
+				{
+					AS.Play(hurtSFX);
+				}
+				else if (other.name == "RollingObstacle" && ECSManager.IsValidEntity(hurtSFX))
 				{
 					AS.Play(hurtSFX);
 				}
@@ -723,85 +729,85 @@ namespace TRE
 				{
 					if (ControllerPreset == 0)
 					{
-                        float x = IS.GetControllerStickX(ControllerNumber, false); // false for left thumbstick
-                        float y = IS.GetControllerStickY(ControllerNumber, false); // false for left thumbstick
+						float x = IS.GetControllerStickX(ControllerNumber, false); // false for left thumbstick
+						float y = IS.GetControllerStickY(ControllerNumber, false); // false for left thumbstick
 
-                        // calculate the direction vector
-                        isWalking = x != 0 || y != 0;
+						// calculate the direction vector
+						isWalking = x != 0 || y != 0;
 
-                        // calculate the angle of the direction vector
-                        if (isWalking)
-                        {
-                            lastPlayerDirection = (int)(Math.Atan2(y, x) * 180 / Math.PI - 90 + 360) % 360;
+						// calculate the angle of the direction vector
+						if (isWalking)
+						{
+							lastPlayerDirection = (int)(Math.Atan2(y, x) * 180 / Math.PI - 90 + 360) % 360;
 
-                            // handle the dirVec
-                            if (y > 0)
-                                dirVec += CS.GetMainCameraForwardVec();
-                            if (y < 0)
-                                dirVec -= CS.GetMainCameraForwardVec();
-                            if (x > 0)
-                                dirVec -= CS.GetMainCameraRightVec();
-                            if (x < 0)
-                                dirVec += CS.GetMainCameraRightVec();
-                        }
+							// handle the dirVec
+							if (y > 0)
+								dirVec += CS.GetMainCameraForwardVec();
+							if (y < 0)
+								dirVec -= CS.GetMainCameraForwardVec();
+							if (x > 0)
+								dirVec -= CS.GetMainCameraRightVec();
+							if (x < 0)
+								dirVec += CS.GetMainCameraRightVec();
+						}
 					}
-                    else
-                    {
-                        if (IS.GetControllerButtonPress(ControllerNumber, IS.Button.DPadUp))
-                        {
-                            dirVec += CS.GetMainCameraForwardVec();
-                            lastPlayerDirection = 0;
-                            isWalking = true;
-                        }
+					else
+					{
+						if (IS.GetControllerButtonPress(ControllerNumber, IS.Button.DPadUp))
+						{
+							dirVec += CS.GetMainCameraForwardVec();
+							lastPlayerDirection = 0;
+							isWalking = true;
+						}
 
-                        if (IS.GetControllerButtonPress(ControllerNumber, IS.Button.DPadDown))
-                        {
-                            dirVec -= CS.GetMainCameraForwardVec();
-                            lastPlayerDirection = 180;
-                            isWalking = true;
-                        }
+						if (IS.GetControllerButtonPress(ControllerNumber, IS.Button.DPadDown))
+						{
+							dirVec -= CS.GetMainCameraForwardVec();
+							lastPlayerDirection = 180;
+							isWalking = true;
+						}
 
-                        if (IS.GetControllerButtonPress(ControllerNumber, IS.Button.DPadLeft))
-                        {
-                            dirVec += CS.GetMainCameraRightVec();
-                            lastPlayerDirection = 90;
-                            isWalking = true;
-                        }
+						if (IS.GetControllerButtonPress(ControllerNumber, IS.Button.DPadLeft))
+						{
+							dirVec += CS.GetMainCameraRightVec();
+							lastPlayerDirection = 90;
+							isWalking = true;
+						}
 
-                        if (IS.GetControllerButtonPress(ControllerNumber, IS.Button.DPadRight))
-                        {
-                            dirVec -= CS.GetMainCameraRightVec();
-                            lastPlayerDirection = 270;
-                            isWalking = true;
-                        }
+						if (IS.GetControllerButtonPress(ControllerNumber, IS.Button.DPadRight))
+						{
+							dirVec -= CS.GetMainCameraRightVec();
+							lastPlayerDirection = 270;
+							isWalking = true;
+						}
 
-                        if (IS.GetControllerButtonPress(ControllerNumber, IS.Button.DPadUp))
-                        {
-                            if (IS.GetControllerButtonPress(ControllerNumber, IS.Button.DPadRight))
-                                lastPlayerDirection = 315;
+						if (IS.GetControllerButtonPress(ControllerNumber, IS.Button.DPadUp))
+						{
+							if (IS.GetControllerButtonPress(ControllerNumber, IS.Button.DPadRight))
+								lastPlayerDirection = 315;
 
-                            if (IS.GetControllerButtonPress(ControllerNumber, IS.Button.DPadLeft))
-                                lastPlayerDirection = 45;
-                        }
+							if (IS.GetControllerButtonPress(ControllerNumber, IS.Button.DPadLeft))
+								lastPlayerDirection = 45;
+						}
 
-                        if (IS.GetControllerButtonPress(ControllerNumber, IS.Button.DPadDown))
-                        {
-                            if (IS.GetControllerButtonPress(ControllerNumber, IS.Button.DPadRight))
-                                lastPlayerDirection = 225;
+						if (IS.GetControllerButtonPress(ControllerNumber, IS.Button.DPadDown))
+						{
+							if (IS.GetControllerButtonPress(ControllerNumber, IS.Button.DPadRight))
+								lastPlayerDirection = 225;
 
-                            if (IS.GetControllerButtonPress(ControllerNumber, IS.Button.DPadLeft))
-                                lastPlayerDirection = 135;
-                        }
+							if (IS.GetControllerButtonPress(ControllerNumber, IS.Button.DPadLeft))
+								lastPlayerDirection = 135;
+						}
 
-                        if (!IS.GetControllerButtonPress(ControllerNumber, IS.Button.DPadUp) &&
-                            !IS.GetControllerButtonPress(ControllerNumber, IS.Button.DPadDown) &&
-                            !IS.GetControllerButtonPress(ControllerNumber, IS.Button.DPadLeft) &&
-                            !IS.GetControllerButtonPress(ControllerNumber, IS.Button.DPadRight))
-                        {
-                            isWalking = false;
-                        }
+						if (!IS.GetControllerButtonPress(ControllerNumber, IS.Button.DPadUp) &&
+							!IS.GetControllerButtonPress(ControllerNumber, IS.Button.DPadDown) &&
+							!IS.GetControllerButtonPress(ControllerNumber, IS.Button.DPadLeft) &&
+							!IS.GetControllerButtonPress(ControllerNumber, IS.Button.DPadRight))
+						{
+							isWalking = false;
+						}
 
-                    }
+					}
 
 					//When the space bar is released, the player will stop mid jump
 					if (jumpCancelled && isJumping && currVelocity.y > 0)
@@ -995,7 +1001,7 @@ namespace TRE
 			}
 
 			// Check if can trigger ability
-			if (IS.GetKeyPress(playerAbilityKey))
+			if (isControllable && IS.GetKeyPress(playerAbilityKey))
 			{
 				if (mainBlueberry || mainStrawberry)
 				{
@@ -1014,7 +1020,7 @@ namespace TRE
 				}
 			}
 
-			if (IS.GetControllerButtonTriggered(ControllerNumber, swap))
+			if (isControllable && IS.GetControllerButtonTriggered(ControllerNumber, ability))
 			{
 				if (mainBlueberry || mainStrawberry)
 				{
@@ -1124,28 +1130,28 @@ namespace TRE
 				particleVel = vec3.Zero;
 			}
 			//pos.y += 1f;
-			if(isScaled == false || (!mainBlueberry && !mainStrawberry))
+			if (isScaled == false || (!mainBlueberry && !mainStrawberry))
 			{
-                pos.x += particleVel.x * 2;
-                pos.y += currOffset - 3;
-                pos.z += particleVel.z * 2;
+				pos.x += particleVel.x * 2;
+				pos.y += currOffset - 3;
+				pos.z += particleVel.z * 2;
 				PS3D.SetParticleSize(moley_dust.ID, 0.5f);
-            }
-			else if(mainBlueberry)
+			}
+			else if (mainBlueberry)
 			{
-                pos.x += particleVel.x * 10;
-                pos.y += currOffset - 3;
-                pos.z += particleVel.z * 10;
+				pos.x += particleVel.x * 10;
+				pos.y += currOffset - 3;
+				pos.z += particleVel.z * 10;
 				PS3D.SetParticleSize(moley_dust.ID, 1.5f);
-            }
-			else if(mainStrawberry)
+			}
+			else if (mainStrawberry)
 			{
-                pos.x += particleVel.x * 3;
-                pos.y += currOffset - 3;
-                pos.z += particleVel.z * 3;
+				pos.x += particleVel.x * 3;
+				pos.y += currOffset - 3;
+				pos.z += particleVel.z * 3;
 				PS3D.SetParticleSize(moley_dust.ID, 1.0f);
-            }
-			
+			}
+
 			moley_dust.GetComponent<Transform>().Position = pos;
 
 			PS3D.SetVelocity(moley_dust.ID, new vec3(particleVel.x, 0.10f, particleVel.z));
@@ -1180,6 +1186,8 @@ namespace TRE
 				moleyTransform.Scale = new vec3(moleyTransform.Scale.x, 0.01f, moleyTransform.Scale.z);
 			}
 			Invulnerability = true;
+
+			IsActivated = true;
 
 			// Commenting out for now until IsActivated is cfm not needed
 			//if (Invulnerability)
@@ -1267,20 +1275,24 @@ namespace TRE
 				confirmationPopUp = true;
 			}
 
-            // Camera panning at the start
-            bool cameraTransiting = false;
-            if (ECSManager.FindEntityByName("CameraManager") != null &&
-                (
-                (Scene.GetSceneName() == "Tutorial" && !ECSManager.FindEntityByName("CameraManager").GetComponent<TutorialCameraManager>().preTransitions.preTransitioned) ||
-                (Scene.GetSceneName() == "Level_1" && !ECSManager.FindEntityByName("CameraManager").GetComponent<Level_1CameraManager>().preTransitions.preTransitioned) ||
-                (Scene.GetSceneName() == "Level_2" && !ECSManager.FindEntityByName("CameraManager").GetComponent<Level_2CameraManager>().preTransitions.preTransitioned))
-                )
-            {
-                cameraTransiting = true;
-            }
+			// Camera panning at the start
+			bool cameraTransiting = false;
+			if (ECSManager.FindEntityByName("CameraManager") != null &&
+				(
+				(Scene.GetSceneName() == "Tutorial" && !ECSManager.FindEntityByName("CameraManager").GetComponent<TutorialCameraManager>().preTransitions.preTransitioned) ||
+				(Scene.GetSceneName() == "Level_1" && !ECSManager.FindEntityByName("CameraManager").GetComponent<Level_1CameraManager>().preTransitions.preTransitioned) ||
+				(Scene.GetSceneName() == "Level_2" && !ECSManager.FindEntityByName("CameraManager").GetComponent<Level_2CameraManager>().preTransitions.preTransitioned))
+				)
+			{
+				cameraTransiting = true;
+			}
 
-            // Logic to handle isControllable
-            if (Scene.IsTransiting() || cameraTransiting || confirmationPopUp)
+			// Reduce uncontrollable timer if > 0
+			if (uncontrollableTimer > 0f) uncontrollableTimer -= Time.deltaTime;
+			if (uncontrollableTimer < 0f) uncontrollableTimer = 0f;
+
+			// Logic to handle isControllable
+			if (Scene.IsTransiting() || cameraTransiting || confirmationPopUp || uncontrollableTimer > 0f)
 			{
 				isControllable = false;
 			}
@@ -1304,31 +1316,31 @@ namespace TRE
 			return newVolume;
 		}
 
-        public void SetControllerPreset(int preset)
-        {
-            switch (preset)
-            {
-                case 0 :
-                    jump = IS.Button.A;
-                    swap = IS.Button.B;
-                    ability = IS.Button.X;
-                    drop = IS.Button.Y;
-                    break;
-                case 1 :
-                    jump = IS.Button.B;
-                    swap = IS.Button.A;
-                    ability = IS.Button.Y;
-                    drop = IS.Button.X;
-                    break;
-            }
-        }
+		public void SetControllerPreset(int preset)
+		{
+			switch (preset)
+			{
+				case 0:
+					jump = IS.Button.A;
+					swap = IS.Button.B;
+					ability = IS.Button.X;
+					drop = IS.Button.Y;
+					break;
+				case 1:
+					jump = IS.Button.B;
+					swap = IS.Button.A;
+					ability = IS.Button.Y;
+					drop = IS.Button.X;
+					break;
+			}
+		}
 
-        public void SetKeyboardPreset(int preset)
-        {
-            switch (preset)
-            {
-				case 0 :
-                    playerUpKey = InputKeys.W;
+		public void SetKeyboardPreset(int preset)
+		{
+			switch (preset)
+			{
+				case 0:
+					playerUpKey = InputKeys.W;
 					playerDownKey = InputKeys.S;
 					playerLeftKey = InputKeys.A;
 					playerRightKey = InputKeys.D;
@@ -1337,8 +1349,8 @@ namespace TRE
 					playerAbilityKey = InputKeys.E;
 					playerDropKey = InputKeys.LeftShift;
 					break;
-				case 1 :
-                    playerUpKey = InputKeys.I;
+				case 1:
+					playerUpKey = InputKeys.I;
 					playerDownKey = InputKeys.K;
 					playerLeftKey = InputKeys.J;
 					playerRightKey = InputKeys.L;
@@ -1346,8 +1358,8 @@ namespace TRE
 					playerSwapKey = InputKeys.Backslash;
 					playerAbilityKey = InputKeys.Backspace;
 					playerDropKey = InputKeys.RightShift;
-                    break;
-                case 2 :
+					break;
+				case 2:
 					playerUpKey = InputKeys.Up;
 					playerDownKey = InputKeys.Down;
 					playerLeftKey = InputKeys.Left;
@@ -1356,8 +1368,8 @@ namespace TRE
 					playerSwapKey = InputKeys.Comma;
 					playerAbilityKey = InputKeys.Period;
 					playerDropKey = InputKeys.M;
-                    break;
-            }
-        }
-    }
+					break;
+			}
+		}
+	}
 }

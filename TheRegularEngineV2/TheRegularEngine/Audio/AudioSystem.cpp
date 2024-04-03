@@ -74,21 +74,22 @@ namespace TRE
 				source.m_Channel->setPitch(source.m_Pitch);
 				source.m_Channel->setPriority(source.m_Priority);
 
-				if (!source.m_Spatialize)
+				/*const float volume = source.m_Spatialize ? source.m_SpatialVolume : source.m_Volume;
+
+				if (source.m_ChannelGroup == m_MusicChannelGroup)
 				{
-					if (source.m_ChannelGroup == m_MusicChannelGroup)
-					{
-						source.m_Channel->setVolume(source.m_Volume * m_BGMVolume * m_MasterVolume);
-					}
-					else if (source.m_ChannelGroup == m_SFXChannelGroup)
-					{
-						source.m_Channel->setVolume(source.m_Volume * m_SFXVolume * m_MasterVolume);
-					}
-					else
-					{
-						source.m_Channel->setVolume(source.m_Volume * m_MasterVolume);
-					}
+					source.m_Channel->setVolume(volume * m_BGMVolume * m_MasterVolume);
+					source.m_ChannelGroup->setVolume(volume * m_BGMVolume * m_MasterVolume);
 				}
+				else if (source.m_ChannelGroup == m_SFXChannelGroup)
+				{
+					source.m_Channel->setVolume(volume * m_SFXVolume * m_MasterVolume);
+					source.m_ChannelGroup->setVolume(volume * m_SFXVolume * m_MasterVolume);
+				}
+				else
+				{
+					source.m_Channel->setVolume(volume * m_MasterVolume);
+				}*/
 			}
 			else
 			{
@@ -487,9 +488,9 @@ namespace TRE
 				m_System->get3DListenerAttributes(0, &listenerPos, nullptr, nullptr, nullptr);
 				const float distance = sqrtf(powf(listenerPos.x - sourcePos.x, 2) + powf(listenerPos.y - sourcePos.y, 2) + powf(listenerPos.z - sourcePos.z, 2));
 
-				const float volume = Calculate3DVolume(distance, audiosource.m_MinDistance, audiosource.m_MaxDistance, audiosource.m_Volume);
+				audiosource.m_SpatialVolume = Calculate3DVolume(distance, audiosource.m_MinDistance, audiosource.m_MaxDistance, audiosource.m_Volume);
 
-				audiosource.m_Channel->setVolume(volume * m_MasterVolume);
+				audiosource.m_Channel->setVolume(audiosource.m_SpatialVolume * m_MasterVolume);
 
 				audiosource.m_goPosition = glmVec3ToFmodVector(sourceposition.m_Position);
 				audiosource.m_Channel->set3DMinMaxDistance(audiosource.m_MinDistance, audiosource.m_MaxDistance);

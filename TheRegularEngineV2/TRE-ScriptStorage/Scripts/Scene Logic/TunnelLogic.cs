@@ -130,6 +130,7 @@ namespace TRE
 				}
 				#endregion
 			}*/
+
 		}
 
 		public void OnTriggerEnter(System.UInt64 otherID)
@@ -162,6 +163,12 @@ namespace TRE
 				HoleyInside = false;
 				HoleyApprove = false;
 			}
+		}
+
+		/// <summary>Returns whether EXACTLY ONE mole has approved.</summary>
+		public bool MoleApproved()
+		{
+			return HoleyApprove ^ MoleyApprove;
 		}
 
 		public bool MolesApproved()

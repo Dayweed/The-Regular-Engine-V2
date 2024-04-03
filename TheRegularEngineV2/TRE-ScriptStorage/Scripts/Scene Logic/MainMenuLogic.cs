@@ -3,6 +3,7 @@ using GlmSharp;
 
 namespace TRE
 {
+	using AS = AudioSystem;
 	using IS = InputSystem;
 	using PS = PhysicsSystem;
 
@@ -12,19 +13,12 @@ namespace TRE
 		Entity Moley;
 		Entity Holey;
 
+		#region Tunnel Variables
 		Entity ToOptionSelect;
 		Entity ToLevelSelect;
 		Entity ToCreditsSelect;
 		Entity ToQuitSelect;
 
-		Entity QuitConfirmation;
-		Entity QuitConfirmationYes;
-		Entity QuitConfirmationNo;
-
-		Entity QuitYesNoPointer;
-
-		bool PopupQuitConfirmation = false;
-		bool CurrentButtonSelected = false;
 		bool selectedOption = false;
 		bool selectedLevel = false;
 		bool selectedCredits = false;
@@ -40,6 +34,24 @@ namespace TRE
 		bool selectedTutorial = false;
 		bool selectedLevel1 = false;
 		bool selectedLevel2 = false;
+
+		// Tunnel Materials
+		const string potMaterial = "Pot.material";
+		const string potOrangeMaterial = "Pot_Orange.material";
+		const string potGreenMaterial = "Pot_Green.material";
+
+		Entity[] tunnelList;
+		int[] tunnelPreviousMoleApprovalCount;
+		#endregion
+
+		Entity QuitConfirmation;
+		Entity QuitConfirmationYes;
+		Entity QuitConfirmationNo;
+
+		Entity QuitYesNoPointer;
+
+		bool PopupQuitConfirmation = false;
+		bool CurrentButtonSelected = false;
 
 		// Controller UI
 		bool controller1 = false;
@@ -72,6 +84,9 @@ namespace TRE
 		const float titleMoveSpeed = 10f;
 		const float titleOffset = 0.05f;
 
+		/// <summary>SFX for both players approving a tunnel</summary>
+		ulong HoleCheckSFX;
+
 		public void Start()
 		{
 			UIControls = ECSManager.FindEntityByName("Controls_UI");
@@ -80,15 +95,18 @@ namespace TRE
 			Moley = ECSManager.FindEntityByName("Moley");
 			Holey = ECSManager.FindEntityByName("Holey");
 
-			ToOptionSelect = ECSManager.FindEntityByName("ToOptionSelect");
-			ToLevelSelect = ECSManager.FindEntityByName("ToLevelSelect");
-			ToCreditsSelect = ECSManager.FindEntityByName("ToCreditsSelect");
-			ToQuitSelect = ECSManager.FindEntityByName("ToQuitSelect");
-
-			ToReturnSelect = ECSManager.FindEntityByName("ToReturnSelect");
-			ToTutorialSelect = ECSManager.FindEntityByName("ToTutorialSelect");
-			ToLevel1Select = ECSManager.FindEntityByName("ToLevel1Select");
-			ToLevel2Select = ECSManager.FindEntityByName("ToLevel2Select");
+			tunnelList = new Entity[]
+			{
+				ToOptionSelect = ECSManager.FindEntityByName("ToOptionSelect"),
+				ToLevelSelect = ECSManager.FindEntityByName("ToLevelSelect"),
+				ToCreditsSelect = ECSManager.FindEntityByName("ToCreditsSelect"),
+				ToQuitSelect = ECSManager.FindEntityByName("ToQuitSelect"),
+				ToReturnSelect = ECSManager.FindEntityByName("ToReturnSelect"),
+				ToTutorialSelect = ECSManager.FindEntityByName("ToTutorialSelect"),
+				ToLevel1Select = ECSManager.FindEntityByName("ToLevel1Select"),
+				ToLevel2Select = ECSManager.FindEntityByName("ToLevel2Select")
+			};
+			tunnelPreviousMoleApprovalCount = new int[tunnelList.Length];
 
 			QuitConfirmation = ECSManager.FindEntityByName("QuitConfirmationPopup");
 			QuitConfirmationYes = ECSManager.FindEntityByName("YesQuit");
@@ -113,6 +131,8 @@ namespace TRE
 				title.GetComponent<TextBounce>().Pause();
 
 			TitleStarsCollected.GetComponent<TextBounce>().Pause();
+
+			HoleCheckSFX = ECSManager.FindIDFromName("SFX_HoleCheck");
 
 			// Determine where to spawn the moles based on previous scene
 			string prevScene = PersistentSystem.GetValue("PrevScene");
@@ -292,7 +312,7 @@ namespace TRE
 			vec3 titleStarsCollectedPos = TitleStarsCollected.GetComponent<Transform>().Position;
 			if (ToTutorialSelect.GetComponent<TunnelLogic>().MolesInside() || ToLevel1Select.GetComponent<TunnelLogic>().MolesInside() || ToLevel2Select.GetComponent<TunnelLogic>().MolesInside())
 			{
-				titleStarsCollectedPos.y = displayYPos;
+				titleStarsCollectedPos.y = displayYPos + 170f;
 				// Determine which stars to display
 				DetermineStarsDisplay();
 			}
@@ -311,6 +331,25 @@ namespace TRE
 			}
 			#endregion
 
+			// Set correct material(color)(orange/normal) based on the CHANGE of # of moles approved.
+			for (int i = 0; i < tunnelList.Length; ++i)
+			{
+				TunnelLogic tunnel = tunnelList[i].GetComponent<TunnelLogic>();
+				int previousMoleApprovalCount = tunnelPreviousMoleApprovalCount[i];
+				int currentMoleApprovalCount = tunnel.MoleApproved() ? 1 : 0;
+
+				if (previousMoleApprovalCount == 0 && currentMoleApprovalCount == 1)
+				{
+					tunnel.GetComponent<MeshRenderer>().Material = potOrangeMaterial;
+					AS.Play(pauseMenu.ID);
+				}
+				else if (previousMoleApprovalCount == 1 && currentMoleApprovalCount == 0)
+					tunnel.GetComponent<MeshRenderer>().Material = potMaterial;
+
+				// store the number of moles approved for use in next Update() call
+				tunnelPreviousMoleApprovalCount[i] = currentMoleApprovalCount;
+			}
+
 			bool isAnythingSelected = selectedOption || selectedLevel || selectedCredits || selectedQuit ||
 				selectedReturn || selectedTutorial || selectedLevel1 || selectedLevel2;
 
@@ -322,48 +361,64 @@ namespace TRE
 					selectedOption = true;
 					JumpIntoHole();
 					ToOptionSelect.GetComponent<TunnelLogic>().ResetMoles();
+					ToOptionSelect.GetComponent<MeshRenderer>().Material = potGreenMaterial;
+					AS.Play(HoleCheckSFX);
 				}
 				else if (ToLevelSelect.GetComponent<TunnelLogic>().MolesApproved() && !selectedLevel)
 				{
 					selectedLevel = true;
 					JumpIntoHole();
 					ToLevelSelect.GetComponent<TunnelLogic>().ResetMoles();
+					ToLevelSelect.GetComponent<MeshRenderer>().Material = potGreenMaterial;
+					AS.Play(HoleCheckSFX);
 				}
 				else if (ToCreditsSelect.GetComponent<TunnelLogic>().MolesApproved() && !selectedCredits)
 				{
 					selectedCredits = true;
 					JumpIntoHole();
 					ToCreditsSelect.GetComponent<TunnelLogic>().ResetMoles();
+					ToCreditsSelect.GetComponent<MeshRenderer>().Material = potGreenMaterial;
+					AS.Play(HoleCheckSFX);
 				}
 				else if (ToQuitSelect.GetComponent<TunnelLogic>().MolesApproved() && !selectedQuit)
 				{
 					selectedQuit = true;
 					JumpIntoHole();
 					ToQuitSelect.GetComponent<TunnelLogic>().ResetMoles();
+					ToQuitSelect.GetComponent<MeshRenderer>().Material = potGreenMaterial;
+					AS.Play(HoleCheckSFX);
 				}
 				else if (ToReturnSelect.GetComponent<TunnelLogic>().MolesApproved() && !selectedReturn)
 				{
 					selectedReturn = true;
 					JumpIntoHole();
 					ToReturnSelect.GetComponent<TunnelLogic>().ResetMoles();
+					ToReturnSelect.GetComponent<MeshRenderer>().Material = potGreenMaterial;
+					AS.Play(HoleCheckSFX);
 				}
 				else if (ToTutorialSelect.GetComponent<TunnelLogic>().MolesApproved() && !selectedTutorial)
 				{
 					selectedTutorial = true;
 					JumpIntoHole();
 					ToTutorialSelect.GetComponent<TunnelLogic>().ResetMoles();
+					ToTutorialSelect.GetComponent<MeshRenderer>().Material = potGreenMaterial;
+					AS.Play(HoleCheckSFX);
 				}
 				else if (ToLevel1Select.GetComponent<TunnelLogic>().MolesApproved() && !selectedLevel1)
 				{
 					selectedLevel1 = true;
 					JumpIntoHole();
 					ToLevel1Select.GetComponent<TunnelLogic>().ResetMoles();
+					ToLevel1Select.GetComponent<MeshRenderer>().Material = potGreenMaterial;
+					AS.Play(HoleCheckSFX);
 				}
 				else if (ToLevel2Select.GetComponent<TunnelLogic>().MolesApproved() && !selectedLevel2)
 				{
 					selectedLevel2 = true;
 					JumpIntoHole();
 					ToLevel2Select.GetComponent<TunnelLogic>().ResetMoles();
+					ToLevel2Select.GetComponent<MeshRenderer>().Material = potGreenMaterial;
+					AS.Play(HoleCheckSFX);
 				}
 			}
 
@@ -402,6 +457,8 @@ namespace TRE
 					Holey.GetComponent<Transform>().Position = new vec3(teleportPos.x + 5, teleportPos.y + 15, teleportPos.z);
 
 					JumpOutHole();
+
+					ToLevelSelect.GetComponent<MeshRenderer>().Material = potMaterial; // set tunnel color back to normal
 				}
 				else if (selectedQuit)
 				{
@@ -411,6 +468,8 @@ namespace TRE
 					QuitConfirmationYes.GetComponent<SpriteRenderer>().isVisible = true;
 					QuitConfirmationNo.GetComponent<SpriteRenderer>().isVisible = true;
 					QuitYesNoPointer.GetComponent<SpriteRenderer>().isVisible = true;
+
+					ToQuitSelect.GetComponent<MeshRenderer>().Material = potMaterial; // set tunnel color back to normal
 				}
 				else if (selectedReturn)
 				{
@@ -422,6 +481,8 @@ namespace TRE
 					Holey.GetComponent<Transform>().Position = new vec3(teleportPos.x + 5, teleportPos.y + 25, teleportPos.z);
 
 					JumpOutHole();
+
+					ToReturnSelect.GetComponent<MeshRenderer>().Material = potMaterial; // set tunnel color back to normal
 				}
 				else if (selectedTutorial)
 				{
@@ -464,6 +525,7 @@ namespace TRE
 					Moley.GetComponent<Transform>().Position = new vec3(teleportPos.x - 5, teleportPos.y + 15, teleportPos.z);
 					Holey.GetComponent<Transform>().Position = new vec3(teleportPos.x + 5, teleportPos.y + 15, teleportPos.z);
 					JumpOutHole();
+					ToQuitSelect.GetComponent<MeshRenderer>().Material = potMaterial; // set tunnel color back to normal
 				}
 
 				if (IS.GetKeyPress(InputKeys.A))
@@ -497,6 +559,7 @@ namespace TRE
 					Moley.GetComponent<Transform>().Position = new vec3(teleportPos.x - 5, teleportPos.y + 15, teleportPos.z);
 					Holey.GetComponent<Transform>().Position = new vec3(teleportPos.x + 5, teleportPos.y + 15, teleportPos.z);
 					JumpOutHole();
+					ToOptionSelect.GetComponent<MeshRenderer>().Material = potMaterial; // set tunnel color back to normal
 				}
 			}
 

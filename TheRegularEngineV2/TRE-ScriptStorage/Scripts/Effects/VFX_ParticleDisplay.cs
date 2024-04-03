@@ -17,21 +17,21 @@ namespace TRE
 			mainCamera = ECSManager.FindEntityByName("Main Camera");
 
 			//Display();
-        }
+		}
 
 		public void Update()
 		{
-            // Always look at the main camera
+			// Always look at the main camera
 			if (mainCamera != null)
-            {
-                // Rotate Character to look at target
-                vec2 rotAxis = MathF.GetLookAtAxis(transform.Position, mainCamera.transform.Position);
-                transform.Rotation = new vec3(rotAxis.x, rotAxis.y, 0);
-            }
+			{
+				// Rotate Character to look at target
+				vec2 rotAxis = MathF.GetLookAtAxis(transform.Position, mainCamera.transform.Position);
+				transform.Rotation = new vec3(rotAxis.x, rotAxis.y, 0);
+			}
 
-            if (!displaying) return;
+			if (!displaying) return;
 
-            displayTimer -= Time.deltaTime;
+			displayTimer -= Time.deltaTime;
 			if (displayTimer > 0f) return;
 
 			displayTimer = displayDuration;
@@ -44,8 +44,8 @@ namespace TRE
 		public void Display()
 		{
 			displaying = true;
-            displayTimer = displayDuration;
-            SpriteSystem.SetSprite3DVisibility(ID, true);
-        }
+			displayTimer = displayDuration;
+			SpriteSystem.SetSprite3DVisibility(ID, true);
+		}
 	}
 }

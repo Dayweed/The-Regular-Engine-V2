@@ -1643,15 +1643,15 @@ namespace TRE
 		//Sprite 3D
 		public static void SetSprite3DVisibility(EntityID ID, bool isvisible)
 		{
-            Engine_SetSprite3DVisible(ID, isvisible);
-        }
+			Engine_SetSprite3DVisible(ID, isvisible);
+		}
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern static void Engine_SetSprite3DVisible(EntityID ID, bool isVisible);
-		
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		public extern static void Engine_SetSprite3DVisible(EntityID ID, bool isVisible);
+
 		//Sprite 2D
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		public extern static void Engine_SetVisible(EntityID ID, bool isVisible);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
@@ -1691,7 +1691,7 @@ namespace TRE
 
 		public static void SetGammaValue(float gamma)
 		{
-            Engine_SetGammaValue(gamma);
+			Engine_SetGammaValue(gamma);
 		}
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
@@ -1898,12 +1898,12 @@ namespace TRE
 
 	public class ParticleSystem3D
 	{
-        public static void SetParticleSize(EntityID ID, float size)
-        {
-            Engine_SetParticleSize3D(ID, size);
-        }
+		public static void SetParticleSize(EntityID ID, float size)
+		{
+			Engine_SetParticleSize3D(ID, size);
+		}
 
-        public static void SetActive(EntityID ID, bool isActive)
+		public static void SetActive(EntityID ID, bool isActive)
 		{
 			Engine_SetParticleEmitterActive3D(ID, isActive);
 		}
@@ -1949,9 +1949,9 @@ namespace TRE
 		}
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern static void Engine_SetParticleSize3D(EntityID ID, float size);
+		public extern static void Engine_SetParticleSize3D(EntityID ID, float size);
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		public extern static void Engine_SetParticleEmitterActive3D(EntityID ID, bool isVisible);
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
