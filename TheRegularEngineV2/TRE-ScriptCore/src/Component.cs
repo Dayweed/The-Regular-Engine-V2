@@ -614,6 +614,14 @@ namespace TRE
 			}
 		}
 
+		public float currentDelayTime
+		{
+			get
+			{
+				return DirectPathfindingSystem.Engine_GetPathfindingCurrentDelay(entity.ID);
+			}
+		}
+
 		public void Start()
 		{
 			DirectPathfindingSystem.Engine_StartPathfinding(entity.ID);

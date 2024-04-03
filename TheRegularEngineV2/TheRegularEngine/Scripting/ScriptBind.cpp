@@ -2559,6 +2559,18 @@ namespace TRE
 		}
 		return entity->GetComponent<DirectPathfinding>().m_DirectionChange;
 	}
+
+	static float Engine_GetPathfindingCurrentDelay(CSEntityID id)
+	{
+		Entity entity = VALIDATEENTITY(id);
+		if (!entity) return false;
+		if (!entity->HasComponent<DirectPathfinding>())
+		{
+			PUBLISHERROR("There is no DirectPathfinding in " + entity->GetName() + "!");
+			return false;
+		}
+		return entity->GetComponent<DirectPathfinding>().m_CurrentTime;
+	}
 #pragma endregion
 
 #pragma region PostProcessing
@@ -3135,6 +3147,7 @@ namespace TRE
 			mono_add_internal_call("TRE.DirectPathfindingSystem::Engine_ResetPathfinding", Engine_ResetPathfinding);
 			mono_add_internal_call("TRE.DirectPathfindingSystem::Engine_GetOldPositionPathfinding", Engine_GetOldPositionPathfinding);
 			mono_add_internal_call("TRE.DirectPathfindingSystem::Engine_GetDirectionChangePathfinding", Engine_GetPathfindingDirectionChange);
+			mono_add_internal_call("TRE.DirectPathfindingSystem::Engine_GetPathfindingCurrentDelay", Engine_GetPathfindingCurrentDelay);
 		}
 
 		// Post Effects

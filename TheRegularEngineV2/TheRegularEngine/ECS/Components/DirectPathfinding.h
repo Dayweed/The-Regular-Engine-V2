@@ -14,6 +14,7 @@ namespace TRE
 
 		float m_Delay = 1.f;
 		float m_Speed = 1.f;
+		float m_CurrentTime = 0.f;	// To track delay timing
 		int m_CurrentIndex = -1;	// -1: m_WayPoints is empty, in inspector should be disabled
 
 		bool m_StartOnPlay = true;
@@ -28,7 +29,6 @@ namespace TRE
 		bool m_IsRunning = false;	// Check if it is running
 
 	private:
-		float m_CurrentTime = 0.f;	// To track delay timing
 		bool m_Direction = true;	// Direction to move index [True: ++; False: --]
 
 		friend class DirectPathfindingSystem;

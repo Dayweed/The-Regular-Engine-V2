@@ -1821,6 +1821,9 @@ namespace TRE
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		public extern static bool Engine_GetDirectionChangePathfinding(EntityID ID);
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		public extern static float Engine_GetPathfindingCurrentDelay(EntityID ID);
 	}
 
 	public class ScenePostEffectsSystem
