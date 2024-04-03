@@ -28,6 +28,8 @@ namespace TRE
 		private ulong resultStarSFX;
 		private ulong ResultSFX;
 
+        private bool controllerConnected;
+
 		public void Start()
 		{
 
@@ -69,10 +71,26 @@ namespace TRE
 			Maracca.SetActive(false);
 
 			currentTimer = delayBufferStart;
+
+            if (InputSystem.GetControllerConnected(0) || InputSystem.GetControllerConnected(1))
+            {
+                controllerConnected = true;
+            }
+            else
+            {
+                controllerConnected = false;
+            }
 		}
 
 		public void Update()
 		{
+			controllerConnected = InputSystem.GetControllerConnected(0) || InputSystem.GetControllerConnected(1);
+            if (controllerConnected)
+            {
+				// change the UI
+                //ECSManager.FindEntityByName("SpaceToContinue").GetComponent<SpriteRenderer>().Texture = "";
+            }
+
 			// Go to next scene
 			if (InputSystem.GetKeyPress(InputKeys.Enter) || InputSystem.GetKeyPress(InputKeys.Space) || InputSystem.GetControllerButtonTriggered(0, InputSystem.Button.A))
 			{
@@ -82,12 +100,6 @@ namespace TRE
 					Scene.TransitionScene("CutsceneEnd", 4f);
 				else
 					Scene.TransitionScene("MainMenu", 4f);
-			}
-
-			// Close Game
-			if (InputSystem.GetKeyHold(InputKeys.Escape))
-			{
-				Game.CloseGame();
 			}
 
 			if (!startBufferComplete)
