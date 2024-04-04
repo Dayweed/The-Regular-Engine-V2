@@ -279,7 +279,7 @@ namespace TRE
 					expectedDistance = 0;
 					cameraController.lookOnlyBool = false;
 					cameraController.expectedYPos = 135f;
-					cameraController.forcedZ = -123.492f;
+					cameraController.forcedZ = -108.492f;
 					cameraController.forceZaxis = true;
 					cameraController.offsetX = 10f;
 					cameraController.offsetZ = 0f;

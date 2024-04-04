@@ -36,8 +36,8 @@ namespace TRE
 
 					if (playerObj.GetComponent<MoleyController>().mainStrawberry)
 					{
-						newPos.y += playerObj.GetComponent<MoleyController>().currOffset + playerObj.GetComponent<CapsuleCollider>().HalfHeight * 2f;
-						PS.ResizeBoxCollider(this.ID, new vec3(4, 2, 4));
+						newPos.y += playerObj.GetComponent<MoleyController>().currOffset + playerObj.GetComponent<CapsuleCollider>().HalfHeight * 2f +1f;
+						PS.ResizeBoxCollider(this.ID, new vec3(2, 1, 2));
 					}
 				}
 

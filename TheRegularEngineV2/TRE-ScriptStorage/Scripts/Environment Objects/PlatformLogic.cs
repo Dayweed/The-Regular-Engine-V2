@@ -49,10 +49,10 @@ namespace TRE
 
 				// Shake before moving
 				DirectPathfinding DP = GetComponent<DirectPathfinding>();
-				if (DP.currentDelayTime > 0f && DP.currentDelayTime < trembleDuration)
+				/*if (DP.currentDelayTime > 0f && DP.currentDelayTime < trembleDuration)
 				{
 					Tremble();
-                }
+                }*/
 
 				// Play Audio SFX
 				if (GetComponent<DirectPathfinding>().directionChange)
