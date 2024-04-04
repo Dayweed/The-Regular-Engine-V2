@@ -20,45 +20,46 @@ layout(location = 0) out struct
 	vec4 MaterialColor; //Material color
 	vec4 AmbientColor;
 	vec4 ShadowCoord;
-	vec4 DirectionalLightDirection;
-	vec4 DirectionalLightColor;
+	vec4 DirectionalLightDirection_Main;
+	vec4 DirectionalLightColor_Main;
+	vec4 DirectionalLightDirection_Fill;
+	vec4 DirectionalLightColor_Fill;
 	vec3 VertNormal;
 	vec3 CameraWorldPos;
 	float ShadowIntensity;
-	//float m_DrawShadow;
+	float MultipleLights;
 } Out;
-
-layout(set = 0, binding = 0) uniform UBO
-{
-	mat4 m_ProjView;
-	mat4 m_LightSpaceMatrix;
-	vec4 m_LightPosition;
-	vec4 m_LightColor;
-	vec4 m_CameraPosition;
-	vec4 m_DirectionalLightDirection;
-	vec4 m_DirectionalLightColor;
-	vec4 m_AmbientLight;
-	float m_ShadowIntensity;
-	float GammaValue;
-
-} ubo;
-
-layout (set = 0, binding = 8) uniform UBOAnimation
-{
-	mat4 L2W[256];
-} AnimationUBO;
-
-layout(set = 0, binding = 6) uniform MaterialColor
-{
-	vec4 m_Color;
-} MaterialUBO;
 
 layout(push_constant) uniform Push
 {
 	mat4 m_Model;
 	int m_DrawShadow;
 } push;
-const float gamma = 2.2;
+
+layout(set = 0, binding = 0) uniform UBO
+{
+	mat4 m_ProjView;
+	mat4 m_LightSpaceMatrix;
+	vec4 m_CameraPosition;
+	vec4 m_DirectionalLightDirection_Main;
+	vec4 m_DirectionalLightColor_Main;
+	vec4 m_DirectionalLightDirection_Fill;
+	vec4 m_DirectionalLightColor_Fill;
+	vec4 m_AmbientLight;
+	float m_ShadowIntensity;
+	float m_GammaValue;
+	float m_MultipleLights;
+} ubo;
+
+layout(set = 0, binding = 6) uniform MaterialColor
+{
+	vec4 m_Color;
+} MaterialUBO;
+
+layout (set = 0, binding = 8) uniform UBOAnimation
+{
+	mat4 L2W[256];
+} AnimationUBO;
 
 void main() 
 {
@@ -69,28 +70,29 @@ void main()
 
 	mat3 rot = mat3(push.m_Model);
 
-    Out.VertColor = pow(inColor, vec3(ubo.GammaValue));
+    Out.VertColor = pow(inColor, vec3(ubo.m_GammaValue));
 	Out.TexCoord = inTexCoord;
 
 	vec3 normal = normalize(rot * inNormal);
 	vec3 tangent = normalize(rot * inTangent);	
 	vec3 bitangent = normalize(rot * inBitangent);
-
 	Out.VertNormal = normal;
 
 	Out.TBN = mat3( tangent, bitangent, normal);
 	Out.PosWorld = push.m_Model * vec4(inPosition, 1.0);
-	Out.PosWorld.w = ubo.GammaValue;
+	Out.PosWorld.w = ubo.m_GammaValue;
 	Out.MaterialColor = MaterialUBO.m_Color;
 	Out.AmbientColor = ubo.m_AmbientLight;
 	Out.CameraWorldPos = ubo.m_CameraPosition.xyz;
 
 	Out.ShadowCoord = ubo.m_LightSpaceMatrix * push.m_Model * vec4(inPosition, 1.0);
-	Out.DirectionalLightDirection = ubo.m_DirectionalLightDirection;
-	Out.DirectionalLightColor = ubo.m_DirectionalLightColor;
+	Out.DirectionalLightDirection_Main = ubo.m_DirectionalLightDirection_Main;
+	Out.DirectionalLightColor_Main = ubo.m_DirectionalLightColor_Main;
+	Out.DirectionalLightDirection_Fill = ubo.m_DirectionalLightDirection_Fill;
+	Out.DirectionalLightColor_Fill = ubo.m_DirectionalLightColor_Fill;
 	Out.ShadowIntensity = ubo.m_ShadowIntensity;
+	Out.MultipleLights = ubo.m_MultipleLights;
 }
-
 
 #version 450
 
@@ -102,15 +104,17 @@ layout(location = 0) in struct
 	vec4 PosWorld; //w for gamma correction
 	vec3 VertColor;
 	vec2 TexCoord;
-	vec4 MaterialColor;
+	vec4 MaterialColor; //Material color
 	vec4 AmbientColor;
 	vec4 ShadowCoord;
-	vec4 DirectionalLightDirection;
-	vec4 DirectionalLightColor;
+	vec4 DirectionalLightDirection_Main;
+	vec4 DirectionalLightColor_Main;
+	vec4 DirectionalLightDirection_Fill;
+	vec4 DirectionalLightColor_Fill;
 	vec3 VertNormal;
 	vec3 CameraWorldPos;
 	float ShadowIntensity;
-	//float m_DrawShadow;
+	float MultipleLights;
 } In;
 
 layout(push_constant) uniform Push
@@ -140,7 +144,7 @@ float Shadow(in vec3 lightCoords, in vec3 normal)
 		lightCoords.xy = lightCoords.xy * 0.5 + 0.5;
 
 		float currentDepth = lightCoords.z;
-		float bias = max(0.025 * (1.0 - dot(-In.DirectionalLightDirection.xyz, normal)), 0.015);
+		float bias = max(0.025 * (1.0 - dot(-In.DirectionalLightDirection_Main.xyz, normal)), 0.015);
 		
 		int sampleRadius = 4;
 		vec2 texelSize = 1.0 / textureSize(shadowMap, 0);
@@ -183,41 +187,64 @@ void main()
 	normal = normalize(In.TBN * normal); //Transform normal to world space
 
 	float shadow = Shadow(In.ShadowCoord.xyz / In.ShadowCoord.w, normal);
-	
+
 	//Diffuse intensity
-	float diffuseIntensity = max(dot(normal, -normalize(In.DirectionalLightDirection.xyz)), 0.005);
+	float diffuseIntensity_Main = max(dot(normal, -normalize(In.DirectionalLightDirection_Main.xyz)), 0.005);
+	float diffuseIntensity_Fill = max(dot(normal, -normalize(In.DirectionalLightDirection_Fill.xyz)), 0.005);
 
 	vec3 pixelToCamera = normalize(In.CameraWorldPos - In.PosWorld.xyz);
 	float rimFactor = dot(normal, pixelToCamera);
 	rimFactor = 1.0 - rimFactor;
 	rimFactor = max(rimFactor, 0.0);
-	rimFactor = pow(rimFactor, 2.0);
+	rimFactor = pow(rimFactor, 1.0);
 
 	const vec3 ambient = In.AmbientColor.rgb * In.AmbientColor.a * texture(AOMap, In.TexCoord).rgb * texture(AOMap, In.TexCoord).a;
 	
-	float dp = max(dot(normalize(In.VertNormal), -normalize(In.DirectionalLightDirection.xyz)), 0.0025);
+	float dp_Main = max(dot(normalize(In.VertNormal), -normalize(In.DirectionalLightDirection_Main.xyz)), 0.0025);
+	float dp_Fill = max(dot(normalize(In.VertNormal), -normalize(In.DirectionalLightDirection_Fill.xyz)), 0.0025);
 
 	//Diffuse color
-	if(dp <= 0.05)
+	if(dp_Main <= 0.05)
 	{
 		shadow = 0.0;
 	}
-	diffuseIntensity = ceil(diffuseIntensity * CelShadingLevels) * CelScaleFactor;
-	dp = smoothstep(0.2, 1.0, dp) * float(CelShadingLevels);
-	dp = ceil(dp) * CelScaleFactor;
-	diffuseIntensity = mix(diffuseIntensity, dp, 0.5);
-	diffuseIntensity = clamp(diffuseIntensity, 0.0, 1.0);
-	shadow = clamp(shadow, 0.0, 0.95);
-	vec3 diffuse = In.VertColor * texture(DiffuseMap, In.TexCoord).rgb * In.MaterialColor.rgb * In.MaterialColor.a * diffuseIntensity * In.DirectionalLightColor.rgb * In.DirectionalLightColor.a;
-	vec3 rimColor = texture(DiffuseMap, In.TexCoord).rgb * rimFactor;
-	if(push.m_DrawShadow != 0)
-		outColor.rgb = ambient * (1.0 - shadow) * (diffuse * texture(DiffuseMap, In.TexCoord).a + rimColor * texture(DiffuseMap, In.TexCoord).a * 0.5);
+	diffuseIntensity_Main = ceil(diffuseIntensity_Main * CelShadingLevels) * CelScaleFactor;
+	dp_Main = smoothstep(0.2, 1.0, dp_Main) * float(CelShadingLevels);
+	dp_Main = ceil(dp_Main) * CelScaleFactor;
+	diffuseIntensity_Main = mix(diffuseIntensity_Main, dp_Main, 0.5);
+	diffuseIntensity_Main = clamp(diffuseIntensity_Main, 0.0, 1.0);
+
+	diffuseIntensity_Fill = ceil(diffuseIntensity_Fill * CelShadingLevels) * CelScaleFactor;
+	dp_Fill = smoothstep(0.2, 1.0, dp_Fill) * float(CelShadingLevels);
+	dp_Fill = ceil(dp_Fill) * CelScaleFactor;
+	diffuseIntensity_Fill = mix(diffuseIntensity_Fill, dp_Fill, 0.5);
+	diffuseIntensity_Fill = clamp(diffuseIntensity_Fill, 0.0, 1.0);
+
+	vec3 diffuseMain = In.VertColor * texture(DiffuseMap, In.TexCoord).rgb * In.MaterialColor.rgb * In.MaterialColor.a * diffuseIntensity_Main * In.DirectionalLightColor_Main.rgb * In.DirectionalLightColor_Main.a;
+	vec3 diffuseFill = In.VertColor * texture(DiffuseMap, In.TexCoord).rgb * In.MaterialColor.rgb * In.MaterialColor.a * diffuseIntensity_Fill * In.DirectionalLightColor_Fill.rgb * In.DirectionalLightColor_Fill.a;
+
+	vec3 diffuse;
+
+	if(In.MultipleLights <= 0.5)
+	{
+		diffuse = diffuseMain;
+	}
 	else
-		outColor.rgb = ambient * (diffuse * texture(DiffuseMap, In.TexCoord).a + rimColor * texture(DiffuseMap, In.TexCoord).a * 0.5);
+	{
+		diffuse = mix(diffuseMain, diffuseFill, 0.6);
+	}
+
+	vec3 rimColor = texture(DiffuseMap, In.TexCoord).rgb * rimFactor;
+	outColor.rgb = ambient * (diffuse * texture(DiffuseMap, In.TexCoord).a + rimColor * texture(DiffuseMap, In.TexCoord).a * 0.5);
+	if(push.m_DrawShadow != 0)
+	{
+		outColor.rgb *= (1.0 - shadow);
+	}
+
 	//Convert from HDR to LDR before gamma correction - for the blue tint
 	outColor.rgb = outColor.rgb / ( outColor.rgb + vec3(1.0, 1.0, 0.9) );
 
 	//Gamma correction
 	outColor.rgb = (pow(outColor.rgb, vec3(1.0 / In.PosWorld.w)));
-	outColor.a = 1.0;
+	outColor.a = texture(DiffuseMap, In.TexCoord).a * In.MaterialColor.a;
 }

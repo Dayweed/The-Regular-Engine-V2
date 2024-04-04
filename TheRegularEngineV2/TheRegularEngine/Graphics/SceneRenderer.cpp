@@ -373,7 +373,6 @@ namespace TRE
 		UBO ubo{};
 		ubo.m_Gamma = Renderer::GetGammaValue();
 		ubo.m_ProjView = editorCamera.GetViewProjectionMatrix();
-		ubo.m_LightPosition = glm::vec4(transform.m_Position, 0.f);
 		ubo.m_CameraPosition = glm::vec4(transform.m_Position, 1.f);
 
 		m_ProjView3D = ubo.m_ProjView;
@@ -388,51 +387,88 @@ namespace TRE
 		recalculateShadowFrustum = true;
 
 		ShadowUBO UBO_Shadow{};
-		const auto& DLights = ECSManager::Instance().GetEntities<DirectionalLight>();
-		if (DLights.size() > 0)
+		std::vector<Entity> DLights = ECSManager::Instance().GetEntities<DirectionalLight>();
+
+		//HARDCODE 2 LIGHTS ONLY
+		//Sort main light to be first
+		if (DLights.size() == 2)
 		{
-			const auto& entity = DLights[0]; //Get first directional light
-			const auto& lightTransform = entity->GetComponent<Transform>();
-			const auto& light = entity->GetComponent<DirectionalLight>();
-			ubo.m_LightDirection = glm::vec4(light.m_Direction, 1.f);
-			ubo.m_LightDirectionalColor = light.m_DirectionalColor;
-			ubo.m_LightAmbientColor = light.m_AmbientColor;
-			ubo.m_ShadowIntensity = light.m_ShadowIntensity;
-
-			if (recalculateShadowFrustum)
+			if (DLights[0]->GetComponent<DirectionalLight>().m_Main == false)
 			{
-				RecreateShadowAABB(baseCamera.GetFrustumCorners(false, m_EditorShadowRatio));
-				shadowDepthViewMatrix = glm::translate(glm::mat4(1.f), m_EditorShadowRenderPoint) * glm::toMat4(glm::quat(glm::radians(-lightTransform.m_Rotation)));
+				std::vector<Entity> temp(2);
+				temp.push_back(DLights[1]);
+				temp.push_back(DLights[0]);
+				DLights = temp;
 			}
 
-			if (recalculateShadowFrustum)
+			ubo.m_MultipleLight = 1.f;
+		}
+		else
+		{
+			ubo.m_MultipleLight = 0.f;
+		}
+
+		int i = 0;
+		for (const auto& ent : DLights)
+		{
+			const auto& light = ent->GetComponent<DirectionalLight>();
+			//If is main light, use it for ambient and shadow
+			if (light.m_Main)
 			{
-				glm::mat4 shadowDepthProjectionMatrix;
-				const float deltaX = m_EditorShadowAABBMax.x - m_EditorShadowAABBMin.x;
-				const float deltaY = m_EditorShadowAABBMax.y - m_EditorShadowAABBMin.y;
-				const float deltaZ = m_EditorShadowAABBMax.z - m_EditorShadowAABBMin.z;
-				const float orthoLength = deltaX;
-				const float orthoHeight = deltaY;
-				const float orthoNear = 0.1f;
-				const float orthoFar = orthoNear + deltaZ;
+				ubo.m_LightAmbientColor = light.m_AmbientColor;
+				ubo.m_ShadowIntensity = light.m_ShadowIntensity;
 
-				shadowDepthProjectionMatrix = glm::mat4(1.f);
-				shadowDepthProjectionMatrix[0][0] = -2.f / (orthoLength - -orthoLength);
-				shadowDepthProjectionMatrix[1][1] = -2.f / (orthoHeight - -orthoHeight);
-				shadowDepthProjectionMatrix[2][2] = 2.f / (orthoFar - orthoNear);
-				shadowDepthProjectionMatrix[3][0] = -(orthoLength + -orthoLength) / (orthoLength - -orthoLength);
-				shadowDepthProjectionMatrix[3][1] = -(orthoHeight + -orthoHeight) / (orthoHeight - -orthoHeight);
-				shadowDepthProjectionMatrix[3][2] = -(orthoNear) / (orthoFar - orthoNear);
+				const auto& lightTransform = ent->GetComponent<Transform>();
 
-				shadowDepthViewMatrix = glm::inverse(shadowDepthViewMatrix);
-				m_EditorShadowView = shadowDepthViewMatrix;
-				m_EditorShadowProj = shadowDepthProjectionMatrix;
+				if (recalculateShadowFrustum)
+				{
+					RecreateShadowAABB(baseCamera.GetFrustumCorners(false, 0.17f));
+					glm::vec3 tempRotation = glm::radians(lightTransform.m_Rotation);
+					glm::mat4 rotationMat = glm::toMat4(glm::quat(tempRotation));
+					shadowDepthViewMatrix = glm::translate(glm::mat4(1.f), m_ShadowRenderPoint) * rotationMat;
+				}
 
-				UBO_Shadow.view = m_EditorShadowView;
-				UBO_Shadow.proj = m_EditorShadowProj;
+				if (recalculateShadowFrustum)
+				{
+					glm::mat4 shadowDepthProjectionMatrix;
+					const float deltaX = m_ShadowAABBMax.x - m_ShadowAABBMin.x;
+					const float deltaY = m_ShadowAABBMax.y - m_ShadowAABBMin.y;
+					const float deltaZ = m_ShadowAABBMax.z - m_ShadowAABBMin.z;
+					const float orthoLength = deltaX;
+					const float orthoHeight = deltaY;
+					const float orthoNear = 0.1f;
+					const float orthoFar = orthoNear + deltaZ;
+
+					shadowDepthProjectionMatrix = glm::mat4(1.f);
+					shadowDepthProjectionMatrix[0][0] = -2.f / (orthoLength - -orthoLength);
+					shadowDepthProjectionMatrix[1][1] = -2.f / (orthoHeight - -orthoHeight);
+					shadowDepthProjectionMatrix[2][2] = 2.f / (orthoFar - orthoNear);
+					shadowDepthProjectionMatrix[3][0] = -(orthoLength + -orthoLength) / (orthoLength - -orthoLength);
+					shadowDepthProjectionMatrix[3][1] = -(orthoHeight + -orthoHeight) / (orthoHeight - -orthoHeight);
+					shadowDepthProjectionMatrix[3][2] = -(orthoNear) / (orthoFar - orthoNear);
+
+					shadowDepthViewMatrix = glm::inverse(shadowDepthViewMatrix);
+					m_ShadowView = shadowDepthViewMatrix;
+					m_ShadowProj = shadowDepthProjectionMatrix;
+
+					UBO_Shadow.view = m_ShadowView;
+					UBO_Shadow.proj = m_ShadowProj;
+				}
+
+				ubo.m_LightSpaceMatrix = m_ShadowProj * m_ShadowView;
 			}
-			
-			ubo.m_LightSpaceMatrix = m_EditorShadowProj * m_EditorShadowView;
+
+			if (i == 0)
+			{
+				ubo.m_LightDirection_Main = glm::vec4(light.m_Direction, 1.f);
+				ubo.m_LightDirectionalColor_Main = light.m_DirectionalColor;
+			}
+			else if (i == 1)
+			{
+				ubo.m_LightDirection_Fill = glm::vec4(light.m_Direction, 1.f);
+				ubo.m_LightDirectionalColor_Fill = light.m_DirectionalColor;
+			}
+			++i;
 		}
 
 		m_ShadowUBO->SetData(&UBO_Shadow, sizeof(ShadowUBO));
@@ -469,7 +505,6 @@ namespace TRE
 		UBO ubo{};
 		ubo.m_Gamma = Renderer::GetGammaValue();
 		ubo.m_ProjView = baseCamera.m_ProjectionMatrix * baseCamera.m_ViewMatrix;
-		ubo.m_LightPosition = glm::vec4(cameraTransform.m_Position, 0.f);
 		ubo.m_CameraPosition = glm::vec4(cameraTransform.m_Position, 1.f);
 		
 		m_ProjView3D = ubo.m_ProjView;
@@ -483,57 +518,88 @@ namespace TRE
 		recalculateShadowFrustum = true;
 
 		ShadowUBO UBO_Shadow{};
-		const auto& DLights = ECSManager::Instance().GetEntities<DirectionalLight>();
+		std::vector<Entity> DLights = ECSManager::Instance().GetEntities<DirectionalLight>();
 
-		if (DLights.size() > 0)
+		//HARDCODE 2 LIGHTS ONLY
+		//Sort main light to be first
+		if (DLights.size() == 2)
 		{
-			const auto& entityDirectional = DLights[0]; //Get first directional light
-			const auto& lightTransform = entityDirectional->GetComponent<Transform>();
-			const auto& light = entityDirectional->GetComponent<DirectionalLight>();
-			ubo.m_LightDirection = glm::vec4(light.m_Direction, 1.f);
-			ubo.m_LightDirectionalColor = light.m_DirectionalColor;
-			ubo.m_LightAmbientColor = light.m_AmbientColor;
-			ubo.m_ShadowIntensity = light.m_ShadowIntensity;
-
-			if (recalculateShadowFrustum)
+			if (DLights[0]->GetComponent<DirectionalLight>().m_Main == false)
 			{
-				RecreateShadowAABB(baseCamera.GetFrustumCorners(false, 0.17f));
-				glm::vec3 tempRotation = glm::radians(lightTransform.m_Rotation);
-				glm::mat4 rotationMat = glm::toMat4(glm::quat(tempRotation));
-				shadowDepthViewMatrix = glm::translate(glm::mat4(1.f), m_ShadowRenderPoint) * rotationMat;
+				std::vector<Entity> temp(2);
+				temp.push_back(DLights[1]);
+				temp.push_back(DLights[0]);
+				DLights = temp;
+			}
+			ubo.m_MultipleLight = 1.f;
+		}
+		else
+		{
+			ubo.m_MultipleLight = 0.f;
+		}
+		//std::cout << ubo.m_MultipleLight << std::endl;
+		
+		int i = 0;
+		for (const auto& ent : DLights)
+		{
+			const auto& light = ent->GetComponent<DirectionalLight>();
+			//If is main light, use it for ambient and shadow
+			if (light.m_Main)
+			{
+				ubo.m_LightAmbientColor = light.m_AmbientColor;
+				ubo.m_ShadowIntensity = light.m_ShadowIntensity;
+
+				const auto& lightTransform = ent->GetComponent<Transform>();
+
+				if (recalculateShadowFrustum)
+				{
+					RecreateShadowAABB(baseCamera.GetFrustumCorners(false, 0.17f));
+					glm::vec3 tempRotation = glm::radians(lightTransform.m_Rotation);
+					glm::mat4 rotationMat = glm::toMat4(glm::quat(tempRotation));
+					shadowDepthViewMatrix = glm::translate(glm::mat4(1.f), m_ShadowRenderPoint) * rotationMat;
+				}
+
+				if (recalculateShadowFrustum)
+				{
+					glm::mat4 shadowDepthProjectionMatrix;
+					const float deltaX = m_ShadowAABBMax.x - m_ShadowAABBMin.x;
+					const float deltaY = m_ShadowAABBMax.y - m_ShadowAABBMin.y;
+					const float deltaZ = m_ShadowAABBMax.z - m_ShadowAABBMin.z;
+					const float orthoLength = deltaX;
+					const float orthoHeight = deltaY;
+					const float orthoNear = 0.1f;
+					const float orthoFar = orthoNear + deltaZ;
+
+					shadowDepthProjectionMatrix = glm::mat4(1.f);
+					shadowDepthProjectionMatrix[0][0] = -2.f / (orthoLength - -orthoLength);
+					shadowDepthProjectionMatrix[1][1] = -2.f / (orthoHeight - -orthoHeight);
+					shadowDepthProjectionMatrix[2][2] = 2.f / (orthoFar - orthoNear);
+					shadowDepthProjectionMatrix[3][0] = -(orthoLength + -orthoLength) / (orthoLength - -orthoLength);
+					shadowDepthProjectionMatrix[3][1] = -(orthoHeight + -orthoHeight) / (orthoHeight - -orthoHeight);
+					shadowDepthProjectionMatrix[3][2] = -(orthoNear) / (orthoFar - orthoNear);
+
+					shadowDepthViewMatrix = glm::inverse(shadowDepthViewMatrix);
+					m_ShadowView = shadowDepthViewMatrix;
+					m_ShadowProj = shadowDepthProjectionMatrix;
+
+					UBO_Shadow.view = m_ShadowView;
+					UBO_Shadow.proj = m_ShadowProj;
+				}
+
+				ubo.m_LightSpaceMatrix = m_ShadowProj * m_ShadowView;
 			}
 
-			if (recalculateShadowFrustum)
+			if (i == 0)
 			{
-				glm::mat4 shadowDepthProjectionMatrix;
-				const float deltaX = m_ShadowAABBMax.x - m_ShadowAABBMin.x;
-				const float deltaY = m_ShadowAABBMax.y - m_ShadowAABBMin.y;
-				const float deltaZ = m_ShadowAABBMax.z - m_ShadowAABBMin.z;
-				/*const float deltaX = 500;
-				const float deltaY = 500;
-				const float deltaZ = 500;*/
-				const float orthoLength = deltaX;
-				const float orthoHeight = deltaY;
-				const float orthoNear = 0.1f;
-				const float orthoFar = orthoNear + deltaZ;
-
-				shadowDepthProjectionMatrix = glm::mat4(1.f);
-				shadowDepthProjectionMatrix[0][0] = -2.f / (orthoLength - -orthoLength);
-				shadowDepthProjectionMatrix[1][1] = -2.f / (orthoHeight - -orthoHeight);
-				shadowDepthProjectionMatrix[2][2] = 2.f / (orthoFar - orthoNear);
-				shadowDepthProjectionMatrix[3][0] = -(orthoLength + -orthoLength) / (orthoLength - -orthoLength);
-				shadowDepthProjectionMatrix[3][1] = -(orthoHeight + -orthoHeight) / (orthoHeight - -orthoHeight);
-				shadowDepthProjectionMatrix[3][2] = -(orthoNear) / (orthoFar - orthoNear);
-
-				shadowDepthViewMatrix = glm::inverse(shadowDepthViewMatrix);
-				m_ShadowView = shadowDepthViewMatrix;
-				m_ShadowProj = shadowDepthProjectionMatrix;
-
-				UBO_Shadow.view = m_ShadowView;
-				UBO_Shadow.proj = m_ShadowProj;
+				ubo.m_LightDirection_Main = glm::vec4(light.m_Direction, 1.f);
+				ubo.m_LightDirectionalColor_Main = light.m_DirectionalColor;
 			}
-			
-			ubo.m_LightSpaceMatrix = m_ShadowProj * m_ShadowView;
+			else if (i == 1)
+			{
+				ubo.m_LightDirection_Fill = glm::vec4(light.m_Direction, 1.f);
+				ubo.m_LightDirectionalColor_Fill = light.m_DirectionalColor;
+			}
+			++i;
 		}
 
 		m_ShadowUBO->SetData(&UBO_Shadow, sizeof(ShadowUBO));

@@ -40,18 +40,16 @@ namespace TRE
 	struct UBO
 	{
 		glm::mat4 m_ProjView{ 1.f };																	//World to view to projection
-		glm::mat4 m_LightSpaceMatrix = { glm::mat4(1.f) };																//Matrix to transform to light space coordinates
-
-		glm::vec4 m_LightPosition{ 0.f, 0.f, 0.f, 0.f};														//Light position for now will be the camera in world space
-		#pragma warning (suppress: 4324)																// warning C4324: 'TRE::UBO': structure was padded due to alignment specifier	
-		glm::vec4 m_LightColor { 1.f, 1.f, 1.f, 10.f };										//Light color, w for intensity
+		glm::mat4 m_LightSpaceMatrix = { glm::mat4(1.f) };												//Matrix to transform to light space coordinates
 		glm::vec4 m_CameraPosition{0.f, 0.f, 0.f, 1.f};													//Camera position in world space
-		glm::vec4 m_LightDirection = { glm::vec4(glm::normalize(glm::vec3(1.0f, -1.f, 1.f)), 1.f) }; //Directional Light in world space
-		glm::vec4 m_LightDirectionalColor = { glm::vec4(1.f, 1.f, 1.f, 1.f) };			    	    //Color for directional light
-		glm::vec4 m_LightAmbientColor = { glm::vec4(1.f, 1.f, 1.f, 1.f) };				    	    //Color for ambient light
-		float m_ShadowIntensity = { 0.85f };																//Shadow intensity
-
+		glm::vec4 m_LightDirection_Main = { glm::vec4(glm::normalize(glm::vec3(1.0f, -1.f, 1.f)), 1.f) };	//Directional Light in world space, (1) will be main light
+		glm::vec4 m_LightDirectionalColor_Main = { glm::vec4(1.f, 1.f, 1.f, 1.f) };			    		//Color for directional light
+		glm::vec4 m_LightDirection_Fill = { glm::vec4(glm::normalize(glm::vec3(1.0f, -1.f, 1.f)), 1.f) };	//Directional Light in world space
+		glm::vec4 m_LightDirectionalColor_Fill = { glm::vec4(1.f, 1.f, 1.f, 1.f) };			    		//Color for directional light
+		glm::vec4 m_LightAmbientColor = { glm::vec4(1.f, 1.f, 1.f, 1.f) };				    			//Color for ambient light
+		float m_ShadowIntensity = { 0.85f };															//Shadow intensity
 		float m_Gamma = { 2.2f };
+		float m_MultipleLight = { 0.5f };
 	};
 
 	struct SkyBoxUBO
