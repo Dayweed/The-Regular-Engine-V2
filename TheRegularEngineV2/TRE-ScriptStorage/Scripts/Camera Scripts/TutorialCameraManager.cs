@@ -38,6 +38,7 @@ namespace TRE
 		public CameraTransitions preTransitions;
 
 		private ulong stonelandedSFX;
+		private ulong fountainSFX;
 
 		public void Start()
 		{
@@ -72,6 +73,7 @@ namespace TRE
 
 			//Audio
 			stonelandedSFX = ECSManager.FindIDFromName("FallingRock");
+			fountainSFX = ECSManager.FindIDFromName("Fountain");
 
 			//expectedDistance = 35;
 			//expectedPosition = new vec3(0, 10, 20);
@@ -148,6 +150,11 @@ namespace TRE
 					cameraController.offsetZ = 0f;
 					expectedDuration = 0.8f;
 					CheckTransition(Trigger_C);
+
+					if (ECSManager.IsValidEntity(fountainSFX))
+					{
+						AudioSystem.SetPause(fountainSFX, true);
+					}
 				}
 
 				if (regionD)
