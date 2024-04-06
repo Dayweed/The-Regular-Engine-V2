@@ -14,6 +14,7 @@ namespace TRE
 
 		public List<List<HoleCheckDisplay>> triggerStars;
 
+		public bool levelFinished = false;
 		public SpriteRenderer courseComplete;
 		public static float currentTime;
 		public float waitingTime = 0.90f;
@@ -189,8 +190,10 @@ namespace TRE
 			mConfettispawned = false;
 			mConfettiTimeDurian = 3f;
 
-			// Load Cheats
-			if (bool.TryParse(PersistentSystem.GetValue("powerUps"), out bool powerResult))
+            levelFinished = false;
+
+            // Load Cheats
+            if (bool.TryParse(PersistentSystem.GetValue("powerUps"), out bool powerResult))
 			{
 				keepinvCheat = powerResult;
 			}
@@ -378,12 +381,12 @@ namespace TRE
 																				   StarParticle.GetComponent<Transform>().Position.z);
 					}
 				}
-			}
+            }
 
-			if (PhysicsSystem.IsTriggerStay(Holey.ID, ConfettiTrigger.ID) && PhysicsSystem.IsTriggerStay(Moley.ID, ConfettiTrigger.ID))
+            if (PhysicsSystem.IsTriggerStay(Holey.ID, ConfettiTrigger.ID) && PhysicsSystem.IsTriggerStay(Moley.ID, ConfettiTrigger.ID))
 			{
-				confettiTime = true;
-			}
+                confettiTime = true;
+            }
 
 			if (confettiTime)
 			{
@@ -488,7 +491,20 @@ namespace TRE
 				{
 					currentTime += Time.deltaTime;
 				}
-			}
+
+				if (!levelFinished)
+				{
+                    // Rotate the camera (Somehow this must be called here in order for the camera manager actions to run)
+                    CameraController cam = ECSManager.FindEntityByName("Main Camera").GetComponent<CameraController>();
+                    cam.expectedPosition = cam.transform.Position;
+                    cam.expectedRotation = cam.transform.Rotation + new vec3(0, 180, 0);
+                    cam.transitionDuration = 1f;
+                    cam.overrideCamera = true;
+                    cam.freeCamera = false;
+                    cam.toTransition = true;
+					levelFinished = true;
+                }
+            }
 		}
 
 		// Return current map stars

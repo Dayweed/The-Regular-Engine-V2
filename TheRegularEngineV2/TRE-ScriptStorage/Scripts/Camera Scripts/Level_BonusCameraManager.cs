@@ -41,7 +41,9 @@ namespace TRE
 
 		CameraController cameraController;
 
-		private vec3 expectedPosition;
+        private SceneLogic SceneLogic;
+
+        private vec3 expectedPosition;
 		private vec3 expectedRotation;
 		private float expectedDistance;
 		private float expectedDuration;
@@ -78,8 +80,21 @@ namespace TRE
 		}
 
 		public void Update()
-		{
-			cameraController.freeCamera = true;
+        {
+            // Ignore this if some other place if demanding attention from the cameraController
+            if (SceneLogic.levelFinished && !cameraController.overrideCamera)
+            {
+                // Rotate the camera
+                expectedPosition = new vec3(0, 10, 20);
+                expectedRotation = new vec3(30, 90, 0);
+                cameraController.transitionDuration = 2f;
+                cameraController.overrideCamera = true;
+                cameraController.freeCamera = false;
+                cameraController.toTransition = true;
+                return;
+            }
+
+            cameraController.freeCamera = true;
 			regionA = IsInsideTrigger(Trigger_A);
 			regionB = IsInsideTrigger(Trigger_B);
 			regionC = IsHoleyMoleyInsideTrigger(Trigger_C);

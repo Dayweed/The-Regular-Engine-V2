@@ -37,7 +37,9 @@ namespace TRE
 
 		public CameraTransitions preTransitions;
 
-		private ulong stonelandedSFX;
+        private SceneLogic SceneLogic;
+
+        private ulong stonelandedSFX;
 		private ulong fountainSFX;
 
 		public void Start()
@@ -86,12 +88,26 @@ namespace TRE
 			preTransitions.AddCameraData(new vec3(180, 50, -20), new vec3(30, 260, 0), 8f);
 			preTransitions.AddCameraData(new vec3(30, 40, -10), new vec3(30, 180, 0), 4f);
 			preTransitions.AddCameraData(new vec3(0, 10, 30), new vec3(30, 180, 0), 2f);
-		}
+
+            SceneLogic = ECSManager.FindEntityByName("Scene Transition Logic").GetComponent<SceneLogic>();
+        }
 
 		public void Update()
-		{
+        {
+            // Ignore this if some other place if demanding attention from the cameraController
+            if (SceneLogic.levelFinished && !cameraController.overrideCamera)
+            {
+                // Rotate the camera
+                expectedPosition = new vec3(1000, 10, 20);
+                expectedRotation = new vec3(30, 270, 0);
+                cameraController.transitionDuration = 2f;
+                cameraController.overrideCamera = true;
+                cameraController.freeCamera = false;
+                cameraController.toTransition = true;
+                return;
+            }
 
-			if (preTransitions.preTransitioned == false)
+            if (preTransitions.preTransitioned == false)
 			{
 				preTransitions.GetCurrentData(out cameraController.expectedPosition, out cameraController.expectedRotation, out cameraController.transitionDuration);
 				preTransitions.PreTransition(Time.deltaTime > 0.5f ? 0.5f : Time.deltaTime, out cameraController.toTransition);
@@ -179,9 +195,9 @@ namespace TRE
 
 				if (regionE)
 				{
-					//platforming section
-					expectedPosition = new vec3(0, 60, 50);
-					expectedRotation = new vec3(50, 180, 0);
+                    //platforming section
+                    expectedPosition = new vec3(50, 40, -550);
+                    expectedRotation = new vec3(50, 180, 0);
 					expectedDistance = 80;
 					cameraController.lookOnlyBool = false;
 					cameraController.expectedYPos = 0f;

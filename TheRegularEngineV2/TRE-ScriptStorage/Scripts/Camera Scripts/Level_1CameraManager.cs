@@ -48,7 +48,9 @@ namespace TRE
 
 		public CameraTransitions preTransitions;
 
-		public void Start()
+        private SceneLogic SceneLogic;
+
+        public void Start()
 		{
 			MidPos = ECSManager.FindEntityByName("MidPos");
 			Debug.Log("Holey ID is " + MidPos.ID);
@@ -84,10 +86,25 @@ namespace TRE
 			preTransitions.AddCameraData(new vec3(140, 65, -200), new vec3(30, 265, 0), 2f);
 			preTransitions.AddCameraData(new vec3(50, 65, -200), new vec3(40, 265, 0), 1f);
 			preTransitions.AddCameraData(new vec3(-20, 50, -20), new vec3(40, 180, 0), 1.5f);
+
+			SceneLogic = ECSManager.FindEntityByName("Scene Transition Logic").GetComponent<SceneLogic>();
 		}
 
 		public void Update()
 		{
+			// Ignore this if some other place if demanding attention from the cameraController
+			if (SceneLogic.levelFinished && !cameraController.overrideCamera)
+			{
+                // Rotate the camera
+                expectedPosition = new vec3(1000, 10, 20);
+                expectedRotation = new vec3(30, 90, 0);
+                cameraController.transitionDuration = 2f;
+                cameraController.overrideCamera = true;
+                cameraController.freeCamera = false;
+                cameraController.toTransition = true;
+                return;
+			}
+
 			if (preTransitions.preTransitioned == false)
 			{
 				preTransitions.GetCurrentData(out cameraController.expectedPosition, out cameraController.expectedRotation, out cameraController.transitionDuration);

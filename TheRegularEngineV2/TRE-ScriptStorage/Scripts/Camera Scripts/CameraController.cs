@@ -37,6 +37,7 @@ namespace TRE
 		public bool toTransition;
 		public float transitionDuration = 0.8f;
 		public bool freeCamera = true;
+		public bool overrideCamera = false;	// true = Override Camera controls to move to a certain location
 
 		public bool lookOnlyBool = false; // true = look only(stationary position), false = follow player
 
