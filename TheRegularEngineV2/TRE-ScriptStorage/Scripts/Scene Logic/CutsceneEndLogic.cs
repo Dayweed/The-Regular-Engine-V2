@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 
 namespace TRE
 {
@@ -16,23 +15,17 @@ namespace TRE
 		const float delayScene = 7f;
 
 		int currentFrame = 0;
-		int pressSpaceCounter = 0;
 
 		bool endCutscene = false;
 		bool pressedSpaceTwice = false;
 
-		private ulong birdSFX;
-		private ulong dialogueSFX;
-		private ulong invitationSFX;
-		private ulong endBGM;
 		private ulong BGM;
-		private bool invitationSFXPlayed = false;
 
 		List<Entity> frames = new List<Entity>();
 		List<string> nextScenes = new List<string>();
 
-        private bool controllerConnected = false;
-        private bool prevControllerConnected = false;
+		private bool controllerConnected = false;
+		private bool prevControllerConnected = false;
 		private bool changeUI = false;
 
 		public void Start()
@@ -41,6 +34,11 @@ namespace TRE
 			Frame_2 = ECSManager.FindEntityByName("Frame2");
 			Frame_3 = ECSManager.FindEntityByName("Frame3");
 			SpaceToContinue = ECSManager.FindEntityByName("SpaceToContinue");
+
+			// change the fading speed a bit
+			// Frame_2.GetComponent<VFX_FadeIn>().SetFadingSpeed(1);
+			// Frame_1.GetComponent<VFX_FadeOut>().SetFadingSpeed(1);
+			// Frame_2.GetComponent<VFX_FadeOut>().SetFadingSpeed(1);
 
 			Frame_1.SetActive(false);
 			Frame_2.SetActive(false);
@@ -57,37 +55,36 @@ namespace TRE
 			frames[currentFrame].GetComponent<VFX_FadeIn>().FadeIn();
 			currentTime = delayFrame;
 
-            if (InputSystem.GetControllerConnected(0) || InputSystem.GetControllerConnected(1))
-            {
-                controllerConnected = true;
-                prevControllerConnected = true;
-                changeUI = true;
-            }
-            else
-            {
-                controllerConnected = false;
-                prevControllerConnected = false;
-            
-            }
+			if (InputSystem.GetControllerConnected(0) || InputSystem.GetControllerConnected(1))
+			{
+				controllerConnected = true;
+				prevControllerConnected = true;
+				changeUI = true;
+			}
+			else
+			{
+				controllerConnected = false;
+				prevControllerConnected = false;
+			}
 		}
 
 		public void Update()
 		{
 			controllerConnected = InputSystem.GetControllerConnected(0) || InputSystem.GetControllerConnected(1);
-            if (controllerConnected != prevControllerConnected)
-            {
-                changeUI = true;
-                prevControllerConnected = controllerConnected;
-            }
+			if (controllerConnected != prevControllerConnected)
+			{
+				changeUI = true;
+				prevControllerConnected = controllerConnected;
+			}
 
-            if (controllerConnected && changeUI)
-            {
-                //SpaceToContinue.GetComponent<SpriteRenderer>().Texture = "";
-            }
-			else if (!controllerConnected && changeUI)
-            {
+			if (controllerConnected && changeUI)
+			{
 				//SpaceToContinue.GetComponent<SpriteRenderer>().Texture = "";
-            }
+			}
+			else if (!controllerConnected && changeUI)
+			{
+				//SpaceToContinue.GetComponent<SpriteRenderer>().Texture = "";
+			}
 
 			bool pressedSpace = InputSystem.GetKeyPress(InputKeys.Space);
 			bool pressA = InputSystem.GetControllerButtonTriggered(0, InputSystem.Button.A);
@@ -95,7 +92,7 @@ namespace TRE
 			//bool paragraphIsHalfWay = false;
 
 			//Go to Credits Scene
-			if (hasPlayerPressed && /*SpaceToContinue.GetActive() && */currentFrame >= frames.Count - 1)
+			if (hasPlayerPressed && currentFrame >= frames.Count - 1)
 			{
 				if (ECSManager.IsValidEntity(BGM))
 					AS.Stop(BGM);
@@ -104,37 +101,29 @@ namespace TRE
 				endCutscene = true;
 			}
 
-			if (currentFrame >= frames.Count) return;
+			if (currentFrame >= frames.Count)
+				return;
 
 			if (currentTime > 0)
-			{
 				currentTime -= Time.deltaTime;
-			}
 
 			if (!endCutscene)
 			{
 				//Every frame will go through this if statement (when its going to the next frame)
 				if (hasPlayerPressed || (currentFrame < frames.Count &&
-												 frames[currentFrame].GetComponent<VFX_FadeIn>().DoneFading() && currentTime <= 0))
+											frames[currentFrame].GetComponent<VFX_FadeIn>().DoneFading() && currentTime <= 0))
 				{
 					frames[currentFrame].GetComponent<VFX_FadeIn>().ForceComplete();
-
-					if (currentFrame >= 3 && currentFrame <= 7)
-						++pressSpaceCounter;
 
 					//player can press double space to go next frame OR once the paragraph is done press space once to go next frame
 					if (currentFrame >= 3 && currentFrame <= 7 && (hasPlayerPressed && pressedSpaceTwice))
 					{
 						++currentFrame;
 						pressedSpaceTwice = false;
-						pressSpaceCounter = 0;
 					}
 
 					else if (!(currentFrame >= 3 && currentFrame <= 7))
 						++currentFrame;
-
-					if (ECSManager.IsValidEntity(dialogueSFX))
-						AS.Stop(dialogueSFX);
 
 					//currentframe == 3/4/5/6/7, SpaceToContinueBlack
 					//letter frames + last frame + out of bounds frame will go through this if statement

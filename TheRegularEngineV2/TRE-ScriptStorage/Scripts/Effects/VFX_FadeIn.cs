@@ -9,7 +9,7 @@ namespace TRE
 		public bool fading = false;
 		bool doneFading = false;
 
-		const float fadingSpeed = 0.5f;
+		float fadingSpeed = 0.5f;
 
 		SpriteRenderer MyRenderer;
 
@@ -99,5 +99,8 @@ namespace TRE
 		{
 			fading = false;
 		}
+
+		public float GetFadingSpeed() => fadingSpeed;
+		public void SetFadingSpeed(float value) => fadingSpeed = value;
 	}
 }
