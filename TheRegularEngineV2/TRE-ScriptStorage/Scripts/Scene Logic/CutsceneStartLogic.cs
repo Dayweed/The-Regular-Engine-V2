@@ -41,103 +41,113 @@ namespace TRE
 		private ulong BGM;
 		private bool invitationSFXPlayed = false;
 
+		/// <summary>This contains all frames in the scene. Assigned in Start().</summary>
 		List<Entity> frames = new List<Entity>();
-		List<string> nextScenes = new List<string>();       // This will fade all out before going to the next frame
-		List<string> forcedScenes = new List<string>();     // This requires the user to press space manually to go to the next scene
-		List<string> autoAppearScenes = new List<string>(); // This will auto appear without fading in
-		List<string> autoDisappearScenes = new List<string>(); // This will auto appear without fading out
+
+		/// <summary>This will fade all out before going to the next frame.</summary>
+		List<string> nextScenes = new List<string>();
+
+		/// <summary>This requires the user to press space manually to go to the next scene.</summary>
+		List<string> forcedScenes = new List<string>();
+
+		/// <summary>This will auto appear without fading in.</summary>
+		List<string> autoAppearScenes = new List<string>();
+
+		/// <summary>This will auto appear without fading out.</summary>
+		List<string> autoDisappearScenes = new List<string>();
 
 		//Skip cutscene
 		public bool skipCutscene = false;
-		string mapName = "Tutorial";
+		const string mapName = "Tutorial";
 
-        private bool ControllerConnected = false;
+		private bool ControllerConnected = false;
 		private bool prevControllerConnected = false;
 		private bool changeUI = false;
 
-        public void Start()
-        {
-            Frame_1 = ECSManager.FindEntityByName("Frame1");
-            Frame_2 = ECSManager.FindEntityByName("Frame2");
-            Frame_3 = ECSManager.FindEntityByName("Frame3");
-            Frame_4 = ECSManager.FindEntityByName("Frame4");
-            Frame_5 = ECSManager.FindEntityByName("Frame5");
-            Frame_6 = ECSManager.FindEntityByName("Frame6");
-            Frame_7 = ECSManager.FindEntityByName("Frame7");
-            Frame_8 = ECSManager.FindEntityByName("Frame8");
-            Frame_9 = ECSManager.FindEntityByName("Frame9");
-            Frame_10 = ECSManager.FindEntityByName("Frame10");
-            SpaceToContinue = ECSManager.FindEntityByName("SpaceToContinue");
-            SpaceToContinueBlack = ECSManager.FindEntityByName("SpaceToContinueBlack");
-            InvitationDialogue1 = ECSManager.FindEntityByName("InvitationDialogue1");
-            InvitationDialogue2 = ECSManager.FindEntityByName("InvitationDialogue2");
-            InvitationDialogue3 = ECSManager.FindEntityByName("InvitationDialogue3");
-            InvitationDialogue4 = ECSManager.FindEntityByName("InvitationDialogue4");
-            InvitationDialogue5 = ECSManager.FindEntityByName("InvitationDialogue5");
+		private float transitionTimer = delayScene;
 
-            Frame_1.SetActive(false);
-            Frame_2.SetActive(false);
-            Frame_3.SetActive(false);
-            Frame_4.SetActive(false);
-            Frame_5.SetActive(false);
-            Frame_6.SetActive(false);
-            Frame_7.SetActive(false);
-            Frame_8.SetActive(false);
-            Frame_9.SetActive(false);
-            Frame_10.SetActive(false);
-            SpaceToContinue.SetActive(false);
-            SpaceToContinueBlack.SetActive(false);
+		public void Start()
+		{
+			Frame_1 = ECSManager.FindEntityByName("Frame1");
+			Frame_2 = ECSManager.FindEntityByName("Frame2");
+			Frame_3 = ECSManager.FindEntityByName("Frame3");
+			Frame_4 = ECSManager.FindEntityByName("Frame4");
+			Frame_5 = ECSManager.FindEntityByName("Frame5");
+			Frame_6 = ECSManager.FindEntityByName("Frame6");
+			Frame_7 = ECSManager.FindEntityByName("Frame7");
+			Frame_8 = ECSManager.FindEntityByName("Frame8");
+			Frame_9 = ECSManager.FindEntityByName("Frame9");
+			Frame_10 = ECSManager.FindEntityByName("Frame10");
+			SpaceToContinue = ECSManager.FindEntityByName("SpaceToContinue");
+			SpaceToContinueBlack = ECSManager.FindEntityByName("SpaceToContinueBlack");
+			InvitationDialogue1 = ECSManager.FindEntityByName("InvitationDialogue1");
+			InvitationDialogue2 = ECSManager.FindEntityByName("InvitationDialogue2");
+			InvitationDialogue3 = ECSManager.FindEntityByName("InvitationDialogue3");
+			InvitationDialogue4 = ECSManager.FindEntityByName("InvitationDialogue4");
+			InvitationDialogue5 = ECSManager.FindEntityByName("InvitationDialogue5");
 
-            frames = new List<Entity>()
-                { Frame_1, Frame_2, Frame_3, Frame_4, Frame_5, Frame_6, Frame_7, Frame_8, Frame_9, Frame_10 };
-            nextScenes = new List<string>() { "Frame3", "Frame4", "Frame5", "Frame6", "Frame7", "Frame8", "Frame9" };
-            forcedScenes = new List<string>() { "Frame4", "Frame5", "Frame6", "Frame7", "Frame8" };
-            autoAppearScenes = new List<string>() { "Frame5", "Frame6", "Frame7", "Frame8" };
-            autoDisappearScenes = new List<string>() { "Frame4", "Frame5", "Frame6", "Frame7" };
+			Frame_1.SetActive(false);
+			Frame_2.SetActive(false);
+			Frame_3.SetActive(false);
+			Frame_4.SetActive(false);
+			Frame_5.SetActive(false);
+			Frame_6.SetActive(false);
+			Frame_7.SetActive(false);
+			Frame_8.SetActive(false);
+			Frame_9.SetActive(false);
+			Frame_10.SetActive(false);
+			SpaceToContinue.SetActive(false);
+			SpaceToContinueBlack.SetActive(false);
 
-            birdSFX = ECSManager.FindIDFromName("SFX_Bird");
-            dialogueSFX = ECSManager.FindIDFromName("SFX_DIalogue");
-            invitationSFX = ECSManager.FindIDFromName("SFX_Invitation");
-            endBGM = ECSManager.FindIDFromName("BGM_EndLoop");
-            BGM = ECSManager.FindIDFromName("BGM");
+			frames = new List<Entity>
+				{ Frame_1, Frame_2, Frame_3, Frame_4, Frame_5, Frame_6, Frame_7, Frame_8, Frame_9, Frame_10 };
+			nextScenes = new List<string>() { "Frame3", "Frame4", "Frame5", "Frame6", "Frame7", "Frame8", "Frame9" };
+			forcedScenes = new List<string>() { "Frame4", "Frame5", "Frame6", "Frame7", "Frame8" };
+			autoAppearScenes = new List<string>() { "Frame5", "Frame6", "Frame7", "Frame8" };
+			autoDisappearScenes = new List<string>() { "Frame4", "Frame5", "Frame6", "Frame7" };
 
-            currentFrame = 0;
-            frames[currentFrame].SetActive(true);
-            frames[currentFrame].GetComponent<VFX_FadeIn>().FadeIn();
-            currentTime = delayFrame;
+			birdSFX = ECSManager.FindIDFromName("SFX_Bird");
+			dialogueSFX = ECSManager.FindIDFromName("SFX_DIalogue");
+			invitationSFX = ECSManager.FindIDFromName("SFX_Invitation");
+			endBGM = ECSManager.FindIDFromName("BGM_EndLoop");
+			BGM = ECSManager.FindIDFromName("BGM");
 
-            if (InputSystem.GetControllerConnected(0) || InputSystem.GetControllerConnected(1))
-            {
-                ControllerConnected = true;
-                prevControllerConnected = true;
+			currentFrame = 0;
+			frames[currentFrame].SetActive(true);
+			frames[currentFrame].GetComponent<VFX_FadeIn>().FadeIn();
+			currentTime = delayFrame;
+
+			if (InputSystem.GetControllerConnected(0) || InputSystem.GetControllerConnected(1))
+			{
+				ControllerConnected = true;
+				prevControllerConnected = true;
 				changeUI = true;
-            }
-            else
-            {
-                ControllerConnected = false;
-                prevControllerConnected = false;
-            }
-        }
-    
+			}
+			else
+			{
+				ControllerConnected = false;
+				prevControllerConnected = false;
+			}
+		}
 
 		public void Update()
 		{
 			ControllerConnected = InputSystem.GetControllerConnected(0) || InputSystem.GetControllerConnected(1);
-            if (ControllerConnected != prevControllerConnected)
-            {
+			if (ControllerConnected != prevControllerConnected)
+			{
 				changeUI = true;
-                prevControllerConnected = ControllerConnected;
-            }
-            
-            if (ControllerConnected && changeUI)
-            {
-                // change the UI 
-                //SpaceToContinue.GetComponent<SpriteRenderer>().Texture = "";
-            }
+				prevControllerConnected = ControllerConnected;
+			}
+
+			if (ControllerConnected && changeUI)
+			{
+				// change the UI 
+				//SpaceToContinue.GetComponent<SpriteRenderer>().Texture = "";
+			}
 			else if (!ControllerConnected && changeUI)
-            {
-                //SpaceToContinue.GetComponent<SpriteRenderer>().Texture = "";
-            }
+			{
+				//SpaceToContinue.GetComponent<SpriteRenderer>().Texture = "";
+			}
 
 			bool pressedSpace = InputSystem.GetKeyPress(InputKeys.Space);
 			bool pressA = InputSystem.GetControllerButtonTriggered(0, InputSystem.Button.A);
@@ -157,6 +167,7 @@ namespace TRE
 					AS.Play(endBGM);
 
 				Scene.TransitionScene("Tutorial", delayScene);
+				endCutscene = true;
 			}
 			else
 			{
@@ -263,6 +274,17 @@ namespace TRE
 				{
 					if (ECSManager.IsValidEntity(dialogueSFX))
 						AS.Stop(dialogueSFX);
+				}
+
+				// if you hit the last frame, tick down timer to transition to Tutorial scene
+				if (currentFrame >= frames.Count - 1) // using >= because currentFrame gets incremented too quick
+				{
+					transitionTimer -= Time.deltaTime;
+					if (transitionTimer <= 0)
+					{
+						Scene.TransitionScene(mapName, delayScene);
+						endCutscene = true;
+					}
 				}
 
 				// Ignore if last frame alr
