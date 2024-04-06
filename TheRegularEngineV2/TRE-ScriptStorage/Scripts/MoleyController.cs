@@ -20,6 +20,9 @@ namespace TRE
 		public PowerUpUI MyPowerUpUI;
 		public PowerUpManager MyPowerManager;
 
+		/// <summary>Check if player is on top of another player</summary>
+		public bool isOnPlayer = false;
+
 		/// <summary>Check if player has boosted jump</summary>
 		public bool isBoostedJump = false;
 

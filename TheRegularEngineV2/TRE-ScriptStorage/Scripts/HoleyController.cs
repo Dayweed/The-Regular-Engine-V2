@@ -19,8 +19,11 @@ namespace TRE
 		public PowerUpUI MyPowerUpUI;
 		public PowerUpManager MyPowerManager;
 
-		/// <summary>Check if player has boosted jump</summary>
-		public bool isBoostedJump = false;
+        /// <summary>Check if player is on top of another player</summary>
+        public bool isOnPlayer = false;
+
+        /// <summary>Check if player has boosted jump</summary>
+        public bool isBoostedJump = false;
 
 		/// <summary>Check if player is on ground</summary>
 		public bool isGrounded = true;
@@ -976,9 +979,9 @@ namespace TRE
 						Entity Moley = ECSManager.FindEntityByName("Moley");
 						if (PS.IsCollisionStay(headCollider.ID, Moley.ID))
 						{
-							vec3 moleyPos = Moley.transform.Position;
-							moleyPos.y += currOffset + GetComponent<CapsuleCollider>().HalfHeight * 2f + Moley.GetComponent<CapsuleCollider>().HalfHeight + 3.5f;
-							Moley.transform.Position = moleyPos;
+							vec3 moleyPos = vec3.Zero;
+							moleyPos.y = currOffset + GetComponent<CapsuleCollider>().HalfHeight * 2f + Moley.GetComponent<CapsuleCollider>().HalfHeight + 3.5f;
+							Moley.transform.Position += moleyPos;
 							PS.SetLinearVelocity(Moley.ID, vec3.Zero);
 						}
 						PS.SetLinearVelocity(ID, vec3.Zero);
@@ -1017,9 +1020,9 @@ namespace TRE
 						Entity Moley = ECSManager.FindEntityByName("Moley");
 						if (PS.IsCollisionStay(headCollider.ID, Moley.ID))
 						{
-							vec3 moleyPos = Moley.transform.Position;
-							moleyPos.y += currOffset + GetComponent<CapsuleCollider>().HalfHeight * 2f + Moley.GetComponent<CapsuleCollider>().HalfHeight + 3.5f;
-							Moley.transform.Position = moleyPos;
+							vec3 moleyPos = vec3.Zero;
+							moleyPos.y = currOffset + GetComponent<CapsuleCollider>().HalfHeight * 2f + Moley.GetComponent<CapsuleCollider>().HalfHeight + 3.5f;
+							Moley.transform.Position += moleyPos;
 							PS.SetLinearVelocity(Moley.ID, vec3.Zero);
 						}
 						PS.SetLinearVelocity(ID, vec3.Zero);

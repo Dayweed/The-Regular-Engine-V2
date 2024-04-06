@@ -38,11 +38,11 @@ namespace TRE
 				globalTimer += Time.deltaTime;
 
                 // Check if is in trigger
-                if (PhysicsSystem.IsTriggerStay(TriggerPlatformCollider.ID, Holey.ID))
+                if (PhysicsSystem.IsTriggerStay(TriggerPlatformCollider.ID, Holey.ID) && !Holey.GetComponent<HoleyController>().isOnPlayer)
 				{
 					Holey.GetComponent<Transform>().Position += transform.Position - GetComponent<DirectPathfinding>().oldPosition;
 				}
-				if (PhysicsSystem.IsTriggerStay(TriggerPlatformCollider.ID, Moley.ID))
+				if (PhysicsSystem.IsTriggerStay(TriggerPlatformCollider.ID, Moley.ID) && !Moley.GetComponent<MoleyController>().isOnPlayer)
 				{
 					Moley.GetComponent<Transform>().Position += transform.Position - GetComponent<DirectPathfinding>().oldPosition;
 				}

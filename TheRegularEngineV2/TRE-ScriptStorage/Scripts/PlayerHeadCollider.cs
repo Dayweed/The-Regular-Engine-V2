@@ -92,6 +92,31 @@ namespace TRE
 				newPosition = transform.Position - oldPosition;
 				other.GetComponent<Transform>().Position += newPosition;
 			}
+
+			if (other.CompareTag("Red") && playerObj.ID != otherID)
+			{
+				other.GetComponent<MoleyController>().isOnPlayer = true;
+            }
+
+			if (other.CompareTag("Blue") && playerObj.ID != otherID)
+			{
+				other.GetComponent<HoleyController>().isOnPlayer = true;
+            }
 		}
+
+		public void OnCollisionExit(System.UInt64 otherID)
+        {
+            Entity other = new Entity(otherID);
+
+            if (other.CompareTag("Red") && playerObj.ID != otherID)
+            {
+                other.GetComponent<MoleyController>().isOnPlayer = false;
+            }
+
+            if (other.CompareTag("Blue") && playerObj.ID != otherID)
+            {
+                other.GetComponent<HoleyController>().isOnPlayer = false;
+            }
+        }
 	}
 }
