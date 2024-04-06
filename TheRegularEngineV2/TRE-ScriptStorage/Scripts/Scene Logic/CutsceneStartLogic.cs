@@ -36,10 +36,23 @@ namespace TRE
 
 		private ulong birdSFX;
 		private ulong dialogueSFX;
+		private ulong dialogue2SFX;
+		private ulong dialogue3SFX;
+		private ulong dialogue4SFX;
+		private ulong dialogue5SFX;
 		private ulong invitationSFX;
+		private ulong cheeringSFX;
+		private ulong cheering2SFX;
 		private ulong endBGM;
 		private ulong BGM;
 		private bool invitationSFXPlayed = false;
+		private bool dialogueSFXPlayed = false;
+		private bool dialogueSFX2Played = false;
+		private bool dialogueSFX3Played = false;
+		private bool dialogueSFX4Played = false;
+		private bool dialogueSFX5Played = false;
+		private bool cheeringSFXPlayed = false;
+		private bool cheering2SFXPlayed = false;
 
 		/// <summary>This contains all frames in the scene. Assigned in Start().</summary>
 		List<Entity> frames = new List<Entity>();
@@ -107,8 +120,14 @@ namespace TRE
 			autoDisappearScenes = new List<string>() { "Frame4", "Frame5", "Frame6", "Frame7" };
 
 			birdSFX = ECSManager.FindIDFromName("SFX_Bird");
-			dialogueSFX = ECSManager.FindIDFromName("SFX_DIalogue");
+			dialogueSFX = ECSManager.FindIDFromName("SFX_Dialogue");
+			dialogue2SFX = ECSManager.FindIDFromName("SFX_Dialogue2");
+			dialogue3SFX = ECSManager.FindIDFromName("SFX_Dialogue3");
+			dialogue4SFX = ECSManager.FindIDFromName("SFX_Dialogue4");
+			dialogue5SFX = ECSManager.FindIDFromName("SFX_Dialogue5");
 			invitationSFX = ECSManager.FindIDFromName("SFX_Invitation");
+			cheeringSFX = ECSManager.FindIDFromName("SFX_Cheer");
+			cheering2SFX = ECSManager.FindIDFromName("SFX_Cheer2");
 			endBGM = ECSManager.FindIDFromName("BGM_EndLoop");
 			BGM = ECSManager.FindIDFromName("BGM");
 
@@ -203,23 +222,6 @@ namespace TRE
 					invitationSFXPlayed = true;
 				}
 
-				//letter frames: 3, 4, 5, 6, 7
-				if (currentFrame >= 3 && currentFrame <= 7)
-				{
-					if (TextSystem.GetDialogueRunning(InvitationDialogue1.ID) || TextSystem.GetDialogueRunning(InvitationDialogue2.ID)
-						|| TextSystem.GetDialogueRunning(InvitationDialogue3.ID) || TextSystem.GetDialogueRunning(InvitationDialogue4.ID)
-						|| TextSystem.GetDialogueRunning(InvitationDialogue5.ID))
-					{
-						if (ECSManager.IsValidEntity(dialogueSFX))
-							AS.Play(dialogueSFX);
-					}
-					else
-					{
-						if (ECSManager.IsValidEntity(dialogueSFX))
-							AS.Stop(dialogueSFX);
-					}
-				}
-
 				if (currentFrame == 3)
 				{
 					paragraphIsHalfWay = TextSystem.GetDialogueRunning(InvitationDialogue1.ID);
@@ -228,6 +230,13 @@ namespace TRE
 						TextSystem.ResetDialogue(InvitationDialogue1.ID);
 					else if (pressSpaceCounter == 0)
 						TextSystem.StartDialogue(InvitationDialogue1.ID);
+
+					if(!dialogueSFXPlayed)
+					{
+						if (ECSManager.IsValidEntity(dialogueSFX))
+							AS.Play(dialogueSFX);
+						dialogueSFXPlayed = true;
+					}
 				}
 
 				if (currentFrame == 4)
@@ -238,6 +247,16 @@ namespace TRE
 						TextSystem.ResetDialogue(InvitationDialogue2.ID);
 					else
 						TextSystem.StartDialogue(InvitationDialogue2.ID);
+
+					if (!dialogueSFX2Played)
+					{
+						if (ECSManager.IsValidEntity(dialogueSFX))
+							AS.Stop(dialogueSFX);
+
+						if (ECSManager.IsValidEntity(dialogue2SFX))
+							AS.Play(dialogue2SFX);
+						dialogueSFX2Played = true;
+					}
 				}
 
 				if (currentFrame == 5)
@@ -248,6 +267,16 @@ namespace TRE
 						TextSystem.ResetDialogue(InvitationDialogue3.ID);
 					else
 						TextSystem.StartDialogue(InvitationDialogue3.ID);
+
+					if (!dialogueSFX3Played)
+					{
+						if (ECSManager.IsValidEntity(dialogue2SFX))
+							AS.Stop(dialogue2SFX);
+
+						if (ECSManager.IsValidEntity(dialogue3SFX))
+							AS.Play(dialogue3SFX);
+						dialogueSFX3Played = true;
+					}
 				}
 
 				if (currentFrame == 6)
@@ -258,6 +287,16 @@ namespace TRE
 						TextSystem.ResetDialogue(InvitationDialogue4.ID);
 					else
 						TextSystem.StartDialogue(InvitationDialogue4.ID);
+
+					if (!dialogueSFX4Played)
+					{
+						if (ECSManager.IsValidEntity(dialogue3SFX))
+							AS.Stop(dialogue3SFX);
+
+						if (ECSManager.IsValidEntity(dialogue4SFX))
+							AS.Play(dialogue4SFX);
+						dialogueSFX4Played = true;
+					}
 				}
 
 				if (currentFrame == 7)
@@ -268,16 +307,38 @@ namespace TRE
 						TextSystem.ResetDialogue(InvitationDialogue5.ID);
 					else
 						TextSystem.StartDialogue(InvitationDialogue5.ID);
+
+					if (!dialogueSFX5Played)
+					{
+						if (ECSManager.IsValidEntity(dialogue4SFX))
+							AS.Stop(dialogue4SFX);
+
+						if (ECSManager.IsValidEntity(dialogue5SFX))
+							AS.Play(dialogue5SFX);
+						dialogueSFX5Played = true;
+					}
 				}
 
-				if (currentFrame == 8)
+				if(currentFrame == 8)
 				{
-					if (ECSManager.IsValidEntity(dialogueSFX))
-						AS.Stop(dialogueSFX);
+					if (ECSManager.IsValidEntity(dialogue5SFX))
+						AS.Stop(dialogue5SFX);
 				}
 
-				// if you hit the last frame, tick down timer to transition to Tutorial scene
-				if (currentFrame >= frames.Count - 1) // using >= because currentFrame gets incremented too quick
+				if (currentFrame == 9 && !cheeringSFXPlayed && !cheering2SFXPlayed)
+				{
+					if (ECSManager.IsValidEntity(cheeringSFX))
+						AS.Play(cheeringSFX);
+					cheeringSFXPlayed = true;
+
+					if (ECSManager.IsValidEntity(cheering2SFX))
+						AS.Play(cheering2SFX);
+					cheering2SFXPlayed = true;
+
+				}
+
+					// if you hit the last frame, tick down timer to transition to Tutorial scene
+					if (currentFrame >= frames.Count - 1) // using >= because currentFrame gets incremented too quick
 				{
 					transitionTimer -= Time.deltaTime;
 					if (transitionTimer <= 0)
@@ -317,9 +378,6 @@ namespace TRE
 
 						if (currentFrame >= 3 && currentFrame <= 7 && paragraphIsHalfWay)
 						{
-							if (ECSManager.IsValidEntity(dialogueSFX))
-								AS.Stop(dialogueSFX);
-
 							++pressSpaceCounter;
 						}
 
