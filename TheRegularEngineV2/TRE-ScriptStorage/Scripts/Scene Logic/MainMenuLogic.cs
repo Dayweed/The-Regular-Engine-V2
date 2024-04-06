@@ -223,19 +223,19 @@ namespace TRE
 			if (controller1 && !controller2 && changeUI)
 			{
 				UIControls.GetComponent<SpriteRenderer>().Texture = "ui-mm-controls-controller1.png";
-				pauseButtonUI.GetComponent<SpriteRenderer>().Texture = "ui-pause-button-controller.png";
+				pauseButtonUI.GetComponent<SpriteRenderer>().Texture = "ui-button-pause-controller.png";
 				controller1 = false;
 			}
 			else if (controller1 && controller2 && changeUI)
 			{
 				UIControls.GetComponent<SpriteRenderer>().Texture = "ui-mm-controls-controller2.png";
-				pauseButtonUI.GetComponent<SpriteRenderer>().Texture = "ui-pause-button-controller.png";
+				pauseButtonUI.GetComponent<SpriteRenderer>().Texture = "ui-button-pause-controller.png";
 				controller1 = false;
 			}
 			else if (!controller1 && !controller2 && changeUI)
 			{
 				UIControls.GetComponent<SpriteRenderer>().Texture = "ui-mm-controls.png";
-				pauseButtonUI.GetComponent<SpriteRenderer>().Texture = "ui-pause-button.png";
+				pauseButtonUI.GetComponent<SpriteRenderer>().Texture = "ui-button-pause.png";
 				changeUI = false;
 			}
 
