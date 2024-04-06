@@ -112,6 +112,8 @@ namespace TRE
 		private Entity P1_controller_panel;
 		private Entity P1_controller_preset1;
 		private Entity P1_controller_preset2;
+		private Entity P1_controller_preset3;
+		private Entity P1_controller_preset4;
 		private Entity P2_panel;
 		private Entity P2_keyboard_panel;
 		private Entity P2_keyboard_preset1;
@@ -233,6 +235,8 @@ namespace TRE
 				P1_controller_panel = ECSManager.FindEntityByName("P1_controller_panel");
 				P1_controller_preset1 = ECSManager.FindEntityByName("P1_controller_preset1");
 				P1_controller_preset2 = ECSManager.FindEntityByName("P1_controller_preset2");
+				P1_controller_preset3 = ECSManager.FindEntityByName("P1_controller_preset3");
+				P1_controller_preset4 = ECSManager.FindEntityByName("P1_controller_preset4");
 
 				P2_keyboard_panel = ECSManager.FindEntityByName("P2_keyboard_panel");
 				P2_keyboard_preset1 = ECSManager.FindEntityByName("P2_keyboard_preset1");
@@ -933,27 +937,67 @@ namespace TRE
 								}
 								else
 								{
-									if (ControllerInput(MenuNavigation.LEFT) || ControllerInput(MenuNavigation.RIGHT) ||
-										IS.GetKeyPress(InputKeys.A) || IS.GetKeyPress(InputKeys.D))
+									//if (ControllerInput(MenuNavigation.LEFT) || ControllerInput(MenuNavigation.RIGHT) ||
+									//	IS.GetKeyPress(InputKeys.A) || IS.GetKeyPress(InputKeys.D))
+									//{
+									//	if (P1_ControllerPreset == 0)
+									//	{
+									//		P1_ControllerPreset = 1;
+									//	}
+									//	else if (P1_ControllerPreset == 1)
+									//	{
+									//		P1_ControllerPreset = 0;
+									//	}
+
+									//	// Set the persistent system
+
+									//	string P1_ControllerPresetString = P1_ControllerPreset.ToString();
+									//	PRS.SetValue("MoleyController", P1_ControllerPresetString);
+									//	moley.GetComponent<MoleyController>().ControllerPreset = P1_ControllerPreset;
+									//	moley.GetComponent<MoleyController>().SetControllerPreset(P1_ControllerPreset);
+									//	playUISound = true;
+
+									//}
+
+									if (ControllerInput(MenuNavigation.LEFT) || IS.GetKeyPress(InputKeys.A))
 									{
-										if (P1_ControllerPreset == 0)
+										int new_p1 = (P1_ControllerPreset - 1) % 4;
+										if (new_p1 == P2_ControllerPreset)
 										{
-											P1_ControllerPreset = 1;
-										}
-										else if (P1_ControllerPreset == 1)
+											P1_ControllerPreset = (new_p1 - 1) % 4;
+                                        }
+										else
 										{
-											P1_ControllerPreset = 0;
-										}
+											P1_ControllerPreset = new_p1;
+                                        }
 
-										// Set the persistent system
+                                        // Set the persistent system
+                                        string P1_ControllerPresetString = P1_ControllerPreset.ToString();
+                                        PRS.SetValue("MoleyController", P1_ControllerPresetString);
+                                        moley.GetComponent<MoleyController>().ControllerPreset = P1_ControllerPreset;
+                                        moley.GetComponent<MoleyController>().SetControllerPreset(P1_ControllerPreset);
+                                        playUISound = true;
+                                    }
 
-										string P1_ControllerPresetString = P1_ControllerPreset.ToString();
-										PRS.SetValue("MoleyController", P1_ControllerPresetString);
-										moley.GetComponent<MoleyController>().ControllerPreset = P1_ControllerPreset;
-										moley.GetComponent<MoleyController>().SetControllerPreset(P1_ControllerPreset);
-										playUISound = true;
+									if (ControllerInput(MenuNavigation.RIGHT) || IS.GetKeyPress(InputKeys.D))
+									{
+                                        int new_p1 = (P1_ControllerPreset + 1) % 4;
+                                        if (new_p1 == P2_ControllerPreset)
+                                        {
+                                            P1_ControllerPreset = (new_p1 + 1) % 4;
+                                        }
+                                        else
+                                        {
+                                            P1_ControllerPreset = new_p1;
+                                        }
 
-									}
+                                        // Set the persistent system
+                                        string P1_ControllerPresetString = P1_ControllerPreset.ToString();
+                                        PRS.SetValue("MoleyController", P1_ControllerPresetString);
+                                        moley.GetComponent<MoleyController>().ControllerPreset = P1_ControllerPreset;
+                                        moley.GetComponent<MoleyController>().SetControllerPreset(P1_ControllerPreset);
+                                        playUISound = true;
+                                    }
 								}
 								break;
 							case 1: //player 2
@@ -998,25 +1042,65 @@ namespace TRE
 								}
 								else
 								{
-									if (ControllerInput(MenuNavigation.LEFT) || ControllerInput(MenuNavigation.RIGHT) ||
-										IS.GetKeyPress(InputKeys.A) || IS.GetKeyPress(InputKeys.D))
-									{
-										if (P2_ControllerPreset == 0)
-										{
-											P2_ControllerPreset = 1;
-										}
-										else if (P2_ControllerPreset == 1)
-										{
-											P2_ControllerPreset = 0;
-										}
+									//if (ControllerInput(MenuNavigation.LEFT) || ControllerInput(MenuNavigation.RIGHT) ||
+									//	IS.GetKeyPress(InputKeys.A) || IS.GetKeyPress(InputKeys.D))
+									//{
+									//	if (P2_ControllerPreset == 0)
+									//	{
+									//		P2_ControllerPreset = 1;
+									//	}
+									//	else if (P2_ControllerPreset == 1)
+									//	{
+									//		P2_ControllerPreset = 0;
+									//	}
 
-										// Set the persistent system
-										string P2_ControllerPresetString = P2_ControllerPreset.ToString();
+									//	// Set the persistent system
+									//	string P2_ControllerPresetString = P2_ControllerPreset.ToString();
+									//	PRS.SetValue("HoleyController", P2_ControllerPresetString);
+									//	holey.GetComponent<HoleyController>().ControllerPreset = P2_ControllerPreset;
+									//	holey.GetComponent<HoleyController>().SetControllerPreset(P2_ControllerPreset);
+									//	playUISound = true;
+									//}
+
+									if (ControllerInput(MenuNavigation.LEFT) || IS.GetKeyPress(InputKeys.A))
+									{
+                                        int new_p2 = (P2_ControllerPreset - 1) % 4;
+                                        if (new_p2 == P1_ControllerPreset)
+                                        {
+                                            P2_ControllerPreset = (new_p2 - 1) % 4;
+                                        }
+                                        else
+                                        {
+                                            P2_ControllerPreset = new_p2;
+                                        }
+
+                                        // Set the persistent system
+                                        string P2_ControllerPresetString = P2_ControllerPreset.ToString();
 										PRS.SetValue("HoleyController", P2_ControllerPresetString);
 										holey.GetComponent<HoleyController>().ControllerPreset = P2_ControllerPreset;
 										holey.GetComponent<HoleyController>().SetControllerPreset(P2_ControllerPreset);
 										playUISound = true;
 									}
+
+                                    if (ControllerInput(MenuNavigation.RIGHT) || IS.GetKeyPress(InputKeys.D))
+									{
+                                        int new_p2 = (P2_ControllerPreset + 1) % 4;
+                                        if (new_p2 == P1_ControllerPreset)
+                                        {
+                                            P2_ControllerPreset = (new_p2 + 1) % 4;
+                                        }
+                                        else
+                                        {
+                                            P2_ControllerPreset = new_p2;
+                                        }
+
+                                        // Set the persistent system
+                                        string P2_ControllerPresetString = P2_ControllerPreset.ToString();
+                                        PRS.SetValue("HoleyController", P2_ControllerPresetString);
+                                        holey.GetComponent<HoleyController>().ControllerPreset = P2_ControllerPreset;
+                                        holey.GetComponent<HoleyController>().SetControllerPreset(P2_ControllerPreset);
+                                        playUISound = true;
+                                    }
 								}
 								break;
 						}
@@ -1446,6 +1530,8 @@ namespace TRE
 				UIS.SetVisible(P1_controller_panel.ID, false);
 				UIS.SetVisible(P1_controller_preset1.ID, false);
 				UIS.SetVisible(P1_controller_preset2.ID, false);
+				UIS.SetVisible(P1_controller_preset3.ID, false);
+				UIS.SetVisible(P1_controller_preset4.ID, false);
 				UIS.SetVisible(P2_panel.ID, false);
 				UIS.SetVisible(P2_keyboard_panel.ID, false);
 				UIS.SetVisible(P2_keyboard_preset1.ID, false);
@@ -1488,6 +1574,8 @@ namespace TRE
 						P1_keyboard_preset3.GetComponent<SpriteRenderer>().isVisible = false;
 						P1_controller_preset1.GetComponent<SpriteRenderer>().isVisible = false;
 						P1_controller_preset2.GetComponent<SpriteRenderer>().isVisible = false;
+						P1_controller_preset3.GetComponent<SpriteRenderer>().isVisible = false;
+						P1_controller_preset4.GetComponent<SpriteRenderer>().isVisible = false;
 						break;
 					case 1:
 						P1_keyboard_preset1.GetComponent<SpriteRenderer>().isVisible = false;
@@ -1495,6 +1583,8 @@ namespace TRE
 						P1_keyboard_preset3.GetComponent<SpriteRenderer>().isVisible = false;
 						P1_controller_preset1.GetComponent<SpriteRenderer>().isVisible = false;
 						P1_controller_preset2.GetComponent<SpriteRenderer>().isVisible = false;
+						P1_controller_preset3.GetComponent<SpriteRenderer>().isVisible = false;
+						P1_controller_preset4.GetComponent<SpriteRenderer>().isVisible = false;
 						break;
 					case 2:
 						P1_keyboard_preset1.GetComponent<SpriteRenderer>().isVisible = false;
@@ -1502,6 +1592,8 @@ namespace TRE
 						P1_keyboard_preset3.GetComponent<SpriteRenderer>().isVisible = showControlsPanel;
 						P1_controller_preset1.GetComponent<SpriteRenderer>().isVisible = false;
 						P1_controller_preset2.GetComponent<SpriteRenderer>().isVisible = false;
+						P1_controller_preset3.GetComponent<SpriteRenderer>().isVisible = false;
+						P1_controller_preset4.GetComponent<SpriteRenderer>().isVisible = false;
 
 						break;
 				}
@@ -1511,21 +1603,44 @@ namespace TRE
 				P1_keyboard_panel.GetComponent<SpriteRenderer>().isVisible = false;
 				P1_controller_panel.GetComponent<SpriteRenderer>().isVisible = showControlsPanel;
 
-				if (P1_ControllerPreset == 0)
+				switch(P1_ControllerPreset)
 				{
-					P1_keyboard_preset1.GetComponent<SpriteRenderer>().isVisible = false;
-					P1_keyboard_preset2.GetComponent<SpriteRenderer>().isVisible = false;
-					P1_keyboard_preset3.GetComponent<SpriteRenderer>().isVisible = false;
-					P1_controller_preset1.GetComponent<SpriteRenderer>().isVisible = showControlsPanel;
-					P1_controller_preset2.GetComponent<SpriteRenderer>().isVisible = false;
-				}
-				else if (P1_ControllerPreset == 1)
-				{
-					P1_keyboard_preset1.GetComponent<SpriteRenderer>().isVisible = false;
-					P1_keyboard_preset2.GetComponent<SpriteRenderer>().isVisible = false;
-					P1_keyboard_preset3.GetComponent<SpriteRenderer>().isVisible = false;
-					P1_controller_preset1.GetComponent<SpriteRenderer>().isVisible = false;
-					P1_controller_preset2.GetComponent<SpriteRenderer>().isVisible = showControlsPanel;
+					case 0:
+						P1_keyboard_preset1.GetComponent<SpriteRenderer>().isVisible = false;
+						P1_keyboard_preset2.GetComponent<SpriteRenderer>().isVisible = false;
+						P1_keyboard_preset3.GetComponent<SpriteRenderer>().isVisible = false;
+						P1_controller_preset1.GetComponent<SpriteRenderer>().isVisible = showControlsPanel;
+						P1_controller_preset2.GetComponent<SpriteRenderer>().isVisible = false;
+						P1_controller_preset3.GetComponent<SpriteRenderer>().isVisible = false;
+						P1_controller_preset4.GetComponent<SpriteRenderer>().isVisible = false;
+						break;
+					case 1:
+						P1_keyboard_preset1.GetComponent<SpriteRenderer>().isVisible = false;
+						P1_keyboard_preset2.GetComponent<SpriteRenderer>().isVisible = false;
+						P1_keyboard_preset3.GetComponent<SpriteRenderer>().isVisible = false;
+						P1_controller_preset1.GetComponent<SpriteRenderer>().isVisible = false;
+						P1_controller_preset2.GetComponent<SpriteRenderer>().isVisible = showControlsPanel;
+						P1_controller_preset3.GetComponent<SpriteRenderer>().isVisible = false;
+						P1_controller_preset4.GetComponent<SpriteRenderer>().isVisible = false;
+						break;
+					case 2:
+                        P1_keyboard_preset1.GetComponent<SpriteRenderer>().isVisible = false;
+                        P1_keyboard_preset2.GetComponent<SpriteRenderer>().isVisible = false;
+                        P1_keyboard_preset3.GetComponent<SpriteRenderer>().isVisible = false;
+                        P1_controller_preset1.GetComponent<SpriteRenderer>().isVisible = false;
+                        P1_controller_preset2.GetComponent<SpriteRenderer>().isVisible = false;
+                        P1_controller_preset3.GetComponent<SpriteRenderer>().isVisible = showControlsPanel;
+                        P1_controller_preset4.GetComponent<SpriteRenderer>().isVisible = false;
+                        break;
+					case 3:
+                        P1_keyboard_preset1.GetComponent<SpriteRenderer>().isVisible = false;
+                        P1_keyboard_preset2.GetComponent<SpriteRenderer>().isVisible = false;
+                        P1_keyboard_preset3.GetComponent<SpriteRenderer>().isVisible = false;
+                        P1_controller_preset1.GetComponent<SpriteRenderer>().isVisible = false;
+                        P1_controller_preset2.GetComponent<SpriteRenderer>().isVisible = false;
+                        P1_controller_preset3.GetComponent<SpriteRenderer>().isVisible = false;
+                        P1_controller_preset4.GetComponent<SpriteRenderer>().isVisible = showControlsPanel;
+                        break;
 				}
 			}
 
