@@ -39,13 +39,13 @@ namespace TRE
 				if (name == "FallingObj_Spawner_01")
 				{
 					size = new vec3(30, 0, 30);
-					activeDuration = 3;
+					activeDuration = 1.5f;
 				}
 
 				if (name == "FallingObj_Spawner_02")
 				{
 					size = new vec3(30, 0, 30);
-					activeDuration = 4;
+					activeDuration = 2;
 				}
 			}
 
@@ -111,10 +111,10 @@ namespace TRE
 					child.transform.Position = pos;
 
 					itemsToSpawn.Add(child);
-					itemsTimer.Add(activeDuration * Random.Range(minDurationModifier, maxDurationModifier));
+					itemsTimer.Add(activeDuration);
 					itemsPos.Add(pos);
 					itemsDefRot.Add(child.transform.Rotation);
-					itemsDelayTimer.Add(delayDuration);
+					itemsDelayTimer.Add(delayDuration * Random.Range(minDurationModifier, maxDurationModifier));
 
 					if (!foundSpot) child.SetActive(false);
 
@@ -198,8 +198,8 @@ namespace TRE
 				itemsToSpawn[i].GetComponent<FallingObj>().isGrounded = false;
 				PhysicsSystem.SetLinearVelocity(itemsToSpawn[i].ID, vec3.Zero);
 
-				itemsTimer[i] = activeDuration * Random.Range(minDurationModifier, maxDurationModifier);
-				itemsDelayTimer[i] = delayDuration;
+				itemsTimer[i] = activeDuration;
+				itemsDelayTimer[i] = delayDuration * Random.Range(minDurationModifier, maxDurationModifier);
 			}
 		}
 	}
