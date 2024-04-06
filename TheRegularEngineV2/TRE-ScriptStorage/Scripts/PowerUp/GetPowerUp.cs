@@ -60,8 +60,11 @@ namespace TRE
 				//PhysicsSystem.SetLinearVelocity(ID, Vector3.zero);
 				cooldownCurrent = 0;
 
-				// Set parent
-				if (other.CompareTag("Platform")) parenting.SetParent(other);
+                // Resume Text Bounce code
+                GetComponent<TextBounce>().Resume();
+
+                // Set parent
+                if (other.CompareTag("Platform")) parenting.SetParent(other);
 				return;
 			}
 
@@ -104,6 +107,9 @@ namespace TRE
 				SetToPlayer();
 
 				collected = true;
+
+				// Pause Text Bounce code
+				GetComponent<TextBounce>().Pause();
 
 				if (collected && ECSManager.IsValidEntity(collectedSFX))
 				{
