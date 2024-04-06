@@ -159,7 +159,8 @@ namespace TRE
 
 				if (ECSManager::Instance().IsRemovableComponent(List.first))
 				{
-					if (ImGui::Button("Remove Component", ImVec2(-FLT_MIN, 0.0f)) && ImGui::IsMouseClicked(ImGuiMouseButton_Left) || ImGui::IsItemClicked())
+					const std::string removeCompButtonLabel = "Remove Component##" + List.first;
+					if (ImGui::Button(removeCompButtonLabel.c_str(), ImVec2(-FLT_MIN, 0.0f)) && ImGui::IsMouseClicked(ImGuiMouseButton_Left) || ImGui::IsItemClicked())
 					{
 						// Update Prefabing if have
 						if (isPrefabInstance)
@@ -513,7 +514,7 @@ namespace TRE
 								for (size_t i{}; i < Value.size(); ++i)
 								{
 									float pos[3]{ Value[i].m_Value.x, Value[i].m_Value.y, Value[i].m_Value.z };
-									UpdatedData = UpdatedData ? true : ImGui::DragFloat3((NameField + std::string("Pos"+i)).c_str(), pos);
+									UpdatedData = UpdatedData ? true : ImGui::DragFloat3((NameField + std::string("Pos" + i)).c_str(), pos);
 									Value[i].m_Value = { pos[0], pos[1], pos[2] };
 									ImGui::SameLine();
 									//// Teleport to that position (Removed since it does not work since the position of Transform will get overwritten)
@@ -604,15 +605,17 @@ namespace TRE
 								if (ImGui::BeginCombo("##FontType", Value.m_FontType.c_str()))
 								{
 									std::ranges::sort(LoadFontTypes, [](const auto& type1, const auto& type2)
-									{
-										for (char ch : type1)
-											ch = static_cast<char>(tolower(ch));
+										{
+											std::string font1Name = type1;
+											for (char& ch : font1Name)
+												ch = static_cast<char>(tolower(ch));
 
-										for (char ch : type2)
-											ch = static_cast<char>(tolower(ch));
+											std::string font2Name = type2;
+											for (char& ch : font2Name)
+												ch = static_cast<char>(tolower(ch));
 
-										return type1 < type2;
-									});
+											return font1Name < font2Name;
+										});
 
 									for (auto& FontName : LoadFontTypes)
 									{
@@ -822,7 +825,7 @@ namespace TRE
 											{
 												ImGui::TextColored({ 1, 0, 0, 1 }, "[Data Type] ScriptFieldTypes::Vector3");
 
-												MonoObject* obj = mono_field_get_value_object(ScriptEngine::s_ScriptEngineData->AppDomain, inst.m_MonoField , instance->GetScriptObject());
+												MonoObject* obj = mono_field_get_value_object(ScriptEngine::s_ScriptEngineData->AppDomain, inst.m_MonoField, instance->GetScriptObject());
 												MonoClass* klass = mono_object_get_class(obj);
 
 												MonoClassField* xField = mono_class_get_field_from_name(klass, "x");
@@ -834,19 +837,19 @@ namespace TRE
 												mono_field_get_value(obj, yField, &y);
 												mono_field_get_value(obj, zField, &z);
 
-												
-												if(ImGui::DragFloat("X", &x))
+
+												if (ImGui::DragFloat("X", &x))
 												{
 													mono_field_set_value(obj, xField, &x);
 												}
 												//put in same line
-												
-												if(ImGui::DragFloat("Y", &y))
+
+												if (ImGui::DragFloat("Y", &y))
 												{
 													mono_field_set_value(obj, yField, &y);
 												}
-												
-												if(ImGui::DragFloat("Z", &z))
+
+												if (ImGui::DragFloat("Z", &z))
 												{
 													mono_field_set_value(obj, zField, &z);
 												}
@@ -872,7 +875,7 @@ namespace TRE
 												{
 													mono_field_set_value(obj, guidField, &ID);
 												}*/
-												
+
 											}
 											else if (inst.m_Type == ScriptFieldTypes::String)
 											{
