@@ -18,6 +18,7 @@ namespace TRE
 		Entity Frame_10;
 		Entity SpaceToContinue;
 		Entity SpaceToContinueBlack;
+        Entity SkipButton;
 		Entity InvitationDialogue1;
 		Entity InvitationDialogue2;
 		Entity InvitationDialogue3;
@@ -93,6 +94,7 @@ namespace TRE
 			Frame_10 = ECSManager.FindEntityByName("Frame10");
 			SpaceToContinue = ECSManager.FindEntityByName("SpaceToContinue");
 			SpaceToContinueBlack = ECSManager.FindEntityByName("SpaceToContinueBlack");
+			SkipButton = ECSManager.FindEntityByName("SkipButton");
 			InvitationDialogue1 = ECSManager.FindEntityByName("InvitationDialogue1");
 			InvitationDialogue2 = ECSManager.FindEntityByName("InvitationDialogue2");
 			InvitationDialogue3 = ECSManager.FindEntityByName("InvitationDialogue3");
@@ -111,6 +113,7 @@ namespace TRE
 			Frame_10.SetActive(false);
 			SpaceToContinue.SetActive(false);
 			SpaceToContinueBlack.SetActive(false);
+			SkipButton.SetActive(false);
 
 			frames = new List<Entity>
 				{ Frame_1, Frame_2, Frame_3, Frame_4, Frame_5, Frame_6, Frame_7, Frame_8, Frame_9, Frame_10 };
@@ -161,12 +164,16 @@ namespace TRE
 			if (ControllerConnected && changeUI)
 			{
 				// change the UI 
-				//SpaceToContinue.GetComponent<SpriteRenderer>().Texture = "";
-			}
+				SpaceToContinue.GetComponent<SpriteRenderer>().Texture = "ui-button-a.png";
+                SpaceToContinueBlack.GetComponent<SpriteRenderer>().Texture = "ui-button-a.png";
+                SkipButton.GetComponent<SpriteRenderer>().Texture = "ui-button-skip-controller.png";
+            }
 			else if (!ControllerConnected && changeUI)
 			{
-				//SpaceToContinue.GetComponent<SpriteRenderer>().Texture = "";
-			}
+				SpaceToContinue.GetComponent<SpriteRenderer>().Texture = "ui-button-space.png";
+                SpaceToContinueBlack.GetComponent<SpriteRenderer>().Texture = "ui-button-space.png";
+                SkipButton.GetComponent<SpriteRenderer>().Texture = "ui-button-skip.png";
+            }
 
 			bool pressedSpace = InputSystem.GetKeyPress(InputKeys.Space);
 			bool pressA = InputSystem.GetControllerButtonTriggered(0, InputSystem.Button.A);

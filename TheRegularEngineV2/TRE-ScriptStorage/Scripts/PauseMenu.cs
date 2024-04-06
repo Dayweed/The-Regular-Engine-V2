@@ -67,9 +67,10 @@ namespace TRE
 		private Entity cfmMenu;
 		private Entity settingsMenu;
 		private Entity settingsClose;
+        private Entity controlsSwitch;
 
-		//Gameplay panel entities
-		private Entity power_ups_panel;
+        //Gameplay panel entities
+        private Entity power_ups_panel;
 		private Entity on_button_pwrUp;
 		private Entity on_button_backing_pwrUp;
 		private Entity off_button_pwrUp;
@@ -207,7 +208,8 @@ namespace TRE
 				off_button_inv = ECSManager.FindEntityByName("off_button_inv");
 				off_button_backing_inv = ECSManager.FindEntityByName("off_button_backing_inv");
 				settingsClose = ECSManager.FindEntityByName("close_settings");
-			}
+                controlsSwitch = ECSManager.FindEntityByName("switch_text");
+            }
 
 			//graphics panel
 			{
@@ -380,14 +382,16 @@ namespace TRE
 			if (controllerConnected && changeUI)
 			{
 				// change the texture for the settings_close button
-				//settingsClose.GetComponent<SpriteRenderer>().Texture = "ui-button-back-controller.png";
-				changeUI = false;
+				settingsClose.GetComponent<SpriteRenderer>().Texture = "ui-button-close-controller.png";
+                controlsSwitch.GetComponent<SpriteRenderer>().Texture = "Controls_PlayerSwitch_Text_Controller.png";
+                changeUI = false;
 			}
 			else if (!controllerConnected && changeUI)
 			{
 				// change the texture for the settings_close button
-				//settingsClose.GetComponent<SpriteRenderer>().Texture = "ui-button-back.png";
-				changeUI = false;
+				settingsClose.GetComponent<SpriteRenderer>().Texture = "ui-button-close.png";
+                controlsSwitch.GetComponent<SpriteRenderer>().Texture = "Controls_PlayerSwitch_Text_KB.png";
+                changeUI = false;
 			}
 
 
@@ -1438,7 +1442,7 @@ namespace TRE
 				UIS.SetVisible(P2_controller_panel.ID, false);
 				UIS.SetVisible(P2_controller_preset1.ID, false);
 				UIS.SetVisible(P2_controller_preset2.ID, false);
-				showControlsPanel = false;
+                showControlsPanel = false;
 			}
 
 			if (showGameplayPanel)
