@@ -57,13 +57,13 @@ namespace TRE
 
 		public void Update()
 		{
-			if (MoleyInside && (InputSystem.GetKeyHold(InputKeys.Space) || InputSystem.GetControllerButtonPress(0, InputSystem.Button.A)) && Moley.GetComponent<MoleyController>().isControllable && !MoleyApprove)
+			if (!Scene.IsTransiting() && MoleyInside && (InputSystem.GetKeyHold(InputKeys.Space) || InputSystem.GetControllerButtonPress(0, InputSystem.Button.A)) && Moley.GetComponent<MoleyController>().isControllable && !MoleyApprove)
 			{
 				MoleyApprove = true;
 				if (ECSManager.IsValidEntity(moleyCheer))
 					AudioSystem.Play(moleyCheer);
 			}
-			if (HoleyInside && (InputSystem.GetKeyHold(InputKeys.Enter) || InputSystem.GetControllerButtonPress(0, InputSystem.Button.A)) && Moley.GetComponent<MoleyController>().isControllable && !HoleyApprove)
+			if (!Scene.IsTransiting() && HoleyInside && (InputSystem.GetKeyHold(InputKeys.Enter) || InputSystem.GetControllerButtonPress(0, InputSystem.Button.A)) && Moley.GetComponent<MoleyController>().isControllable && !HoleyApprove)
 			{
 				HoleyApprove = true;
 				if (ECSManager.IsValidEntity(holeyCheer))
