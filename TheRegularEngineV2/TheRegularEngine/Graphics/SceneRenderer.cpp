@@ -395,10 +395,9 @@ namespace TRE
 		{
 			if (DLights[0]->GetComponent<DirectionalLight>().m_Main == false)
 			{
-				std::vector<Entity> temp(2);
-				temp.push_back(DLights[1]);
-				temp.push_back(DLights[0]);
-				DLights = temp;
+				Entity temp = DLights[0];
+				DLights[0] = DLights[1];
+				DLights[1] = temp;
 			}
 
 			ubo.m_MultipleLight = 1.f;
@@ -526,10 +525,9 @@ namespace TRE
 		{
 			if (DLights[0]->GetComponent<DirectionalLight>().m_Main == false)
 			{
-				std::vector<Entity> temp(2);
-				temp.push_back(DLights[1]);
-				temp.push_back(DLights[0]);
-				DLights = temp;
+				Entity temp = DLights[0];
+				DLights[0] = DLights[1];
+				DLights[1] = temp;
 			}
 			ubo.m_MultipleLight = 1.f;
 		}
@@ -537,7 +535,6 @@ namespace TRE
 		{
 			ubo.m_MultipleLight = 0.f;
 		}
-		//std::cout << ubo.m_MultipleLight << std::endl;
 		
 		int i = 0;
 		for (const auto& ent : DLights)

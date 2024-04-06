@@ -45,7 +45,7 @@ namespace TRE
 		glm::vec4 m_LightDirection_Main = { glm::vec4(glm::normalize(glm::vec3(1.0f, -1.f, 1.f)), 1.f) };	//Directional Light in world space, (1) will be main light
 		glm::vec4 m_LightDirectionalColor_Main = { glm::vec4(1.f, 1.f, 1.f, 1.f) };			    		//Color for directional light
 		glm::vec4 m_LightDirection_Fill = { glm::vec4(glm::normalize(glm::vec3(1.0f, -1.f, 1.f)), 1.f) };	//Directional Light in world space
-		glm::vec4 m_LightDirectionalColor_Fill = { glm::vec4(1.f, 1.f, 1.f, 1.f) };			    		//Color for directional light
+		glm::vec4 m_LightDirectionalColor_Fill = { glm::vec4(1.f, 1.f, 1.f, 0.f) };			    		//Color for directional light
 		glm::vec4 m_LightAmbientColor = { glm::vec4(1.f, 1.f, 1.f, 1.f) };				    			//Color for ambient light
 		float m_ShadowIntensity = { 0.85f };															//Shadow intensity
 		float m_Gamma = { 2.2f };

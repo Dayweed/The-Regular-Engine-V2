@@ -211,13 +211,13 @@ void main()
 	diffuseIntensity_Main = ceil(diffuseIntensity_Main * CelShadingLevels) * CelScaleFactor;
 	dp_Main = smoothstep(0.2, 1.0, dp_Main) * float(CelShadingLevels);
 	dp_Main = ceil(dp_Main) * CelScaleFactor;
-	diffuseIntensity_Main = mix(diffuseIntensity_Main, dp_Main, 0.5);
+	diffuseIntensity_Main = mix(diffuseIntensity_Main, dp_Main, 0.7);
 	diffuseIntensity_Main = clamp(diffuseIntensity_Main, 0.0, 1.0);
 
 	diffuseIntensity_Fill = ceil(diffuseIntensity_Fill * CelShadingLevels) * CelScaleFactor;
 	dp_Fill = smoothstep(0.2, 1.0, dp_Fill) * float(CelShadingLevels);
 	dp_Fill = ceil(dp_Fill) * CelScaleFactor;
-	diffuseIntensity_Fill = mix(diffuseIntensity_Fill, dp_Fill, 0.5);
+	diffuseIntensity_Fill = mix(diffuseIntensity_Fill, dp_Fill, 0.7);
 	diffuseIntensity_Fill = clamp(diffuseIntensity_Fill, 0.0, 1.0);
 
 	vec3 diffuseMain = In.VertColor * texture(DiffuseMap, In.TexCoord).rgb * In.MaterialColor.rgb * In.MaterialColor.a * diffuseIntensity_Main * In.DirectionalLightColor_Main.rgb * In.DirectionalLightColor_Main.a;
@@ -231,7 +231,7 @@ void main()
 	}
 	else
 	{
-		diffuse = mix(diffuseMain, diffuseFill, 0.6);
+		diffuse = diffuseMain + diffuseFill;
 	}
 
 	vec3 rimColor = texture(DiffuseMap, In.TexCoord).rgb * rimFactor;
