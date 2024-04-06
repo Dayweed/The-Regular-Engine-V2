@@ -56,6 +56,9 @@ namespace TRE
 		private Entity controlsPointer;
 		private Transform controlsPointerTransform;
 
+		private Entity selectedPointer;
+		private Transform selectedPointerTransform;
+
 		// Pause menu options
 		private List<Entity> options;
 		private List<Entity> DestructiveActionConfirmations;
@@ -67,10 +70,10 @@ namespace TRE
 		private Entity cfmMenu;
 		private Entity settingsMenu;
 		private Entity settingsClose;
-        private Entity controlsSwitch;
+		private Entity controlsSwitch;
 
-        //Gameplay panel entities
-        private Entity power_ups_panel;
+		//Gameplay panel entities
+		private Entity power_ups_panel;
 		private Entity on_button_pwrUp;
 		private Entity on_button_backing_pwrUp;
 		private Entity off_button_pwrUp;
@@ -90,15 +93,15 @@ namespace TRE
 		private Entity sfxVolumeEnt;
 		// Need to store these values into the persistent system
 		public int masterVolume = 100;
-        public int musicVolume = 100;
-        public int sfxVolume = 100;
+		public int musicVolume = 100;
+		public int sfxVolume = 100;
 
 		//Graphics panel entities
 		private int mCurrentEditMember = -1;
 		private Entity mGammaPanel;
 		private Entity mGammaValue;
 		// store to persistentsystem
-        public float mTempGammaValue = 2.2f; //  Start at 2.2
+		public float mTempGammaValue = 2.2f; //  Start at 2.2
 
 		//Controls panel entities
 		private Entity P1_panel;
@@ -208,8 +211,8 @@ namespace TRE
 				off_button_inv = ECSManager.FindEntityByName("off_button_inv");
 				off_button_backing_inv = ECSManager.FindEntityByName("off_button_backing_inv");
 				settingsClose = ECSManager.FindEntityByName("close_settings");
-                controlsSwitch = ECSManager.FindEntityByName("switch_text");
-            }
+				controlsSwitch = ECSManager.FindEntityByName("switch_text");
+			}
 
 			//graphics panel
 			{
@@ -251,6 +254,9 @@ namespace TRE
 
 			controlsPointer = ECSManager.FindEntityByName("ControlsPointer");
 			controlsPointerTransform = controlsPointer.GetComponent<Transform>();
+
+			selectedPointer = ECSManager.FindEntityByName("settings_highlight");
+			selectedPointerTransform = selectedPointer.GetComponent<Transform>();
 
 			pauseMenu = ECSManager.FindEntityByName("PauseMenu");
 			cfmMenu = ECSManager.FindEntityByName("pauseMenu_destructive");
@@ -383,15 +389,15 @@ namespace TRE
 			{
 				// change the texture for the settings_close button
 				settingsClose.GetComponent<SpriteRenderer>().Texture = "ui-button-close-controller.png";
-                controlsSwitch.GetComponent<SpriteRenderer>().Texture = "Controls_PlayerSwitch_Text_Controller.png";
-                changeUI = false;
+				controlsSwitch.GetComponent<SpriteRenderer>().Texture = "Controls_PlayerSwitch_Text_Controller.png";
+				changeUI = false;
 			}
 			else if (!controllerConnected && changeUI)
 			{
 				// change the texture for the settings_close button
 				settingsClose.GetComponent<SpriteRenderer>().Texture = "ui-button-close.png";
-                controlsSwitch.GetComponent<SpriteRenderer>().Texture = "Controls_PlayerSwitch_Text_KB.png";
-                changeUI = false;
+				controlsSwitch.GetComponent<SpriteRenderer>().Texture = "Controls_PlayerSwitch_Text_KB.png";
+				changeUI = false;
 			}
 
 
@@ -416,6 +422,7 @@ namespace TRE
 					mIsEditingSettings = false;
 					UIS.SetVisible(settingsPointer.ID, false);
 					UIS.SetVisible(controlsPointer.ID, false);
+					UIS.SetVisible(selectedPointer.ID, false);
 					//Debug.Log("Trigger: Get out of editing state");
 				}
 				else if (!mIsEditingSettings && menustate == 1)
@@ -459,8 +466,8 @@ namespace TRE
 						else
 							currentOption -= 1;
 
-                        playUISound = true;
-                    }
+						playUISound = true;
+					}
 
 					if (IS.GetKeyPress(InputKeys.S) || ControllerInput(MenuNavigation.DOWN))
 					{
@@ -469,7 +476,7 @@ namespace TRE
 						else
 							currentOption += 1;
 
-                        playUISound = true;
+						playUISound = true;
 					}
 
 					if (IS.GetKeyPress(InputKeys.Enter) || ControllerInput(MenuNavigation.CONFIRM))
@@ -495,7 +502,7 @@ namespace TRE
 							isChangeMenu = true;
 						}
 
-                        playUISound = true;
+						playUISound = true;
 					}
 
 					switch (currentOption)
@@ -527,7 +534,7 @@ namespace TRE
 						else
 							--settingsOption;
 
-                        playUISound = true;
+						playUISound = true;
 					}
 
 					if (IS.GetKeyPress(InputKeys.D) || ControllerInput(MenuNavigation.RIGHT))
@@ -541,7 +548,7 @@ namespace TRE
 						else
 							++settingsOption;
 
-                        playUISound = true;
+						playUISound = true;
 					}
 
 					switch (settingsOption)
@@ -583,6 +590,8 @@ namespace TRE
 					}
 
 					//show which panel is selected
+					selectedPointer.GetComponent<SpriteRenderer>().isVisible = true;
+					selectedPointerTransform.Position = settingsSelected[settingsOption].GetComponent<Transform>().Position;
 					if (settingsOption >= 0 && settingsOption <= 3)
 					{
 						for (int i = 0; i < settingsSelected.Count; ++i)
@@ -657,13 +666,14 @@ namespace TRE
 					{
 						mIsEditingSettings = true;
 						mCurrentEditMember = 0; //Set it to be 0th member always at the start
-                        playUISound = true;
+						playUISound = true;
 						//Debug.Log("1st trigger mCurrentEditMember: " + mCurrentEditMember);
 					}
 				}
 				//edit settings here
 				else if (menustate == 1 && mIsEditingSettings)
 				{
+					selectedPointer.GetComponent<SpriteRenderer>().isVisible = false;
 					if (showAudioPanel)
 					{
 						settingsPointer.GetComponent<SpriteRenderer>().isVisible = true;
@@ -679,8 +689,8 @@ namespace TRE
 								mCurrentEditMember = 2;
 							else
 								--mCurrentEditMember;
-                            
-                            playUISound = true;
+							
+							playUISound = true;
 							//Debug.Log("mCurrentEditMember: " + mCurrentEditMember);
 						}
 
@@ -693,7 +703,7 @@ namespace TRE
 								mCurrentEditMember = 2;
 							else
 								++mCurrentEditMember;
-                            playUISound = true;
+							playUISound = true;
 
 							//Debug.Log("mCurrentEditMember: " + mCurrentEditMember);
 						}
@@ -712,7 +722,7 @@ namespace TRE
 									// Set persistent system
 									string masterVolumeString = masterVolume.ToString();
 									PRS.SetValue("masterVolume", masterVolumeString);
-                                    playUISound = true;
+									playUISound = true;
 								}
 								else if (IS.GetKeyPress(InputKeys.D) || IS.GetKeyPress(InputKeys.Right) || ControllerInput(MenuNavigation.RIGHT))
 								{
@@ -724,7 +734,7 @@ namespace TRE
 									// Set persistent system
 									string masterVolumeString = masterVolume.ToString();
 									PRS.SetValue("masterVolume", masterVolumeString);
-                                    playUISound = true;
+									playUISound = true;
 								}
 								AS.SetMasterVolume(masterVolume / 100f);
 								TS.SetTextMessage(masterVolumeEnt.ID, masterVolume.ToString());
@@ -740,7 +750,7 @@ namespace TRE
 									// Set persistent system
 									string musicVolumeString = musicVolume.ToString();
 									PRS.SetValue("musicVolume", musicVolumeString);
-                                    playUISound = true;
+									playUISound = true;
 
 								}
 								else if (IS.GetKeyPress(InputKeys.D) || IS.GetKeyPress(InputKeys.Right) || ControllerInput(MenuNavigation.RIGHT))
@@ -753,7 +763,7 @@ namespace TRE
 									// Set persistent system
 									string musicVolumeString = musicVolume.ToString();
 									PRS.SetValue("musicVolume", musicVolumeString);
-                                    playUISound = true;
+									playUISound = true;
 								}
 								AS.SetBGMVolume(musicVolume / 100f);
 								TS.SetTextMessage(musicVolumeEnt.ID, musicVolume.ToString());
@@ -770,7 +780,7 @@ namespace TRE
 									string sfxVolumeString = sfxVolume.ToString();
 									PRS.SetValue("sfxVolume", sfxVolumeString);
 
-                                    playUISound = true;
+									playUISound = true;
 								}
 								else if (IS.GetKeyPress(InputKeys.D) || IS.GetKeyPress(InputKeys.Right) || ControllerInput(MenuNavigation.RIGHT))
 								{
@@ -782,7 +792,7 @@ namespace TRE
 									//
 									string sfxVolumeString = sfxVolume.ToString();
 									PRS.SetValue("sfxVolume", sfxVolumeString);
-                                    playUISound = true;
+									playUISound = true;
 								}
 
 								AS.SetSFXVolume(sfxVolume / 100f);
@@ -818,7 +828,7 @@ namespace TRE
 							else
 								--mCurrentEditMember;
 
-                            playUISound = true;
+							playUISound = true;
 							//Debug.Log("mCurrentEditMember: " + mCurrentEditMember);
 						}
 
@@ -836,7 +846,7 @@ namespace TRE
 								// Set persistent system
 								string gammaValueString = mTempGammaValue.ToString("F1");
 								PRS.SetValue("gammaValue", gammaValueString);
-                                playUISound = true;
+								playUISound = true;
 
 							}
 							else if (IS.GetKeyPress(InputKeys.D) || IS.GetKeyPress(InputKeys.Right))
@@ -848,7 +858,7 @@ namespace TRE
 								// Set persistent system
 								string gammaValueString = mTempGammaValue.ToString("F1");
 								PRS.SetValue("gammaValue", gammaValueString);
-                                playUISound = true;
+								playUISound = true;
 							}
 
 						}
@@ -867,7 +877,7 @@ namespace TRE
 							//Debug.Log("press up");
 							mCurrentEditMember = -1;
 							mIsEditingSettings = false;
-                            playUISound = true;
+							playUISound = true;
 							//Debug.Log("mCurrentEditMember: " + mCurrentEditMember);
 						}
 
@@ -877,7 +887,7 @@ namespace TRE
 								mCurrentEditMember = 1;
 							else if (mCurrentEditMember == 1)
 								mCurrentEditMember = 0;
-                            playUISound = true;
+							playUISound = true;
 							//Debug.Log("mCurrentEditMember: " + mCurrentEditMember);
 						}
 
@@ -918,7 +928,7 @@ namespace TRE
 										PRS.SetValue("MoleyKB", P1_KeyboardPresetString);
 										moley.GetComponent<MoleyController>().KeyboardPreset = P1_KeyboardPreset;
 										moley.GetComponent<MoleyController>().SetKeyboardPreset(P1_KeyboardPreset);
-                                        playUISound = true;
+										playUISound = true;
 									}
 								}
 								else
@@ -941,7 +951,7 @@ namespace TRE
 										PRS.SetValue("MoleyController", P1_ControllerPresetString);
 										moley.GetComponent<MoleyController>().ControllerPreset = P1_ControllerPreset;
 										moley.GetComponent<MoleyController>().SetControllerPreset(P1_ControllerPreset);
-                                        playUISound = true;
+										playUISound = true;
 
 									}
 								}
@@ -981,7 +991,7 @@ namespace TRE
 										PRS.SetValue("HoleyKB", P2_KeyboardPresetString);
 										holey.GetComponent<HoleyController>().KeyboardPreset = P2_KeyboardPreset;
 										holey.GetComponent<HoleyController>().SetKeyboardPreset(P2_KeyboardPreset);
-                                        playUISound = true;
+										playUISound = true;
 
 										//Debug.Log("P2_KeyboardPreset: " + P2_KeyboardPreset);
 									}
@@ -1005,7 +1015,7 @@ namespace TRE
 										PRS.SetValue("HoleyController", P2_ControllerPresetString);
 										holey.GetComponent<HoleyController>().ControllerPreset = P2_ControllerPreset;
 										holey.GetComponent<HoleyController>().SetControllerPreset(P2_ControllerPreset);
-                                        playUISound = true;
+										playUISound = true;
 									}
 								}
 								break;
@@ -1040,7 +1050,7 @@ namespace TRE
 							else
 								--mCurrentEditMember;
 
-                            playUISound = true;
+							playUISound = true;
 							//Debug.Log("mCurrentEditMember: " + mCurrentEditMember);
 						}
 
@@ -1054,7 +1064,7 @@ namespace TRE
 							else
 								++mCurrentEditMember;
 
-                            playUISound = true;
+							playUISound = true;
 							//Debug.Log("mCurrentEditMember: " + mCurrentEditMember);
 						}
 
@@ -1080,7 +1090,7 @@ namespace TRE
 										scenelogic.GetComponent<SceneLogic>().KeepInv(IsPowerUpOn);
 									}
 
-                                    playUISound = true;
+									playUISound = true;
 
 								}
 								else if (IS.GetKeyPress(InputKeys.D) || IS.GetKeyPress(InputKeys.Right) || ControllerInput(MenuNavigation.RIGHT))
@@ -1100,7 +1110,7 @@ namespace TRE
 										scenelogic.GetComponent<SceneLogic>().KeepInv(IsPowerUpOn);
 									}
 
-                                    playUISound = true;
+									playUISound = true;
 								}
 								break;
 							case 1:
@@ -1123,7 +1133,7 @@ namespace TRE
 										scenelogic.GetComponent<SceneLogic>().CreativeMode(IsInvulnerabilityOn);
 									}
 
-                                    playUISound = true;
+									playUISound = true;
 								}
 								else if (IS.GetKeyPress(InputKeys.D) || IS.GetKeyPress(InputKeys.Right) || ControllerInput(MenuNavigation.RIGHT))
 								{
@@ -1144,7 +1154,7 @@ namespace TRE
 										scenelogic.GetComponent<SceneLogic>().CreativeMode(IsInvulnerabilityOn);
 									}
 
-                                    playUISound = true;
+									playUISound = true;
 								}
 								break;
 						}
@@ -1171,8 +1181,9 @@ namespace TRE
 						//Set every pointer back to false
 						settingsPointer.GetComponent<SpriteRenderer>().isVisible = false;
 						controlsPointer.GetComponent<SpriteRenderer>().isVisible = false;
+						selectedPointer.GetComponent<SpriteRenderer>().isVisible = false;
 
-                        playUISound = true;
+						playUISound = true;
 					}
 				}
 				else // confirmation menu logic which is menustate == 2
@@ -1184,7 +1195,7 @@ namespace TRE
 						else if (menuOption == 1)
 							menuOption = 0;
 
-                        playUISound = true;
+						playUISound = true;
 					}
 
 					if (IS.GetKeyPress(InputKeys.D) || ControllerInput(MenuNavigation.RIGHT))
@@ -1194,7 +1205,7 @@ namespace TRE
 						else if (menuOption == 1)
 							menuOption = 0;
 
-                        playUISound = true;
+						playUISound = true;
 					}
 
 					if (IS.GetKeyPress(InputKeys.Enter) || ControllerInput(MenuNavigation.CONFIRM))
@@ -1221,7 +1232,7 @@ namespace TRE
 							menuOption = 1;
 						}
 
-                        playUISound = true;
+						playUISound = true;
 					}
 
 					switch (menuOption)
@@ -1320,13 +1331,13 @@ namespace TRE
 
 
 			// play UI sound here
-            if (playUISound)
-            {
-                if (ECSManager.IsValidEntity(sfx))
-                    AS.Play(sfx);
+			if (playUISound)
+			{
+				if (ECSManager.IsValidEntity(sfx))
+					AS.Play(sfx);
 
-                playUISound = false;
-            }
+				playUISound = false;
+			}
 		}
 
 		private bool ControllerInput(MenuNavigation button)
@@ -1403,6 +1414,7 @@ namespace TRE
 			UIS.SetVisible(settingsMenu.ID, false);
 			UIS.SetVisible(settingsPointer.ID, false);
 			UIS.SetVisible(settingsClose.ID, false);
+			UIS.SetVisible(selectedPointer.ID, false);
 
 			if (showGraphicsPanel)
 			{
@@ -1442,7 +1454,7 @@ namespace TRE
 				UIS.SetVisible(P2_controller_panel.ID, false);
 				UIS.SetVisible(P2_controller_preset1.ID, false);
 				UIS.SetVisible(P2_controller_preset2.ID, false);
-                showControlsPanel = false;
+				showControlsPanel = false;
 			}
 
 			if (showGameplayPanel)
