@@ -79,12 +79,12 @@ namespace TRE
 
 			if (controllerConnected && changeUI)
 			{
-				//SpaceToContinue.GetComponent<SpriteRenderer>().Texture = "";
-			}
+                SpaceToContinue.GetComponent<SpriteRenderer>().Texture = "ui-button-a.png";
+            }
 			else if (!controllerConnected && changeUI)
 			{
-				//SpaceToContinue.GetComponent<SpriteRenderer>().Texture = "";
-			}
+                SpaceToContinue.GetComponent<SpriteRenderer>().Texture = "ui-button-space.png";
+            }
 
 			bool pressedSpace = InputSystem.GetKeyPress(InputKeys.Space);
 			bool pressA = InputSystem.GetControllerButtonTriggered(0, InputSystem.Button.A);
