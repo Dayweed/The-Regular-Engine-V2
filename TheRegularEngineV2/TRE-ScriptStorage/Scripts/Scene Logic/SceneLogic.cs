@@ -492,18 +492,7 @@ namespace TRE
 					currentTime += Time.deltaTime;
 				}
 
-				if (!levelFinished)
-				{
-                    // Rotate the camera (Somehow this must be called here in order for the camera manager actions to run)
-                    CameraController cam = ECSManager.FindEntityByName("Main Camera").GetComponent<CameraController>();
-                    cam.expectedPosition = cam.transform.Position;
-                    cam.expectedRotation = cam.transform.Rotation + new vec3(0, 180, 0);
-                    cam.transitionDuration = 1f;
-                    cam.overrideCamera = true;
-                    cam.freeCamera = false;
-                    cam.toTransition = true;
-					levelFinished = true;
-                }
+                levelFinished = true;
             }
 		}
 

@@ -85,14 +85,15 @@ namespace TRE
             if (SceneLogic.levelFinished && !cameraController.overrideCamera)
             {
                 // Rotate the camera
-                expectedPosition = new vec3(0, 10, 20);
-                expectedRotation = new vec3(30, 90, 0);
+                cameraController.expectedPosition = new vec3(0, 10, 20);
+                cameraController.expectedRotation = new vec3(30, 270, 0);
                 cameraController.transitionDuration = 2f;
                 cameraController.overrideCamera = true;
                 cameraController.freeCamera = false;
                 cameraController.toTransition = true;
-                return;
             }
+
+            if (cameraController.overrideCamera) return;
 
             cameraController.freeCamera = true;
 			regionA = IsInsideTrigger(Trigger_A);

@@ -96,16 +96,17 @@ namespace TRE
 			if (SceneLogic.levelFinished && !cameraController.overrideCamera)
 			{
                 // Rotate the camera
-                expectedPosition = new vec3(1000, 10, 20);
-                expectedRotation = new vec3(30, 90, 0);
-                cameraController.transitionDuration = 2f;
+                cameraController.expectedPosition = new vec3(1100, 130, -175);
+                cameraController.expectedRotation = new vec3(30, 270, 0);
+                cameraController.transitionDuration = 1f;
                 cameraController.overrideCamera = true;
                 cameraController.freeCamera = false;
                 cameraController.toTransition = true;
-                return;
-			}
+            }
 
-			if (preTransitions.preTransitioned == false)
+            if (cameraController.overrideCamera) return;
+
+            if (preTransitions.preTransitioned == false)
 			{
 				preTransitions.GetCurrentData(out cameraController.expectedPosition, out cameraController.expectedRotation, out cameraController.transitionDuration);
 				preTransitions.PreTransition(Time.deltaTime > 0.5f ? 0.5f : Time.deltaTime, out cameraController.toTransition);
