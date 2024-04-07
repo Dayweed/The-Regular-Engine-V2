@@ -20,6 +20,7 @@ namespace TRE
 		bool pressedSpaceTwice = false;
 
 		private ulong BGM;
+		private ulong endBGM;
 
 		List<Entity> frames = new List<Entity>();
 		List<string> nextScenes = new List<string>();
@@ -49,6 +50,7 @@ namespace TRE
 			nextScenes = new List<string>() { "Frame_3" };
 
 			BGM = ECSManager.FindIDFromName("BGM");
+			endBGM = ECSManager.FindIDFromName("BGM_EndLoop");
 
 			currentFrame = 0;
 			frames[currentFrame].SetActive(true);
@@ -96,6 +98,9 @@ namespace TRE
 			{
 				if (ECSManager.IsValidEntity(BGM))
 					AS.Stop(BGM);
+
+				if (ECSManager.IsValidEntity(endBGM))
+					AS.Play(endBGM);
 
 				Scene.TransitionScene("Credits_Scene", 5f);
 				endCutscene = true;
