@@ -77,6 +77,8 @@ namespace TRE
 			expectedDistance = 35;
 			expectedPosition = new vec3(0, 10, 20);
 			expectedRotation = new vec3(30, 180, 0);
+
+			SceneLogic = ECSManager.FindEntityByName("Scene Transition Logic").GetComponent<SceneLogic>();
 		}
 
 		public void Update()

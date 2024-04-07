@@ -6,7 +6,7 @@
 
 		private LevelOneObject LevelOneObj;
 
-		private ulong sfx;
+		// private ulong sfx;
 
 		public void OnCreate()
 		{

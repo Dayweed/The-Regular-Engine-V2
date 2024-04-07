@@ -26,7 +26,7 @@ namespace TRE
 		// private Transform Player1Transform;
 		// private Transform Player2Transform;
 
-		private vec3 thisPos;
+		// private vec3 thisPos;
 
 		public float expectedYPos;
 

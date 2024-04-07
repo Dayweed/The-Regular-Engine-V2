@@ -296,7 +296,7 @@ namespace TRE
 			}
 			else
 			{
-				// send the 'signal' to actualy begin rotation and stop trembling
+				// send the 'signal' to actually begin rotation and stop trembling
 				StartRotation();
 				// transform.Position = originalPosition;
 				trembleTimer = 0;
@@ -317,7 +317,7 @@ namespace TRE
 			}
 			else
 			{
-				// send the 'signal' to actualy begin rotation and stop trembling
+				// send the 'signal' to actually begin rotation and stop trembling
 				StartRotation();
 				// transform.Position = originalPosition;
 				trembleTimer = 0;

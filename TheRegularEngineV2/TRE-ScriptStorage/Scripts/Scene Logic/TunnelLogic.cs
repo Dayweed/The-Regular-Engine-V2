@@ -18,12 +18,12 @@ namespace TRE
 		//Entity SignpostMoley;
 		//Entity SignpostHoley;
 
-		float SignpostGoalMoleyPosY = 0;
-		float SignpostGoalHoleyPosY = 0;
-		const float SignpostHiddenPosY = -28;
-		const float SignpostDisplayPosY = -14;
-		const float SignpostMoveSpeed = 5f;
-		const float SignpostOffset = 0.05f;
+		//float SignpostGoalMoleyPosY = 0;
+		//float SignpostGoalHoleyPosY = 0;
+		//const float SignpostHiddenPosY = -28;
+		//const float SignpostDisplayPosY = -14;
+		//const float SignpostMoveSpeed = 5f;
+		//const float SignpostOffset = 0.05f;
 
 		//Audio
 		private ulong holeyCheer;
