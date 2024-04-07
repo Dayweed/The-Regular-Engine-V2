@@ -203,7 +203,9 @@ namespace TRE
 		private float mImpactedVFXTimer = 1f;
 		private bool mIsImpacted = false;
 
-		public void Start()
+        bool mIsTutorialScene = false;
+
+        public void Start()
 		{
 			#region UI Variables
 			MyPauseMenu = ECSManager.FindEntityByName("PauseMenu").GetComponent<PauseMenu>();
@@ -220,8 +222,15 @@ namespace TRE
 			IsActivated = false;
 			HasBeenTriggeredBefore = false;
 
-			#region Player Transform and Physics Variables
-			moleyTransform = GetComponent<Transform>();
+			if (Scene.GetSceneName() == "Tutorial")
+			{
+				mIsTutorialScene = true;
+			}
+			else
+                mIsTutorialScene = false;
+
+            #region Player Transform and Physics Variables
+            moleyTransform = GetComponent<Transform>();
 			TS.SetRotation(this.ID, vec3.Zero);
 			PS.ConstrainRotationX(this.ID, true);
 			PS.ConstrainRotationY(this.ID, true);
@@ -325,6 +334,7 @@ namespace TRE
                 }
 
 				// Change the popup Ui
+				if (mIsTutorialScene)
 				UIPopup2Controls.GetComponent<SpriteRenderer>().Texture = "ui-button-a.png";
 			}
 
@@ -344,8 +354,9 @@ namespace TRE
                         break;
                 }
 
-				// Change the popup UI
-				UIPopup2Controls.GetComponent<SpriteRenderer>().Texture = "ui-button-space.png";
+                // Change the popup UI
+                if (mIsTutorialScene)
+                    UIPopup2Controls.GetComponent<SpriteRenderer>().Texture = "ui-button-space.png";
 			}
 			#endregion
 
