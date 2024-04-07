@@ -726,9 +726,12 @@ namespace TRE
 			else if (ToLevel2Select.GetComponent<TunnelLogic>().MolesInside())
 				holeSceneName = "Level_2";
 
-			Stars1.SetActive(false);
-			Stars2.SetActive(false);
-			Stars3.SetActive(false);
+			//Stars1.SetActive(false);
+			//Stars2.SetActive(false);
+			//Stars3.SetActive(false);
+			Stars1.GetComponent<SpriteRenderer>().isVisible = false;
+			Stars2.GetComponent<SpriteRenderer>().isVisible = false;
+			Stars3.GetComponent<SpriteRenderer>().isVisible = false;
 
 			if (int.TryParse(PersistentSystem.GetValue(holeSceneName + "StarsObtained"), out int mapStars))
 			{
@@ -736,15 +739,18 @@ namespace TRE
 			}
 			if (mapStars >= 3)
 			{
-				Stars3.SetActive(true);
+				//Stars3.SetActive(true);
+				Stars3.GetComponent<SpriteRenderer>().isVisible = true;
 			}
 			if (mapStars >= 2)
 			{
-				Stars2.SetActive(true);
+				//Stars2.SetActive(true);
+				Stars2.GetComponent<SpriteRenderer>().isVisible = true;
 			}
 			if (mapStars >= 1)
 			{
-				Stars1.SetActive(true);
+				//Stars1.SetActive(true);
+				Stars1.GetComponent<SpriteRenderer>().isVisible = true;
 			}
 		}
 	}
