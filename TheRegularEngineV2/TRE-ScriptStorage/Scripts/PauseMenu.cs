@@ -715,6 +715,7 @@ namespace TRE
 					//show controls panel
 					P1_panel.GetComponent<SpriteRenderer>().isVisible = showControlsPanel;
 					P2_panel.GetComponent<SpriteRenderer>().isVisible = showControlsPanel;
+					controlsSwitch.GetComponent<SpriteRenderer>().isVisible = showControlsPanel;
 					showControlPanel();
 
 					//Not editing settings -> editing settings
@@ -1657,6 +1658,7 @@ namespace TRE
 				UIS.SetVisible(P2_controller_panel.ID, false);
 				UIS.SetVisible(P2_controller_preset1.ID, false);
 				UIS.SetVisible(P2_controller_preset2.ID, false);
+				UIS.SetVisible(controlsSwitch.ID, false);
 				showControlsPanel = false;
 			}
 
