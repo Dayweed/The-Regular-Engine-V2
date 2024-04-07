@@ -282,13 +282,39 @@ namespace TRE
 			if (changeUI && isControllerConnected && CharacterUI != null)
 			{
 				changeUI = false;
-				CharacterUI.GetComponent<SpriteRenderer>().Texture = "CharacterUI_Left_Controller.png";
+                switch (ControllerPreset)
+                {
+                    case 0:
+                        CharacterUI.GetComponent<SpriteRenderer>().Texture = "CharacterUI_Left_Controller.png";
+                        break;
+                    case 1:
+                        CharacterUI.GetComponent<SpriteRenderer>().Texture = "CharacterUI_Left_Controller2.png";
+                        break;
+                    case 2:
+                        CharacterUI.GetComponent<SpriteRenderer>().Texture = "CharacterUI_Left_Controller2.png";
+                        break;
+					case 3:
+						CharacterUI.GetComponent<SpriteRenderer>().Texture = "CharacterUI_Left_Controller.png";
+						break;
+                }
 			}
 
 			if (changeUI && !isControllerConnected && CharacterUI != null)
 			{
 				changeUI = false;
-				CharacterUI.GetComponent<SpriteRenderer>().Texture = "CharacterUI_Left.png";
+                switch (KeyboardPreset)
+                {
+					case 0:
+						CharacterUI.GetComponent<SpriteRenderer>().Texture = "CharacterUI_Left_KB2.png";
+                        break;
+                    case 1:
+                        CharacterUI.GetComponent<SpriteRenderer>().Texture = "CharacterUI_Left.png";
+						break;
+					case 2:
+                        CharacterUI.GetComponent<SpriteRenderer>().Texture = "CharacterUI_Left_KB3.png";
+                        break;
+                }
+				
 			}
 			#endregion
 

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Security.Policy;
 
 namespace TRE
 {
@@ -382,6 +383,8 @@ namespace TRE
 				IS.GetControllerButtonTriggered(0, IS.Button.Start) ||
 				IS.GetControllerButtonTriggered(1, IS.Button.Start);
 
+            bool closeSettings = ControllerInput(MenuNavigation.BACK);
+
 			// Is controller connected
 			controllerConnected = IS.GetControllerConnected(0) || IS.GetControllerConnected(1);
 
@@ -414,7 +417,7 @@ namespace TRE
 			// but allow it to show up it the MainMenu scene even if its camera is not free
 			bool canShowPauseMenu = CurrentScene == "MainMenu" || mainCamera.freeCamera;
 
-			if ((playerPressedPause || ReadExternalPauseCommand()) && canShowPauseMenu)
+			if ((playerPressedPause || ReadExternalPauseCommand() || closeSettings) && canShowPauseMenu)
 			{
 				if (menustate == -1)
 				{
@@ -1057,7 +1060,6 @@ namespace TRE
 									{
                                         P2_KeyboardPreset = Math.Abs((P2_ControllerPreset - 1) % 4);
                                         
-
                                         // Set the persistent system
 										Debug.Log("P2_ControllerPreset: " + P2_ControllerPreset);
                                         string P2_ControllerPresetString = P2_ControllerPreset.ToString();
@@ -1174,9 +1176,51 @@ namespace TRE
 
 									playUISound = true;
 								}
+								else if (ControllerInput(MenuNavigation.CONFIRM))
+                                {
+                                    if (IsPowerUpOn)
+                                    {
+                                        //off
+                                        IsPowerUpOn = false;
+                                        off_button_pwrUp.GetComponent<SpriteRenderer>().isVisible = !IsPowerUpOn;
+                                        off_button_backing_pwrUp.GetComponent<SpriteRenderer>().isVisible = !IsPowerUpOn;
+
+                                        on_button_pwrUp.GetComponent<SpriteRenderer>().isVisible = IsPowerUpOn;
+                                        on_button_backing_pwrUp.GetComponent<SpriteRenderer>().isVisible = IsPowerUpOn;
+                                        // Set persistent system
+                                        string powerUpsString = IsPowerUpOn.ToString();
+                                        PRS.SetValue("powerUps", powerUpsString);
+                                        if (scenelogic != null)
+                                        {
+                                            scenelogic.GetComponent<SceneLogic>().KeepInv(IsPowerUpOn);
+                                        }
+
+                                        playUISound = true;
+                                    }
+                                    else
+                                    {
+                                        //on
+                                        IsPowerUpOn = true;
+                                        on_button_pwrUp.GetComponent<SpriteRenderer>().isVisible = IsPowerUpOn;
+                                        on_button_backing_pwrUp.GetComponent<SpriteRenderer>().isVisible = IsPowerUpOn;
+
+                                        off_button_pwrUp.GetComponent<SpriteRenderer>().isVisible = !IsPowerUpOn;
+                                        off_button_backing_pwrUp.GetComponent<SpriteRenderer>().isVisible = !IsPowerUpOn;
+
+                                        // Set persistent system
+                                        string powerUpsString = IsPowerUpOn.ToString();
+                                        PRS.SetValue("powerUps", powerUpsString);
+                                        if (scenelogic != null)
+                                        {
+                                            scenelogic.GetComponent<SceneLogic>().KeepInv(IsPowerUpOn);
+                                        }
+
+                                        playUISound = true;
+                                    }
+                                }
 								break;
 							case 1:
-								if (IS.GetKeyPress(InputKeys.A) || IS.GetKeyPress(InputKeys.Left) || ControllerInput(MenuNavigation.LEFT))
+								if (IS.GetKeyPress(InputKeys.A) || IS.GetKeyPress(InputKeys.Left) || ControllerInput(MenuNavigation.LEFT) )
 								{
 									//on
 									IsInvulnerabilityOn = true;
@@ -1218,6 +1262,52 @@ namespace TRE
 
 									playUISound = true;
 								}
+
+                                else if (ControllerInput(MenuNavigation.CONFIRM))
+                                {
+                                    if (IsInvulnerabilityOn)
+                                    {
+                                        //off
+                                        IsInvulnerabilityOn = false;
+                                        off_button_inv.GetComponent<SpriteRenderer>().isVisible = !IsInvulnerabilityOn;
+                                        off_button_backing_inv.GetComponent<SpriteRenderer>().isVisible = !IsInvulnerabilityOn;
+
+                                        on_button_inv.GetComponent<SpriteRenderer>().isVisible = IsInvulnerabilityOn;
+                                        on_button_backing_inv.GetComponent<SpriteRenderer>().isVisible = IsInvulnerabilityOn;
+
+                                        // Set persistent system
+                                        string invulnerabilityString = IsInvulnerabilityOn.ToString();
+                                        PRS.SetValue("invulnerability", invulnerabilityString);
+
+                                        if (scenelogic != null)
+                                        {
+                                            scenelogic.GetComponent<SceneLogic>().CreativeMode(IsInvulnerabilityOn);
+                                        }
+
+                                        playUISound = true;
+                                    }
+                                    else
+                                    {
+                                        //on
+                                        IsInvulnerabilityOn = true;
+                                        on_button_inv.GetComponent<SpriteRenderer>().isVisible = IsInvulnerabilityOn;
+                                        on_button_backing_inv.GetComponent<SpriteRenderer>().isVisible = IsInvulnerabilityOn;
+
+                                        off_button_inv.GetComponent<SpriteRenderer>().isVisible = !IsInvulnerabilityOn;
+                                        off_button_backing_inv.GetComponent<SpriteRenderer>().isVisible = !IsInvulnerabilityOn;
+
+                                        // Set persistent system
+                                        string invulnerabilityString = IsInvulnerabilityOn.ToString();
+                                        PRS.SetValue("invulnerability", invulnerabilityString);
+
+                                        if (scenelogic != null)
+                                        {
+                                            scenelogic.GetComponent<SceneLogic>().CreativeMode(IsInvulnerabilityOn);
+                                        }
+
+                                        playUISound = true;
+                                    }
+                                }
 								break;
 						}
 
@@ -1233,7 +1323,7 @@ namespace TRE
 						}
 					}
 
-					if ((IS.GetKeyPress(InputKeys.W) && !settingsPointer.GetComponent<SpriteRenderer>().isVisible) || ControllerInput(MenuNavigation.START))
+					if ((IS.GetKeyPress(InputKeys.W) && !settingsPointer.GetComponent<SpriteRenderer>().isVisible) || ControllerInput(MenuNavigation.START) || ControllerInput(MenuNavigation.BACK))
 					{
 
 						//Debug.Log("Triggered ESC to not editing settings");

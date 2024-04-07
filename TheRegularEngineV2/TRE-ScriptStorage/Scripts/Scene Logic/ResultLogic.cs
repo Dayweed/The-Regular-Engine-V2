@@ -29,6 +29,8 @@ namespace TRE
 		private ulong ResultSFX;
 
         private bool controllerConnected;
+		private bool lastControllerConnected;
+		private bool changeUI = false;
 
 		public void Start()
 		{
@@ -75,20 +77,38 @@ namespace TRE
             if (InputSystem.GetControllerConnected(0) || InputSystem.GetControllerConnected(1))
             {
                 controllerConnected = true;
+                lastControllerConnected = true;
+				changeUI = true;
             }
             else
             {
                 controllerConnected = false;
+                lastControllerConnected = false;
             }
 		}
 
 		public void Update()
 		{
 			controllerConnected = InputSystem.GetControllerConnected(0) || InputSystem.GetControllerConnected(1);
-            if (controllerConnected)
+
+            if (controllerConnected != lastControllerConnected)
+            {
+				lastControllerConnected = controllerConnected;
+				changeUI = true;
+            }
+
+            if (controllerConnected && changeUI)
             {
 				// change the UI
-                //ECSManager.FindEntityByName("SpaceToContinue").GetComponent<SpriteRenderer>().Texture = "";
+                ECSManager.FindEntityByName("SpaceToContinue").GetComponent<SpriteRenderer>().Texture = "ui-continue-controller.png";
+				changeUI = false;
+            }
+
+			else if (!controllerConnected && changeUI)
+            {
+                // change the UI
+                ECSManager.FindEntityByName("SpaceToContinue").GetComponent<SpriteRenderer>().Texture = "ui-continue.png";
+				changeUI = false;
             }
 
 			// Go to next scene
