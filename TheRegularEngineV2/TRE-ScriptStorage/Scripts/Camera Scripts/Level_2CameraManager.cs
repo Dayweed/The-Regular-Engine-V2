@@ -56,6 +56,8 @@ namespace TRE
 
         private SceneLogic SceneLogic;
 
+		private ulong tumbleweedSFX;
+
         public void Start()
 		{
 			MidPos = ECSManager.FindEntityByName("MidPos");
@@ -95,7 +97,10 @@ namespace TRE
 			preTransitions.AddCameraData(new vec3(28, 20, 60), new vec3(33, 180, 0), 2f);
 
             SceneLogic = ECSManager.FindEntityByName("Scene Transition Logic").GetComponent<SceneLogic>();
-        }
+
+			tumbleweedSFX = ECSManager.FindIDFromName("SFX_Tumbleweed1");
+
+		}
 
 		public void Update()
         {
@@ -194,6 +199,10 @@ namespace TRE
 					cameraController.offsetZ = 0f;
 					expectedDuration = 0.8f;
 					CheckTransition(Trigger_D);
+
+					if (ECSManager.IsValidEntity(tumbleweedSFX))
+						AudioSystem.SetPause(tumbleweedSFX, false);
+
 				}
 
 				if (regionE)
