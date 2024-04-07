@@ -8,6 +8,11 @@ namespace TRE
 		List<OnOffPlatform> platformList = new List<OnOffPlatform>();
 		readonly List<Button> buttonList = new List<Button>();
 
+		#region Audio
+		private ulong platformSFX;
+		private bool isPlaying = false;
+		#endregion
+
 		public void Start()
 		{
 			platformList = GetPlatforms();
@@ -46,6 +51,8 @@ namespace TRE
 
 				return;
 			}
+
+			platformSFX = ECSManager.FindIDFromName("SFX_ActivatePlatform");
 		}
 
 		public void Update()
@@ -80,6 +87,19 @@ namespace TRE
 						platformList[lowerIndex].SetPlatformState(false);
 					platformList[i].SetPlatformState(true);
 				}
+
+				Debug.Log(isPlaying.ToString());
+
+				//if (button.GetIsButtonPressed() && !isPlaying)
+				//{
+				//	if (ECSManager.IsValidEntity(platformSFX))
+				//		AudioSystem.Play(platformSFX);
+				//	isPlaying = true;
+				//}
+				//else
+				//{
+				//	isPlaying = false;
+				//}
 			}
 		}
 
