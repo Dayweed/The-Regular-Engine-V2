@@ -305,10 +305,10 @@ namespace TRE
                 switch (KeyboardPreset)
                 {
 					case 0:
-						CharacterUI.GetComponent<SpriteRenderer>().Texture = "CharacterUI_Left_KB2.png";
+						CharacterUI.GetComponent<SpriteRenderer>().Texture = "CharacterUI_Left.png";
                         break;
                     case 1:
-                        CharacterUI.GetComponent<SpriteRenderer>().Texture = "CharacterUI_Left.png";
+                        CharacterUI.GetComponent<SpriteRenderer>().Texture = "CharacterUI_Left_KB2.png";
 						break;
 					case 2:
                         CharacterUI.GetComponent<SpriteRenderer>().Texture = "CharacterUI_Left_KB3.png";
