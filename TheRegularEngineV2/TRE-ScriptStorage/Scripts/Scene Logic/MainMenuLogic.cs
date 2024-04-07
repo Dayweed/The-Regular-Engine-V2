@@ -10,6 +10,10 @@ namespace TRE
 	public class MainMenuLogic : Entity
 	{
 		Entity UIControls;
+		Entity p1Controls;
+		Entity p2Controls;
+
+
 		Entity Moley;
 		Entity Holey;
 
@@ -60,6 +64,12 @@ namespace TRE
 		bool lastController2 = false;
 		bool changeUI = false;
 
+		// Controls UI tracker
+		int p1controllerPreset = 0;
+		int p2controllerPreset = 0;
+		int p1kbPreset = 0;
+		int p2kbPreset = 0;
+
 		private Entity pauseButtonUI;
 		private PauseMenu pauseMenu;
 		bool isInOptions = false;
@@ -90,6 +100,8 @@ namespace TRE
 		public void Start()
 		{
 			UIControls = ECSManager.FindEntityByName("Controls_UI");
+            p1Controls = ECSManager.FindEntityByName("P1Controls");
+			p2Controls = ECSManager.FindEntityByName("P2Controls");
 			pauseButtonUI = ECSManager.FindEntityByName("PauseHUD");
 			pauseMenu = ECSManager.FindEntityByName("PauseMenu").GetComponent<PauseMenu>();
 			Moley = ECSManager.FindEntityByName("Moley");
@@ -181,6 +193,14 @@ namespace TRE
 			controller1 = IS.GetControllerConnected(0);
 			controller2 = IS.GetControllerConnected(1);
 
+			// Controller Preset
+            p1controllerPreset = Moley.GetComponent<MoleyController>().ControllerPreset;
+			p2controllerPreset = Holey.GetComponent<HoleyController>().ControllerPreset;
+
+            // Keyboard Preset
+			p1kbPreset = Moley.GetComponent<MoleyController>().KeyboardPreset;
+			p2kbPreset = Holey.GetComponent<HoleyController>().KeyboardPreset;
+            
 			// Controller check
 			if (controller1)
 			{
@@ -219,22 +239,86 @@ namespace TRE
 
 			}
 
-			//Controller UI 
-			if (controller1 && !controller2 && changeUI)
+			// Controller UI
+            if (controller1)
+            {
+                switch (p1controllerPreset)
+                {
+					case 0:
+						p1Controls.GetComponent<SpriteRenderer>().Texture = "ui-mm-controls-controller1.png";
+						break;
+					case 1:
+						p1Controls.GetComponent<SpriteRenderer>().Texture = "ui-mm-controls-controller2.png";
+						break;
+					case 2:
+						p1Controls.GetComponent<SpriteRenderer>().Texture = "ui-mm-controls-controller3.png";
+						break;
+					case 3:
+						p1Controls.GetComponent<SpriteRenderer>().Texture = "ui-mm-controls-controller4.png";
+						break;
+                }
+            }
+
+			else if (!controller1)
+            {
+                switch (p1kbPreset)
+                {
+					case 0:
+						p1Controls.GetComponent<SpriteRenderer>().Texture = "ui-mm-controls-kb1.png";
+						break;
+					case 1:
+						p1Controls.GetComponent<SpriteRenderer>().Texture = "ui-mm-controls-kb2.png";
+						break;
+					case 2:
+						p1Controls.GetComponent<SpriteRenderer>().Texture = "ui-mm-controls-kb3.png";
+						break;
+
+                }
+            }
+
+            if (controller2 )
+            {
+                switch (p2controllerPreset)
+                {
+					case 0:
+						p2Controls.GetComponent<SpriteRenderer>().Texture = "ui-mm-controls-controller1.png";
+						break;
+					case 1:
+						p2Controls.GetComponent<SpriteRenderer>().Texture = "ui-mm-controls-controller2.png";
+						break;
+					case 2:
+						p2Controls.GetComponent<SpriteRenderer>().Texture = "ui-mm-controls-controller3.png";
+						break;
+					case 3:
+						p2Controls.GetComponent<SpriteRenderer>().Texture = "ui-mm-controls-controller4.png";
+						break;
+                }
+            }
+
+			else if (!controller2)
+            {
+                switch (p2kbPreset)
+                {
+					case 0:
+						p2Controls.GetComponent<SpriteRenderer>().Texture = "ui-mm-controls-kb1.png";
+						break;
+					case 1:
+						p2Controls.GetComponent<SpriteRenderer>().Texture = "ui-mm-controls-kb2.png";
+						break;
+					case 2:
+						p2Controls.GetComponent<SpriteRenderer>().Texture = "ui-mm-controls-kb3.png";
+						break;
+                }
+            }
+
+			// Pause Button UI
+			if ((controller1 || controller2) && changeUI)
 			{
-				UIControls.GetComponent<SpriteRenderer>().Texture = "ui-mm-controls-controller1.png";
 				pauseButtonUI.GetComponent<SpriteRenderer>().Texture = "ui-button-pause-controller.png";
-				controller1 = false;
+				changeUI = false;
 			}
-			else if (controller1 && controller2 && changeUI)
+			else if ((!controller1 && !controller2) && changeUI)
 			{
-				UIControls.GetComponent<SpriteRenderer>().Texture = "ui-mm-controls-controller2.png";
-				pauseButtonUI.GetComponent<SpriteRenderer>().Texture = "ui-button-pause-controller.png";
-				controller1 = false;
-			}
-			else if (!controller1 && !controller2 && changeUI)
-			{
-				UIControls.GetComponent<SpriteRenderer>().Texture = "ui-mm-controls.png";
 				pauseButtonUI.GetComponent<SpriteRenderer>().Texture = "ui-button-pause.png";
 				changeUI = false;
 			}
@@ -250,11 +334,20 @@ namespace TRE
 				{
 					UIControls.GetComponent<VFX_FadeIn>().ForceStop();
 					UIControls.GetComponent<VFX_FadeOut>().FadeOut();
+
+					// Controls 1
+
+					// Controls 2
+
 				}
 				else if (UIControls.GetComponent<SpriteRenderer>().Color.w < 1 && !MoleyMoving && !HoleyMoving)
 				{
 					UIControls.GetComponent<VFX_FadeOut>().ForceStop();
 					UIControls.GetComponent<VFX_FadeIn>().FadeIn();
+
+					// Controls 1
+
+					// Controls 2
 				}
 			}
 			#endregion

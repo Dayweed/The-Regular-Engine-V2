@@ -730,7 +730,7 @@ namespace TRE
 				// controller is connected
 				else if (!MyPauseMenu.isPaused && isControllable && isControllerConnected)
 				{
-					if (ControllerPreset == 0)
+					if (ControllerPreset == 0 || ControllerPreset == 2)
 					{
 						float x = IS.GetControllerStickX(ControllerNumber, false); // false for left thumbstick
 						float y = IS.GetControllerStickY(ControllerNumber, false); // false for left thumbstick
@@ -1335,6 +1335,18 @@ namespace TRE
 					ability = IS.Button.Y;
 					drop = IS.Button.X;
 					break;
+				case 2:
+                    jump = IS.Button.B;
+                    swap = IS.Button.A;
+                    ability = IS.Button.Y;
+                    drop = IS.Button.X;
+                    break;
+				case 3:
+                    jump = IS.Button.A;
+                    swap = IS.Button.B;
+                    ability = IS.Button.X;
+                    drop = IS.Button.Y;
+                    break;
 			}
 		}
 
