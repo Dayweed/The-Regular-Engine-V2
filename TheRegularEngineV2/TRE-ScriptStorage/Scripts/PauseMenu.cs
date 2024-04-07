@@ -133,6 +133,9 @@ namespace TRE
 		public int P1_ControllerPreset = 0;
 		public int P2_ControllerPreset = 0;
 
+		//delay buffer for pause menu
+        private float controllerStickDelay = 0.2f;
+
 		private CameraController mainCamera;
 		private string CurrentScene;
 
@@ -1500,8 +1503,7 @@ namespace TRE
 
 		private bool ControllerInput(MenuNavigation button)
 		{
-			float leftStickY_0 = IS.GetControllerStickY(0, false);
-			float leftStickY_1 = IS.GetControllerStickY(1, false);
+			
 
 			// Check if the controller input is valid
 			switch (button)
@@ -1510,28 +1512,28 @@ namespace TRE
 					if (IS.GetControllerButtonTriggered(0, IS.Button.DPadUp) || IS.GetControllerButtonTriggered(1, IS.Button.DPadUp))
 						return true;
 					// handle analog stick
-					if (leftStickY_0 > 0.5f || leftStickY_1 > 0.5f)
+					if (delayedControllerStickInput(MenuNavigation.UP))
 						return true;
 					break;
 				case MenuNavigation.DOWN:
 					if (IS.GetControllerButtonTriggered(0, IS.Button.DPadDown) || IS.GetControllerButtonTriggered(1, IS.Button.DPadDown))
 						return true;
 					// handle analog stick
-					if (leftStickY_0 < -0.5f || leftStickY_1 < -0.5f)
+					if (delayedControllerStickInput(MenuNavigation.DOWN))
 						return true;
 					break;
 				case MenuNavigation.LEFT:
 					if (IS.GetControllerButtonTriggered(0, IS.Button.DPadLeft) || IS.GetControllerButtonTriggered(1, IS.Button.DPadLeft))
 						return true;
 					// handle analog stick
-					if (IS.GetControllerStickX(0, false) < -0.5f || IS.GetControllerStickX(1, false) < -0.5f)
+					if (delayedControllerStickInput(MenuNavigation.LEFT))
 						return true;
 					break;
 				case MenuNavigation.RIGHT:
 					if (IS.GetControllerButtonTriggered(0, IS.Button.DPadRight) || IS.GetControllerButtonTriggered(1, IS.Button.DPadRight))
 						return true;
 					// handle analog stick
-					if (IS.GetControllerStickX(0, false) > 0.5f || IS.GetControllerStickX(1, false) > 0.5f)
+					if (delayedControllerStickInput(MenuNavigation.RIGHT))
 						return true;
 					break;
 				case MenuNavigation.CONFIRM:
@@ -1807,5 +1809,74 @@ namespace TRE
 			externalPauseCommand = false;
 			return oldValue;
 		}
+
+        private bool delayedControllerStickInput(MenuNavigation direction)
+        {
+            //switch
+            switch (direction)
+            {
+				case MenuNavigation.UP:
+                    if (IS.GetControllerStickY(0, false) > 0.5f || IS.GetControllerStickY(1, false) > 0.5f)
+                    {
+                        // time the input
+                        if (controllerStickDelay <= 0)
+                        {
+                            controllerStickDelay = 0.2f;
+                            return true;
+                        }
+                        else
+                        {
+							controllerStickDelay -= Time.deltaTime;
+                        }
+                    }
+                    break;
+				case MenuNavigation.DOWN:
+                    if (IS.GetControllerStickY(0, false) < -0.5f || IS.GetControllerStickY(1, false) < -0.5f)
+                    {
+                        // time the input
+                        if (controllerStickDelay <= 0)
+                        {
+                            controllerStickDelay = 0.2f;
+                            return true;
+                        }
+                        else
+                        {
+                            controllerStickDelay -= Time.deltaTime;
+                        }
+                    }
+					break;
+				case MenuNavigation.LEFT:
+                    if (IS.GetControllerStickX(0, false) < -0.5f || IS.GetControllerStickX(1, false) < -0.5f)
+                    {
+                        // time the input
+                        if (controllerStickDelay <= 0)
+                        {
+                            controllerStickDelay = 0.2f;
+                            return true;
+                        }
+                        else
+                        {
+                            controllerStickDelay -= Time.deltaTime;
+                        }
+                    }
+					break;
+				case MenuNavigation.RIGHT:
+                    if (IS.GetControllerStickX(0, false) > 0.5f || IS.GetControllerStickX(1, false) > 0.5f)
+                    {
+                        // time the input
+                        if (controllerStickDelay <= 0)
+                        {
+                            controllerStickDelay = 0.2f;
+                            return true;
+                        }
+                        else
+                        {
+                            controllerStickDelay -= Time.deltaTime;
+                        }
+                    }
+					break;
+            }
+			return false;
+        }
 	}
 }
