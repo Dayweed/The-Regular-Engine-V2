@@ -53,7 +53,7 @@ namespace TRE
 		public bool isControllable = true;
 		private bool isControllerConnected = false;
 		private bool lastControllerConnected = false;
-		private bool changeUI = false;
+		public bool changeUI = false;
 		public float uncontrollableTimer = 0f;
 		private Entity CharacterUI;
 
@@ -1373,7 +1373,7 @@ namespace TRE
                     drop = IS.Button.Y;
                     break;
 			}
-		}
+        }
 
 		public void SetKeyboardPreset(int preset)
 		{

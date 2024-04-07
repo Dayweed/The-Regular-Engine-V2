@@ -940,6 +940,7 @@ namespace TRE
 										PRS.SetValue("MoleyKB", P1_KeyboardPresetString);
 										moley.GetComponent<MoleyController>().KeyboardPreset = P1_KeyboardPreset;
 										moley.GetComponent<MoleyController>().SetKeyboardPreset(P1_KeyboardPreset);
+										moley.GetComponent<MoleyController>().changeUI = true;
 										playUISound = true;
 									}
 								}
@@ -977,6 +978,7 @@ namespace TRE
                                         PRS.SetValue("MoleyController", P1_ControllerPresetString);
                                         moley.GetComponent<MoleyController>().ControllerPreset = P1_ControllerPreset;
                                         moley.GetComponent<MoleyController>().SetControllerPreset(P1_ControllerPreset);
+										moley.GetComponent<MoleyController>().changeUI = true;
                                         playUISound = true;
                                     }
 
@@ -990,6 +992,7 @@ namespace TRE
                                         PRS.SetValue("MoleyController", P1_ControllerPresetString);
                                         moley.GetComponent<MoleyController>().ControllerPreset = P1_ControllerPreset;
                                         moley.GetComponent<MoleyController>().SetControllerPreset(P1_ControllerPreset);
+										moley.GetComponent<MoleyController>().changeUI = true;
                                         playUISound = true;
                                     }
 								}
@@ -1029,6 +1032,7 @@ namespace TRE
 										PRS.SetValue("HoleyKB", P2_KeyboardPresetString);
 										holey.GetComponent<HoleyController>().KeyboardPreset = P2_KeyboardPreset;
 										holey.GetComponent<HoleyController>().SetKeyboardPreset(P2_KeyboardPreset);
+										holey.GetComponent<HoleyController>().changeUI = true;
 										playUISound = true;
 
 										//Debug.Log("P2_KeyboardPreset: " + P2_KeyboardPreset);
@@ -1066,6 +1070,7 @@ namespace TRE
 										PRS.SetValue("HoleyController", P2_ControllerPresetString);
 										holey.GetComponent<HoleyController>().ControllerPreset = P2_ControllerPreset;
 										holey.GetComponent<HoleyController>().SetControllerPreset(P2_ControllerPreset);
+										holey.GetComponent<HoleyController>().changeUI = true;
 										playUISound = true;
 									}
 
@@ -1079,6 +1084,7 @@ namespace TRE
                                         PRS.SetValue("HoleyController", P2_ControllerPresetString);
                                         holey.GetComponent<HoleyController>().ControllerPreset = P2_ControllerPreset;
                                         holey.GetComponent<HoleyController>().SetControllerPreset(P2_ControllerPreset);
+                                        holey.GetComponent<HoleyController>().changeUI = true;
                                         playUISound = true;
                                     }
 								}
