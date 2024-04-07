@@ -12,14 +12,15 @@ layout(set = 0, binding = 0) uniform UBO
 {
 	mat4 m_ProjView;
 	mat4 m_LightSpaceMatrix;
-	vec4 m_LightPosition;
-	vec4 m_LightColor;
 	vec4 m_CameraPosition;
-	vec4 m_DirectionalLightDirection;
-	vec4 m_DirectionalLightColor;
+	vec4 m_DirectionalLightDirection_Main;
+	vec4 m_DirectionalLightColor_Main;
+	vec4 m_DirectionalLightDirection_Fill;
+	vec4 m_DirectionalLightColor_Fill;
 	vec4 m_AmbientLight;
 	float m_ShadowIntensity;
 	float m_GammaValue;
+	float m_MultipleLights;
 } ubo;
 
 layout(set = 0, binding = 8) uniform ParticleUBO
@@ -62,8 +63,8 @@ void main()
 	Out.TexCoord = inTexCoord;
 	Out.MaterialColor = material.m_Color;
     Out.AmbientColor = ubo.m_AmbientLight;
-	Out.DirectionalLightDirection = ubo.m_DirectionalLightDirection;
-	Out.DirectionalLightColor = ubo.m_DirectionalLightColor;
+	Out.DirectionalLightDirection = ubo.m_DirectionalLightDirection_Main;
+	Out.DirectionalLightColor = ubo.m_DirectionalLightColor_Main;
     Out.VertNormal = normal;
     Out.CameraWorldPos = ubo.m_CameraPosition.xyz;
 }
