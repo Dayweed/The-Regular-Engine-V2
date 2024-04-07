@@ -245,13 +245,13 @@ namespace TRE
 				{
 					MoleyController moley = ECSManager.FindEntityByName("Moley").GetComponent<MoleyController>();
 					//first one is to rolling obj section, second one is to last platforming section, third one is all the way to the last section
-					//moley.GetComponent<Transform>().Position = new vec3(180, 50, -330);
-					moley.GetComponent<Transform>().Position = new vec3(602.175f, 107, -189.596f);
+					moley.GetComponent<Transform>().Position = new vec3(180, 50, -330);
+					//moley.GetComponent<Transform>().Position = new vec3(602.175f, 107, -189.596f);
 					//moley.GetComponent<Transform>().Position = new vec3(970, 108, -193);
 
 					HoleyController holey = ECSManager.FindEntityByName("Holey").GetComponent<HoleyController>();
-					//holey.GetComponent<Transform>().Position = new vec3(180, 50, -310);
-					holey.GetComponent<Transform>().Position = new vec3(602.175f, 107, -174.596f);
+					holey.GetComponent<Transform>().Position = new vec3(180, 50, -310);
+					//holey.GetComponent<Transform>().Position = new vec3(602.175f, 107, -174.596f);
 					//holey.GetComponent<Transform>().Position = new vec3(970, 108, -167);
 				}
 
@@ -278,13 +278,15 @@ namespace TRE
 					//moley.GetComponent<Transform>().Position = new vec3(64, 30, -174);
 					//moley.GetComponent<Transform>().Position = new vec3(293, 30, -138);
 					//moley.GetComponent<Transform>().Position = new vec3(406, 19, -430);
-					moley.GetComponent<Transform>().Position = new vec3(610, 19, -430);
+					//moley.GetComponent<Transform>().Position = new vec3(610, 19, -430);
+					moley.GetComponent<Transform>().Position = new vec3(785, 7, -16);
 
 					HoleyController holey = ECSManager.FindEntityByName("Holey").GetComponent<HoleyController>();
 					//holey.GetComponent<Transform>().Position = new vec3(77, 30, -174);
 					//holey.GetComponent<Transform>().Position = new vec3(293, 30, -120);
 					//holey.GetComponent<Transform>().Position = new vec3(408, 19, -417);
-					holey.GetComponent<Transform>().Position = new vec3(610, 19, -417);
+					//holey.GetComponent<Transform>().Position = new vec3(610, 19, -417);
+					holey.GetComponent<Transform>().Position = new vec3(768, 7, -16);
 				}
 			}
 
