@@ -191,6 +191,9 @@ namespace TRE
 		auto SilhouetteHandle = 16;
 		auto DepthBlurHandle = 17;
 		auto BoxBlurHandle = 18;
+		auto NormalHandle = 19;
+		auto SSAOHandle = 20;
+
 
 		//FinalPassShader
 		{
@@ -295,6 +298,20 @@ namespace TRE
 			std::unique_ptr<Shader> BoxBlurShader = ShaderCompiler::DeserializeReflectShader("../Resources/BoxBlur.TREshader");
 			BoxBlurShader->SetHandle(BoxBlurHandle);
 			ResourceManager::Instance().AddResource(std::move(BoxBlurShader));
+		}
+
+		//NormalShader
+		{
+			std::unique_ptr<Shader> NormalMappingShader = ShaderCompiler::DeserializeReflectShader("../Resources/Normal.TREshader");
+			NormalMappingShader->SetHandle(NormalHandle);
+			ResourceManager::Instance().AddResource(std::move(NormalMappingShader));
+		}
+
+		//SSAOShader
+		{
+			std::unique_ptr<Shader> SSAOShader = ShaderCompiler::DeserializeReflectShader("../Resources/SSAO.TREshader");
+			SSAOShader->SetHandle(SSAOHandle);
+			ResourceManager::Instance().AddResource(std::move(SSAOShader));
 		}
 	}
 

@@ -133,6 +133,13 @@ namespace TRE
 					else
 						Write.pImageInfo = &m_EmptyImageInfo;
 				}
+				else if (Write.dstBinding == 13)
+				{
+					if (SceneRenderer::m_SceneImages.contains(SceneRenderer::SceneImage::NormalMap))
+						Write.pImageInfo = &(SceneRenderer::m_SceneImages[SceneRenderer::SceneImage::NormalMap]->GetDescriptorImageInfo());
+					else
+						Write.pImageInfo = &m_EmptyImageInfo;
+				}
 				else
 				{
 					if(m_Textures[Name] != nullptr)

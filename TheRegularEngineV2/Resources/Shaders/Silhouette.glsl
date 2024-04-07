@@ -4,24 +4,14 @@
 layout(location = 0) in vec2 in_Position;
 layout(location = 1) in vec2 in_UV;
 
-// layout(set = 0, binding = 0) uniform VignetteUBO
-// {
-// 	vec4 m_Color;
-// 	float m_Threshold;
-// } ubo;
-
 layout(location = 0) out struct
 {
-	//vec4 Color;
 	vec2 UV;
-	//float Threshold;
 } Out;
 
 void main() 
 {
-	//Out.Color = ubo.m_Color;
 	Out.UV = in_UV;
-	//Out.Threshold = ubo.m_Threshold;
 	gl_Position = vec4(in_Position, 0.0, 1.0);
 }
 
@@ -36,9 +26,7 @@ const float Threshold = 0.0001;
 
 layout(location = 0) in struct
 {
-	//vec4 Color;
 	vec2 UV;
-	//float Threshold;
 } In;
 
 void main()
@@ -48,12 +36,9 @@ void main()
 	const float depth = texture(depthMap, In.UV).r;
 	if(ID.r < 1.0)
 	{
-		//if depth lesser means occluded
-		//if(depth < ID)
 		if(Threshold < (ID - depth))
 		{
 			outColor = vec4(0.25, 0.25, 0.25, 1.0);
-			//outColor = In.Color;
 		}
 		else
 		{

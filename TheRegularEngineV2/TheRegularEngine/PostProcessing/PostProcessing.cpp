@@ -5,6 +5,7 @@
 #include "Vignette.h"
 #include "Silhouette.h"
 #include "DepthBlur.h"
+#include "SSAO.h"
 
 namespace TRE
 {
@@ -98,8 +99,9 @@ namespace TRE
 	void PostProcessingManager::Init()
 	{
 		m_PostEffects[0] = std::move(std::pair("Silhouette", std::make_shared<Silhouette>()));
-		m_PostEffects[1] = std::move(std::pair("DepthBlur", std::make_shared<DepthBlur>()));
-		m_PostEffects[2] = std::move(std::pair("Vignette", std::make_shared<Vignette>()));
+		m_PostEffects[1] = std::move(std::pair("SSAO", std::make_shared<SSAO>()));
+		m_PostEffects[2] = std::move(std::pair("DepthBlur", std::make_shared<DepthBlur>()));
+		m_PostEffects[3] = std::move(std::pair("Vignette", std::make_shared<Vignette>()));
 	}
 
 	void PostProcessingManager::PreRender(VkFramebuffer targetFramebuffer, const std::shared_ptr<CommandBuffer>& commandBuffer, const int index)

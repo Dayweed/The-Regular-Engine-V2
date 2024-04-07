@@ -75,7 +75,13 @@ namespace TRE
 	{
 		glm::mat4 view;
 		glm::mat4 proj;
-	}; 
+	};
+
+	struct NormalUBO
+	{
+		glm::mat4 view;
+		glm::mat4 proj;
+	};
 
 	struct BoxBlurUBO
 	{
@@ -92,6 +98,7 @@ namespace TRE
 			void ShadowPassInit();
 			void DepthPrepassInit();
 			void IDPrepassInit();
+			void NormalPrepassInit();
 			void BoxBlurPostpassInit();
 			void Shutdown();
 			void Create();
@@ -106,6 +113,7 @@ namespace TRE
 			void ShadowPass(uint32_t Index, const std::multimap<ResourceHandle, Entity>& MaterialSort);
 			void DepthPrepass(uint32_t Index, const std::multimap<ResourceHandle, Entity>& MaterialSort);
 			void IDPrepass(uint32_t Index, const std::multimap<ResourceHandle, Entity>& MaterialSort);
+			void NormalPrepass(uint32_t Index, const std::multimap<ResourceHandle, Entity>& MaterialSort);
 			void BoxBlurPostpass(uint32_t Index);
 			void GeometryPass(uint32_t Index, const std::multimap<ResourceHandle, Entity>& MaterialSort);
 			void GeometryAnimationPass(uint32_t Index, const std::multimap<ResourceHandle, Entity>& MaterialSort);
@@ -121,7 +129,8 @@ namespace TRE
 				ShadowMap = 0,
 				DepthMap,
 				IDMap,
-				BoxBlurMap
+				BoxBlurMap,
+				NormalMap
 			};
 			static std::unordered_map<SceneImage, std::shared_ptr<Image2D>> m_SceneImages;
 
@@ -189,6 +198,17 @@ namespace TRE
 			uint32_t m_IDPrepassMapWidth = 1600;
 			uint32_t m_IDPrepassMapHeight = 900;
 			VkFramebuffer m_IDPrepassFramebuffer;
+
+			//Normal Prepass
+			std::shared_ptr<RenderPass> m_NormalPrepassRenderPass;
+			VkDescriptorImageInfo m_NormalPrepassDescriptInfo;
+			std::shared_ptr<Pipeline> m_NormalPrepassPipeline;
+			//std::shared_ptr<Pipeline> m_NormalPrepassAnimationPipeline;
+			std::shared_ptr<Material> m_NormalPrepassMaterial;
+			std::shared_ptr<UniformBuffer> m_NormalPrepassUBO;
+			uint32_t m_NormalPrepassMapWidth = 1600;
+			uint32_t m_NormalPrepassMapHeight = 900;
+			VkFramebuffer m_NormalPrepassFramebuffer;
 
 			//BoxBlur Postpass
 			std::shared_ptr<RenderPass> m_BoxBlurPostpassRenderPass;

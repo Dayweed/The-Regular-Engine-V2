@@ -38,6 +38,7 @@ namespace TRE
 		m_ShadowUBO = std::make_shared<UniformBuffer>(UINT32_T_CAST(sizeof(ShadowUBO)), 0);
 		m_DepthPrepassUBO = std::make_shared<UniformBuffer>(UINT32_T_CAST(sizeof(DepthUBO)), 0);
 		m_IDPrepassUBO = std::make_shared<UniformBuffer>(UINT32_T_CAST(sizeof(IDUBO)), 0);
+		m_NormalPrepassUBO = std::make_shared<UniformBuffer>(UINT32_T_CAST(sizeof(NormalUBO)), 0);
 		m_BoxBlurPostpassUBO = std::make_shared<UniformBuffer>(UINT32_T_CAST(sizeof(BoxBlurUBO)), 0);
 		m_ParticleUBO2D = std::make_shared<UniformBuffer>(UINT32_T_CAST(sizeof(ParticleUBO)), 0);
 		m_ParticleUBO3D = std::make_shared<UniformBuffer>(UINT32_T_CAST(sizeof(ParticleUBO)), 0);
@@ -184,6 +185,23 @@ namespace TRE
 			m_IDPrepassMaterial->Invalidate();
 		}
 #pragma endregion DepthPrepass
+
+#pragma region NormalPass
+		{
+			NormalPrepassInit();
+
+			PipelineConfigurations normalPrepassPipelineConfig{};
+			normalPrepassPipelineConfig.Primitive = PrimitiveType::Triangles;
+			normalPrepassPipelineConfig.Shader = ResourceManager::Instance().GetResource<Shader>(19);
+			normalPrepassPipelineConfig.CullMode = VK_CULL_MODE_BACK_BIT;
+			normalPrepassPipelineConfig.EnableBlending = true;
+			normalPrepassPipelineConfig.DepthCompareOp = VK_COMPARE_OP_LESS;
+			m_NormalPrepassPipeline = std::make_shared<Pipeline>(normalPrepassPipelineConfig, m_NormalPrepassRenderPass);
+
+			m_NormalPrepassMaterial = std::make_shared<Material>(ResourceManager::Instance().GetResource<Shader>(19));
+			m_NormalPrepassMaterial->Invalidate();
+		}
+#pragma endregion NormalPass
 
 #pragma region BlurPostpass
 		{
@@ -359,6 +377,7 @@ namespace TRE
 		vkDestroyFramebuffer(m_Device->GetLogicalDevice(), m_ShadowFramebuffer, nullptr);
 		vkDestroyFramebuffer(m_Device->GetLogicalDevice(), m_DepthPrepassFramebuffer, nullptr);
 		vkDestroyFramebuffer(m_Device->GetLogicalDevice(), m_IDPrepassFramebuffer, nullptr);
+		vkDestroyFramebuffer(m_Device->GetLogicalDevice(), m_NormalPrepassFramebuffer, nullptr);
 		vkDestroyFramebuffer(m_Device->GetLogicalDevice(), m_BoxBlurPostpassFramebuffer, nullptr);
 
 		m_SceneImages.clear();
@@ -618,6 +637,14 @@ namespace TRE
 		}
 
 		{
+			NormalUBO normalUBO{};
+			normalUBO.view = baseCamera.m_ViewMatrix;
+			normalUBO.proj = baseCamera.m_ProjectionMatrix;
+
+			m_NormalPrepassUBO->SetData(&normalUBO, sizeof(NormalUBO));
+		}
+
+		{
 			BoxBlurUBO boxBlurUBO{};
 			boxBlurUBO.m_InvScreenSize = glm::vec2(1.f / SwapChain->GetWidth(), 1.f / SwapChain->GetHeight());
 
@@ -707,6 +734,7 @@ namespace TRE
 		{
 			DepthPrepass(Index, materialSort);
 			IDPrepass(Index, materialSort);
+			//NormalPrepass(Index, materialSort);
 		}
 
 		m_RenderPass->BeginRenderPass(m_CommandBuffer->GetInUseCommandBuffer(), m_FrameBuffer[ImageIndex]);
@@ -1182,6 +1210,59 @@ namespace TRE
 		Renderer::EndRenderPass(m_CommandBuffer);
 	}
 
+	void SceneRenderer::NormalPrepass(uint32_t Index, const std::multimap<ResourceHandle, Entity>& MaterialSort)
+	{
+		VkClearValue clearValues[2];
+		clearValues[0].depthStencil = { 1.0f, 0 };
+		clearValues[1].color = { 0.0f, 0.0f, 0.0f, 0.0f };
+		VkRenderPassBeginInfo renderPassInfo{};
+		renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+		renderPassInfo.renderPass = m_NormalPrepassRenderPass->GetHandle();
+		renderPassInfo.framebuffer = m_NormalPrepassFramebuffer;
+		renderPassInfo.renderArea.offset = { 0, 0 };
+		renderPassInfo.renderArea.extent = { m_NormalPrepassMapWidth, m_NormalPrepassMapHeight };
+		renderPassInfo.clearValueCount = 2;
+		renderPassInfo.pClearValues = clearValues;
+
+		vkCmdBeginRenderPass(m_CommandBuffer->GetInUseCommandBuffer(), &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
+
+		VkViewport viewport2{};
+		viewport2.x = 0.0f;
+		viewport2.y = 0.0f;
+		viewport2.width = (float)m_NormalPrepassMapWidth;
+		viewport2.height = (float)m_NormalPrepassMapHeight;
+		viewport2.minDepth = 0.0f;
+		viewport2.maxDepth = 1.0f;
+		vkCmdSetViewport(m_CommandBuffer->GetInUseCommandBuffer(), 0, 1, &viewport2);
+
+		VkRect2D scissor2{};
+		scissor2.extent = { m_NormalPrepassMapWidth, m_NormalPrepassMapHeight };
+		vkCmdSetScissor(m_CommandBuffer->GetInUseCommandBuffer(), 0, 1, &scissor2);
+
+		Renderer::BindPipeline(m_CommandBuffer, m_NormalPrepassPipeline);
+
+		m_NormalPrepassMaterial->UpdateForRendering(m_NormalPrepassUBO, Index);
+		vkCmdBindDescriptorSets(m_CommandBuffer->GetInUseCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_NormalPrepassPipeline->GetPipelineLayout(), 0, 1, &m_NormalPrepassMaterial->GetDescriptor(Index), 0, NULL);
+
+		for (const auto& go_mr : MaterialSort)
+		{
+			const MeshRenderer& mr = go_mr.second->GetComponent<MeshRenderer>();
+			ResourceHandle currentMaterialHandle = go_mr.first;
+
+			PushConstant pc{};
+			pc.m_Model = go_mr.second->GetComponent<Transform>().m_WorldXform;
+			vkCmdPushConstants(m_CommandBuffer->GetInUseCommandBuffer(), m_IDPrepassPipeline->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstant), &pc);
+
+			mr.m_RenderObject->Bind(m_CommandBuffer->GetInUseCommandBuffer());
+			mr.m_RenderObject->Draw(m_CommandBuffer->GetInUseCommandBuffer());
+
+			m_PreviousMaterialHandle = currentMaterialHandle;
+		}
+		m_PreviousMaterialHandle = 0;
+
+		Renderer::EndRenderPass(m_CommandBuffer);
+	}
+
 	void SceneRenderer::BoxBlurPostpass(uint32_t Index)
 	{
 		VkClearValue clearValues[2];
@@ -1508,6 +1589,47 @@ namespace TRE
 		if (auto Result = vkCreateFramebuffer(m_Device->GetLogicalDevice(), &framebufferCreateInfo, nullptr, &m_IDPrepassFramebuffer); Result != VK_SUCCESS)
 		{
 			assert(Result == VK_SUCCESS && "Unable to create image sampler for ID pass");
+		}
+	}
+
+	void SceneRenderer::NormalPrepassInit()
+	{
+		m_NormalPrepassMapWidth = 2048;
+		m_NormalPrepassMapHeight = 2048;
+
+		//Color
+		ImageConfig ImgConfig{};
+		ImgConfig.DebugName = "Normal Pass";
+		ImgConfig.Format = ImageFormat::RGBA;
+		ImgConfig.Width = m_NormalPrepassMapWidth;
+		ImgConfig.Height = m_NormalPrepassMapHeight;
+		ImgConfig.Usage = ImageUsage::Attachment;
+		ImgConfig.CreateSampler = true;
+		ImgConfig.Transfer = false;
+		ImgConfig.AddressMode = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_BORDER;
+
+		if (m_SceneImages.contains(SceneImage::NormalMap) == false)
+			m_SceneImages[SceneImage::NormalMap] = std::make_shared<Image2D>(ImgConfig);
+
+		RenderPassInfo RenderPassCreateInfo{};
+		RenderPassCreateInfo.FinalLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+		RenderPassCreateInfo.ImageFormat = Engine::GetInstance().GetWindow()->GetSwapChain()->GetColorFormat();
+		RenderPassCreateInfo.DepthEnabled = false;
+		m_NormalPrepassRenderPass = std::make_shared<RenderPass>(m_Device, RenderPassCreateInfo);
+
+		auto attachments = m_SceneImages[SceneImage::NormalMap]->GetImageData().ImageView;
+		VkFramebufferCreateInfo framebufferCreateInfo{};
+		framebufferCreateInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
+		framebufferCreateInfo.renderPass = m_NormalPrepassRenderPass->GetHandle();
+		framebufferCreateInfo.attachmentCount = 1;
+		framebufferCreateInfo.pAttachments = &attachments;
+		framebufferCreateInfo.width = m_NormalPrepassMapWidth;
+		framebufferCreateInfo.height = m_NormalPrepassMapHeight;
+		framebufferCreateInfo.layers = 1;
+
+		if (auto Result = vkCreateFramebuffer(m_Device->GetLogicalDevice(), &framebufferCreateInfo, nullptr, &m_NormalPrepassFramebuffer); Result != VK_SUCCESS)
+		{
+			assert(Result == VK_SUCCESS && "Unable to create image sampler for Normal pass");
 		}
 	}
 
