@@ -50,7 +50,16 @@ namespace TRE
 
         private SceneLogic SceneLogic;
 
-        public void Start()
+		private ulong tumbleweed1SFX;
+		private ulong tumbleweed2SFX;
+		private ulong tumbleweed3SFX;
+		private ulong tumbleweed4SFX;
+		private ulong platform1SFX;
+		private ulong platform2SFX;
+		private ulong platform3SFX;
+		private ulong platform4SFX;
+
+		public void Start()
 		{
 			MidPos = ECSManager.FindEntityByName("MidPos");
 			Debug.Log("Holey ID is " + MidPos.ID);
@@ -88,6 +97,15 @@ namespace TRE
 			preTransitions.AddCameraData(new vec3(-20, 50, -20), new vec3(40, 180, 0), 1.5f);
 
 			SceneLogic = ECSManager.FindEntityByName("Scene Transition Logic").GetComponent<SceneLogic>();
+
+			tumbleweed1SFX = ECSManager.FindIDFromName("SFX_Tumbleweed1");
+			tumbleweed2SFX = ECSManager.FindIDFromName("SFX_Tumbleweed2");
+			tumbleweed3SFX = ECSManager.FindIDFromName("SFX_Tumbleweed3");
+			tumbleweed4SFX = ECSManager.FindIDFromName("SFX_Tumbleweed4");
+			platform1SFX = ECSManager.FindIDFromName("SFX_Platform_1");
+			platform2SFX = ECSManager.FindIDFromName("SFX_Platform_2");
+			platform3SFX = ECSManager.FindIDFromName("SFX_Platform_3");
+			platform4SFX = ECSManager.FindIDFromName("SFX_Platform_4");
 		}
 
 		public void Update()
@@ -183,6 +201,24 @@ namespace TRE
 					cameraController.offsetZ = 0f;
 					expectedDuration = 0.8f;
 					CheckTransition(Trigger_D);
+
+					if (ECSManager.IsValidEntity(platform1SFX))
+						AudioSystem.SetPause(platform1SFX, true);
+
+					if(ECSManager.IsValidEntity(platform2SFX) && ECSManager.IsValidEntity(platform3SFX) && ECSManager.IsValidEntity(platform4SFX)
+						&& ECSManager.IsValidEntity(tumbleweed1SFX) && ECSManager.IsValidEntity(tumbleweed2SFX) && ECSManager.IsValidEntity(tumbleweed3SFX)
+						&& ECSManager.IsValidEntity(tumbleweed4SFX))
+					{
+						AudioSystem.SetPause(platform2SFX, false);
+						AudioSystem.SetPause(platform3SFX, false);
+						AudioSystem.SetPause(platform4SFX, false);
+						AudioSystem.SetPause(platform1SFX, false);
+						AudioSystem.SetPause(tumbleweed1SFX, false);
+						AudioSystem.SetPause(tumbleweed2SFX, false);
+						AudioSystem.SetPause(tumbleweed3SFX, false);
+						AudioSystem.SetPause(tumbleweed4SFX, false);
+					}
+
 				}
 
 				if (regionE)
