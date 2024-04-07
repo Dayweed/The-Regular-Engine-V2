@@ -170,6 +170,7 @@ namespace TRE
 
 		//these variables are enclusive to Moley
 		private Entity UIPopup2 = null;
+        private Entity UIPopup2Controls = null;
 		public bool IsActivated = false;
 		private bool HasBeenTriggeredBefore = false;
 
@@ -215,6 +216,7 @@ namespace TRE
 
 			mainCamera = ECSManager.FindEntityByName("Main Camera");
 			UIPopup2 = ECSManager.FindEntityByName("PopupUI2");
+			UIPopup2Controls = ECSManager.FindEntityByName("PopupUI2_Controls");
 			IsActivated = false;
 			HasBeenTriggeredBefore = false;
 
@@ -321,6 +323,9 @@ namespace TRE
                         CharacterUI.GetComponent<SpriteRenderer>().Texture = "CharacterUI_Right_Controller.png";
                         break;
                 }
+
+				// Change the popup Ui
+				UIPopup2Controls.GetComponent<SpriteRenderer>().Texture = "ui-button-a.png";
 			}
 
 			if (changeUI && !isControllerConnected && CharacterUI != null)
@@ -338,6 +343,9 @@ namespace TRE
                         CharacterUI.GetComponent<SpriteRenderer>().Texture = "CharacterUI_Right_KB3.png";
                         break;
                 }
+
+				// Change the popup UI
+				UIPopup2Controls.GetComponent<SpriteRenderer>().Texture = "ui-button-space.png";
 			}
 			#endregion
 
@@ -440,11 +448,13 @@ namespace TRE
 				if (IsActivated)
 				{
 					UIPopup2.GetComponent<SpriteRenderer>().isVisible = true;
+					UIPopup2Controls.GetComponent<SpriteRenderer>().isVisible = true;
 				}
 
 				if (IsActivated && IS.GetKeyHold(InputKeys.Space))
 				{
 					UIPopup2.GetComponent<SpriteRenderer>().isVisible = false;
+					UIPopup2Controls.GetComponent<SpriteRenderer>().isVisible = false;
 					HasBeenTriggeredBefore = true;
 				}
 			}
