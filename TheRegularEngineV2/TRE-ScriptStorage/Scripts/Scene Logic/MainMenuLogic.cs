@@ -248,13 +248,13 @@ namespace TRE
 						p1Controls.GetComponent<SpriteRenderer>().Texture = "ui-mm-controls-controller1.png";
 						break;
 					case 1:
-						p1Controls.GetComponent<SpriteRenderer>().Texture = "ui-mm-controls-controller2.png";
+						p1Controls.GetComponent<SpriteRenderer>().Texture = "ui-mm-controls-controller4.png";
 						break;
 					case 2:
-						p1Controls.GetComponent<SpriteRenderer>().Texture = "ui-mm-controls-controller3.png";
+						p1Controls.GetComponent<SpriteRenderer>().Texture = "ui-mm-controls-controller2.png";
 						break;
 					case 3:
-						p1Controls.GetComponent<SpriteRenderer>().Texture = "ui-mm-controls-controller4.png";
+						p1Controls.GetComponent<SpriteRenderer>().Texture = "ui-mm-controls-controller3.png";
 						break;
                 }
             }
@@ -284,13 +284,13 @@ namespace TRE
 						p2Controls.GetComponent<SpriteRenderer>().Texture = "ui-mm-controls-controller1.png";
 						break;
 					case 1:
-						p2Controls.GetComponent<SpriteRenderer>().Texture = "ui-mm-controls-controller2.png";
+						p2Controls.GetComponent<SpriteRenderer>().Texture = "ui-mm-controls-controller4.png";
 						break;
 					case 2:
-						p2Controls.GetComponent<SpriteRenderer>().Texture = "ui-mm-controls-controller3.png";
+						p2Controls.GetComponent<SpriteRenderer>().Texture = "ui-mm-controls-controller2.png";
 						break;
 					case 3:
-						p2Controls.GetComponent<SpriteRenderer>().Texture = "ui-mm-controls-controller4.png";
+						p2Controls.GetComponent<SpriteRenderer>().Texture = "ui-mm-controls-controller3.png";
 						break;
                 }
             }
@@ -335,19 +335,11 @@ namespace TRE
 					UIControls.GetComponent<VFX_FadeIn>().ForceStop();
 					UIControls.GetComponent<VFX_FadeOut>().FadeOut();
 
-					// Controls 1
-
-					// Controls 2
-
 				}
 				else if (UIControls.GetComponent<SpriteRenderer>().Color.w < 1 && !MoleyMoving && !HoleyMoving)
 				{
 					UIControls.GetComponent<VFX_FadeOut>().ForceStop();
 					UIControls.GetComponent<VFX_FadeIn>().FadeIn();
-
-					// Controls 1
-
-					// Controls 2
 				}
 			}
 			#endregion
