@@ -186,10 +186,10 @@ namespace TRE
 				{
 					//first hitw
 					expectedPosition = new vec3(0, 10, 20);
-					expectedRotation = new vec3(25, 90, 0);
-					expectedDistance = 40;
+					expectedRotation = new vec3(20, 90, 0);
+					expectedDistance = 50;
 					cameraController.lookOnlyBool = false;
-					cameraController.expectedYPos = 30f;
+					cameraController.expectedYPos = 35f;
 					cameraController.offsetX = 0f;
 					cameraController.offsetZ = 0f;
 					expectedDuration = 0.8f;
@@ -303,7 +303,7 @@ namespace TRE
 					//second hitw
 					cameraController.forceZaxis = false;
 					expectedPosition = new vec3(0, 10, 20);
-					expectedRotation = new vec3(30, 90, 0);
+					expectedRotation = new vec3(25, 90, 0);
 					expectedDistance = 40;
 					cameraController.lookOnlyBool = false;
 					cameraController.expectedYPos = 40f;
@@ -363,9 +363,9 @@ namespace TRE
 					cameraController.forceXaxis = false;
 					expectedPosition = new vec3(0, 10, 20);
 					expectedRotation = new vec3(30, 0, 0);
-					expectedDistance = 80;
+					expectedDistance = 40;
 					cameraController.lookOnlyBool = false;
-					cameraController.expectedYPos = 6f;
+					cameraController.expectedYPos = 20f;
 					cameraController.offsetX = 0f;
 					cameraController.offsetZ = 0f;
 					expectedDuration = 1.2f;
