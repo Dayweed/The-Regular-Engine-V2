@@ -27,7 +27,7 @@
       0,
       {
          "m_Active": true,
-         "m_GUID": "2328121792219541471",
+         "m_GUID": "8953899974736786789",
          "m_Index": 1,
          "m_Name": "FallingRock",
          "m_Tag": "FallingObstacle"
@@ -128,7 +128,7 @@
          "m_PlayOnStart": true,
          "m_Priority": 40,
          "m_Spatialize": false,
-         "m_Volume": 0.800000011920929,
+         "m_Volume": 0.8999999761581421,
          "m_goPosition": [
             0.0,
             0.0,
