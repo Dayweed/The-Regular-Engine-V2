@@ -176,14 +176,17 @@ namespace TRE
             }
 
 			bool pressedSpace = InputSystem.GetKeyPress(InputKeys.Space);
-			bool pressA = InputSystem.GetControllerButtonTriggered(0, InputSystem.Button.A);
+			bool pressA = InputSystem.GetControllerButtonTriggered(0, InputSystem.Button.A) || InputSystem.GetControllerButtonTriggered(1 , InputSystem.Button.A);
 			bool hasPlayerPressed = pressedSpace || pressA;
 
 			bool paragraphIsHalfWay = false;
 
 			DetermineIfSkippable();
 
-			if (skipCutscene && (InputSystem.GetKeyRelease(InputKeys.Escape) || InputSystem.GetControllerButtonReleased(0, InputSystem.Button.Start)))
+			if (skipCutscene && (InputSystem.GetKeyRelease(InputKeys.Escape) || InputSystem.GetControllerButtonReleased(0, InputSystem.Button.Start)
+                 || InputSystem.GetControllerButtonReleased(1, InputSystem.Button.Start) || InputSystem.GetControllerButtonReleased(0, InputSystem.Button.Back)
+                 || InputSystem.GetControllerButtonReleased(1, InputSystem.Button.Back) || InputSystem.GetControllerButtonReleased(0, InputSystem.Button.B)
+                 || InputSystem.GetControllerButtonReleased(1, InputSystem.Button.B)))
 			{
 				Debug.Log("skip cutscene: " + skipCutscene);
 				if (ECSManager.IsValidEntity(BGM))
