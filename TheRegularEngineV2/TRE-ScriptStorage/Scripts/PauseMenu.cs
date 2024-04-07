@@ -420,45 +420,86 @@ namespace TRE
 			// but allow it to show up it the MainMenu scene even if its camera is not free
 			bool canShowPauseMenu = CurrentScene == "MainMenu" || mainCamera.freeCamera;
 
-			if ((playerPressedPause || ReadExternalPauseCommand() || closeSettings) && canShowPauseMenu)
+			if ((playerPressedPause || ReadExternalPauseCommand()) && canShowPauseMenu)
 			{
-				if (menustate == -1)
-				{
-					isChangeMenu = true;
-					isPaused = !isPaused;
-					menustate = 0;
-					currentOption = 0;
-					//Debug.Log("Trigger: Go into pause state");
-				}
-				else if (mIsEditingSettings && menustate == 1)
-				{
-					isChangeMenu = true;
-					menustate = 1;
-					mIsEditingSettings = false;
-					UIS.SetVisible(settingsPointer.ID, false);
-					UIS.SetVisible(controlsPointer.ID, false);
-					UIS.SetVisible(selectedPointer.ID, false);
-					//Debug.Log("Trigger: Get out of editing state");
-				}
-				else if (!mIsEditingSettings && menustate == 1)
-				{
-					isChangeMenu = true;
-					menustate = 0;
-					BacktoMainPausePage();
-					//Debug.Log("Trigger: Get out of controls panel");
-				}
-				else if (!mIsEditingSettings && menustate == 0)
-				{
-					isChangeMenu = true;
-					isPaused = !isPaused;
-					menustate = 0;
-					currentOption = 0;
-					//Debug.Log("Trigger: Unpause the game");
-				}
+                if (menustate == -1)
+                {
+                    isChangeMenu = true;
+                    isPaused = !isPaused;
+                    menustate = 0;
+                    currentOption = 0;
+                    //Debug.Log("Trigger: Go into pause state");
+                }
+                else if (mIsEditingSettings && menustate == 1 )
+                {
+                    isChangeMenu = true;
+                    menustate = 1;
+                    mIsEditingSettings = false;
+                    UIS.SetVisible(settingsPointer.ID, false);
+                    UIS.SetVisible(controlsPointer.ID, false);
+                    UIS.SetVisible(selectedPointer.ID, false);
+                    //Debug.Log("Trigger: Get out of editing state");
+                }
+                else if (!mIsEditingSettings && menustate == 1 )
+                {
+                    isChangeMenu = true;
+                    menustate = 0;
+                    BacktoMainPausePage();
+                    //Debug.Log("Trigger: Get out of controls panel");
+                }
+                else if (!mIsEditingSettings && menustate == 0 )
+                {
+                    isChangeMenu = true;
+                    isPaused = !isPaused;
+                    menustate = 0;
+                    currentOption = 0;
+                    //Debug.Log("Trigger: Unpause the game");
+                }
 
-				if (ECSManager.IsValidEntity(sfx))
-					AS.Play(sfx);
+                if (ECSManager.IsValidEntity(sfx))
+                    AS.Play(sfx);
 			}
+
+            if (closeSettings)
+            {
+                if (menustate == -1)
+                {
+					// this can only close the pause menu and not open it
+                    isChangeMenu = true;
+                    isPaused = false;
+                    menustate = 0;
+                    currentOption = 0;
+                    //Debug.Log("Trigger: Go into pause state");
+                }
+                else if (mIsEditingSettings && menustate == 1 )
+                {
+                    isChangeMenu = true;
+                    menustate = 1;
+                    mIsEditingSettings = false;
+                    UIS.SetVisible(settingsPointer.ID, false);
+                    UIS.SetVisible(controlsPointer.ID, false);
+                    UIS.SetVisible(selectedPointer.ID, false);
+                    //Debug.Log("Trigger: Get out of editing state");
+                }
+                else if (!mIsEditingSettings && menustate == 1 )
+                {
+                    isChangeMenu = true;
+                    menustate = 0;
+                    BacktoMainPausePage();
+                    //Debug.Log("Trigger: Get out of controls panel");
+                }
+                else if (!mIsEditingSettings && menustate == 0 )
+                {
+                    isChangeMenu = true;
+                    isPaused = !isPaused;
+                    menustate = 0;
+                    currentOption = 0;
+                    //Debug.Log("Trigger: Unpause the game");
+                }
+
+                if (ECSManager.IsValidEntity(sfx))
+                    AS.Play(sfx);
+            }
 
 			if (isPaused)
 			{
