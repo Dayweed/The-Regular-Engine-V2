@@ -398,19 +398,31 @@ namespace TRE
 			if (ToTutorialSelect.GetComponent<TunnelLogic>().MolesInside() || ToLevel1Select.GetComponent<TunnelLogic>().MolesInside() || ToLevel2Select.GetComponent<TunnelLogic>().MolesInside())
 			{
 				titleStarsCollectedPos.y = displayYPos + 170f;
-				// Determine which stars to display
-				DetermineStarsDisplay();
+                // Determine which stars to display
+                DetermineStarsDisplay();
 			}
 			else
 			{
 				titleStarsCollectedPos.y = hiddenYPos;
-				TitleStarsCollected.GetComponent<TextBounce>().Pause();
+				//TitleStarsCollected.GetComponent<TextBounce>().Pause();
 			}
-			// Lerp title to pos
-			float titleStarsCollectedPosY = MathF.Lerp(TitleStarsCollected.GetComponent<Transform>().Position.y, titleStarsCollectedPos.y, titleMoveSpeed * Time.deltaTime);
+
+            // Lerp title to pos
+            float titleStarsCollectedPosY = MathF.Lerp(TitleStarsCollected.GetComponent<Transform>().Position.y, titleStarsCollectedPos.y, titleMoveSpeed * Time.deltaTime);
 			TitleStarsCollected.GetComponent<Transform>().Position = new vec3(titleStarsCollectedPos.x, titleStarsCollectedPosY, titleStarsCollectedPos.z);
-			// Resume Text Bounce if it is close to the position
-			if (TitleStarsCollected.GetComponent<TextBounce>().IsPaused() && titleStarsCollectedPos.y == displayYPos && Math.Abs(titleStarsCollectedPosY - titleStarsCollectedPos.y) < titleOffset)
+
+            vec3 StarPos1 = Stars1.transform.Position;
+            vec3 StarPos2 = Stars2.transform.Position;
+            vec3 StarPos3 = Stars3.transform.Position;
+            StarPos1.y = TitleStarsCollected.transform.Position.y - 20f;
+            StarPos2.y = TitleStarsCollected.transform.Position.y - 20f;
+            StarPos3.y = TitleStarsCollected.transform.Position.y - 20f;
+            Stars1.transform.Position = StarPos1;
+            Stars2.transform.Position = StarPos2;
+            Stars3.transform.Position = StarPos3;
+
+            // Resume Text Bounce if it is close to the position
+            if (TitleStarsCollected.GetComponent<TextBounce>().IsPaused() && titleStarsCollectedPos.y == displayYPos && Math.Abs(titleStarsCollectedPosY - titleStarsCollectedPos.y) < titleOffset)
 			{
 				TitleStarsCollected.GetComponent<TextBounce>().Resume();
 			}
@@ -660,7 +672,7 @@ namespace TRE
 				if (!Holey.GetComponent<HoleyController>().isControllable && Holey.GetComponent<HoleyController>().isGrounded && !Holey.GetComponent<CapsuleCollider>().IsTrigger)
 					Holey.GetComponent<HoleyController>().isControllable = true;
 			}
-		}
+        }
 
 		private void JumpIntoHole()
 		{
@@ -735,23 +747,23 @@ namespace TRE
 
 			if (int.TryParse(PersistentSystem.GetValue(holeSceneName + "StarsObtained"), out int mapStars))
 			{
-				//Debug.Log(holeSceneName + "StarsObtained: " + mapStars);
-			}
-			if (mapStars >= 3)
-			{
-				//Stars3.SetActive(true);
-				Stars3.GetComponent<SpriteRenderer>().isVisible = true;
-			}
-			if (mapStars >= 2)
-			{
-				//Stars2.SetActive(true);
-				Stars2.GetComponent<SpriteRenderer>().isVisible = true;
-			}
-			if (mapStars >= 1)
-			{
-				//Stars1.SetActive(true);
-				Stars1.GetComponent<SpriteRenderer>().isVisible = true;
-			}
+                //Debug.Log(holeSceneName + "StarsObtained: " + mapStars);
+                if (mapStars >= 3)
+                {
+                    //Stars3.SetActive(true);
+                    Stars3.GetComponent<SpriteRenderer>().isVisible = true;
+                }
+                if (mapStars >= 2)
+                {
+                    //Stars2.SetActive(true);
+                    Stars2.GetComponent<SpriteRenderer>().isVisible = true;
+                }
+                if (mapStars >= 1)
+                {
+                    //Stars1.SetActive(true);
+                    Stars1.GetComponent<SpriteRenderer>().isVisible = true;
+                }
+            }
 		}
 	}
 }
