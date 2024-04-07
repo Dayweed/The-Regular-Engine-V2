@@ -48,8 +48,8 @@ namespace TRE
 		public void Start()
 		{
 			originalSpawnPoint = transform.Position;
-			mHoley = new Entity(ECSManager.FindIDFromName("Holey"));
-			mMoley = new Entity(ECSManager.FindIDFromName("Moley"));
+			mHoley = ECSManager.FindEntityByName("Holey");
+			mMoley = ECSManager.FindEntityByName("Moley");
 			mTutorialCactus = new Entity(ECSManager.FindIDFromName("Tutorial_Cactus"));
 			pinataEffect = parenting.GetChildFromName("PinataEffect");
 			mTarget = new Entity(); // Invalid ID

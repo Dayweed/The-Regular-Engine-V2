@@ -169,7 +169,7 @@ namespace TRE
 		private Entity moley_dust;
 
 		//these variables are enclusive to Moley
-		private Entity UIPopup2;
+		private Entity UIPopup2 = null;
 		public bool IsActivated = false;
 		private bool HasBeenTriggeredBefore = false;
 
@@ -435,7 +435,7 @@ namespace TRE
 			}
 
 			#region UI Popup Region
-			if (!HasBeenTriggeredBefore)
+			if (Scene.GetSceneName() == "Tutorial" && !HasBeenTriggeredBefore)
 			{
 				if (IsActivated)
 				{
