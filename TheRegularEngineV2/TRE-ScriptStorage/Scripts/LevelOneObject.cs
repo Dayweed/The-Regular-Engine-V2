@@ -19,12 +19,16 @@ namespace TRE
 		private bool mIsRadialVFX = false;
 		private float mRadialVFXDuration = 3f;
 
+		private ulong sfx;
+
 		public void OnCreate()
 		{
 			// LevelObject = ECSManager.FindEntityByName("LevelObject_PickMe");
 			mainCamera = ECSManager.FindEntityByName("Main Camera");
 			LvlObjUI = ECSManager.FindEntityByName("LevelObject");
 			mRadialVFX = ECSManager.FindEntityByName("RadialEffectVFX");
+
+			sfx = ECSManager.FindIDFromName("SFX_CollectLevelObj");
 		}
 
 		public void Update()
@@ -82,6 +86,12 @@ namespace TRE
 
 			if (!pickedUp && (other.CompareTag("Red") || other.CompareTag("Blue")))
 			{
+
+				if (ECSManager.IsValidEntity(sfx))
+				{
+					AudioSystem.Play(sfx);
+				}
+
 				GetComponent<MeshRenderer>().Visible = false;
 				pickedUp = true;
 				LvlObjUI.GetComponent<VFX_Emerge>().Emerge(vec3.Zero, new vec3(-840f, -280f, 0f), new vec3(1.5f, 1.5f, 1));
