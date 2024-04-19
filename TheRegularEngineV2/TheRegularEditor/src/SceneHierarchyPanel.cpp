@@ -188,11 +188,18 @@ namespace TRE
 				ECSManager::Instance().MarkForDeletion(SelectedEntity);
 				EditorSystemManager::Instance().GetSystem<EditorSystem>()->GetSelectionManager()->ClearSelectedEntity();
 			}
+			if (ImGui::IsWindowHovered() && m_ShortcutDeleteEntityAndChildren && SelectedEntity)
+			{
+				DeleteChildren(SelectedEntity);
+				ECSManager::Instance().MarkForDeletion(SelectedEntity);
+				EditorSystemManager::Instance().GetSystem<EditorSystem>()->GetSelectionManager()->ClearSelectedEntity();
+			}
 
 			m_ShortcutCopyEntity = false;
 			m_ShortcutPasteEntity = false;
 			m_ShortcutDuplicateEntity = false;
 			m_ShortcutDeleteEntity = false;
+			m_ShortcutDeleteEntityAndChildren = false;
 		}
 		ImGui::EndChild();
 
@@ -212,7 +219,7 @@ namespace TRE
 									| (!childrenVector.empty() ? ImGuiTreeNodeFlags_OpenOnArrow : ImGuiTreeNodeFlags_Leaf)
 									| (hasInput ? ImGuiTreeNodeFlags_DefaultOpen : 0);
 
-		ImVec4 color = CurrentEntity->HasComponent<Prefabing>() ? ImVec4( 0, 1, 1, 1 ) : ImVec4(1, 1, 1, 1);
+		ImVec4 color = CurrentEntity->HasComponent<Prefabing>() ? ImVec4(0, 1, 1, 1) : ImVec4(1, 1, 1, 1);
 		ImGui::PushStyleColor(0, color);
 
 		// Auto Open this node if it added a child in the previous frame
@@ -305,13 +312,18 @@ namespace TRE
 			m_ShortcutPasteEntity = key == KeyButton::V;
 			m_ShortcutDuplicateEntity = key == KeyButton::D;
 		}
+
+		// Shift + Del : Delete the selected entity and its children
+		if (mods == KeyMods::SHIFT)
+			m_ShortcutDeleteEntityAndChildren = key == KeyButton::Delete;
+
 		m_ShortcutDeleteEntity = key == KeyButton::Delete;
 	}
 
 	void SceneHierarchyPanel::AddParent(TRE::Entity& CurrentEntity, std::vector<TRE::Entity>& vec)
 	{
 		TRE::Entity childrenVector = ECSSystemManager::Instance().GetSystem<ParentingSystem>()->GetParent(CurrentEntity);
-		
+
 		//if no child
 		if (childrenVector == nullptr)
 		{

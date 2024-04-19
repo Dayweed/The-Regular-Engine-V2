@@ -38,6 +38,7 @@ namespace TRE
 			bool m_ShortcutPasteEntity = false;
 			bool m_ShortcutDuplicateEntity = false;
 			bool m_ShortcutDeleteEntity = false;
+			bool m_ShortcutDeleteEntityAndChildren = false;
 
 			std::string temp_ParentOpen = "";
 	};
