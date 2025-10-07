@@ -1,5 +1,7 @@
 # GAM300
 
+This is a clone of a private repository to showcase the work I have done in the project
+
 Required things to have installed:
 - Vulkan SDK version 1.3.250.1 (https://vulkan.lunarg.com/sdk/home#windows)
 
